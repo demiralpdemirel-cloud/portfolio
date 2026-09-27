@@ -1,0 +1,20 @@
+node_modules
+dist
+.vite
+*.log
+.DS_Store
+.sites-runtime
+.env
+.env.*
+!.env.example
+
+# Large source videos are hosted as GitHub Release assets, not in Git or Pages.
+/public/media/projects/evga-rtx-3090/evga-rtx-3090.mp4
+/public/media/projects/keyboard-study/keyboard-study.mp4
+/public/media/projects/mario-arcade/mario-arcade.mp4
+/public/media/projects/star-wars-vfx/star-wars-vfx.mp4
+/public/media/showreel/main/showreel.mp4
+/public/media/showreel/breakdowns/kurulus-orhan/breakdown.mp4
+/public/media/showreel/breakdowns/teskilat/breakdown.mp4
+/public/media/showreel/breakdowns/turkcell-shaq/breakdown.mp4
+/public/media/showreel/breakdowns/zaferin-rengi/breakdown.mp4

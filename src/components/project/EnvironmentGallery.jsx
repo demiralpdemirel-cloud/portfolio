@@ -1,0 +1,122 @@
+import { useEffect, useRef, useState } from 'react'
+import { assetPath } from '../../utils/assetPath'
+import FullscreenImageViewer from './FullscreenImageViewer'
+
+export default function EnvironmentGallery({ media = [], title }) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [visibleIndex, setVisibleIndex] = useState(0)
+  const [incomingIndex, setIncomingIndex] = useState(null)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [viewerOrigin, setViewerOrigin] = useState(null)
+  const [isViewerOpen, setIsViewerOpen] = useState(false)
+  const heroRef = useRef(null)
+  const focusReturnFrame = useRef(null)
+  const viewerWasOpen = useRef(false)
+  const requestId = useRef(0)
+  const transitionTimer = useRef(null)
+
+  useEffect(() => () => {
+    requestId.current += 1
+    window.clearTimeout(transitionTimer.current)
+    window.cancelAnimationFrame(focusReturnFrame.current)
+  }, [])
+
+  useEffect(() => {
+    if (isViewerOpen) {
+      viewerWasOpen.current = true
+      return undefined
+    }
+    if (!viewerWasOpen.current) return undefined
+    viewerWasOpen.current = false
+    focusReturnFrame.current = requestAnimationFrame(() => heroRef.current?.focus({ preventScroll: true }))
+    return () => window.cancelAnimationFrame(focusReturnFrame.current)
+  }, [isViewerOpen])
+
+  const selectImage = index => {
+    if (index === activeIndex) return
+
+    const id = ++requestId.current
+    let hasStarted = false
+    window.clearTimeout(transitionTimer.current)
+    setIsTransitioning(false)
+    setIncomingIndex(null)
+
+    const image = new Image()
+    const showImage = () => {
+      if (hasStarted || id !== requestId.current) return
+      hasStarted = true
+      setActiveIndex(index)
+      setIncomingIndex(index)
+      requestAnimationFrame(() => {
+        if (id !== requestId.current) return
+        setIsTransitioning(true)
+        transitionTimer.current = window.setTimeout(() => {
+          if (id !== requestId.current) return
+          setVisibleIndex(index)
+          setIncomingIndex(null)
+          setIsTransitioning(false)
+        }, 520)
+      })
+    }
+
+    image.onload = showImage
+    image.src = assetPath(media[index])
+    if (image.complete && image.naturalWidth > 0) showImage()
+  }
+
+  const openViewer = () => {
+    const rect = heroRef.current?.getBoundingClientRect()
+    if (!rect) return
+    setViewerOrigin({ left: rect.left, top: rect.top, width: rect.width, height: rect.height })
+    setIsViewerOpen(true)
+  }
+
+  const closeViewer = () => {
+    setIsViewerOpen(false)
+  }
+
+  if (!media.length) return null
+
+  const imageLayer = (index, className) => (
+    <img
+      className={`environment-frame__image ${className}`}
+      src={assetPath(media[index])}
+      alt=""
+      draggable="false"
+    />
+  )
+
+  return (
+    <div className="environment-frame" role="group" aria-label={`${title} image gallery`}>
+      <button
+        ref={heroRef}
+        className="environment-frame__hero"
+        type="button"
+        aria-label={`Open ${title} view ${String(activeIndex + 1).padStart(2, '0')} fullscreen`}
+        onClick={openViewer}
+      >
+        {imageLayer(visibleIndex, `environment-frame__image--current${isTransitioning ? ' is-leaving' : ''}`)}
+        {incomingIndex !== null && imageLayer(incomingIndex, `environment-frame__image--incoming${isTransitioning ? ' is-entering' : ''}`)}
+      </button>
+      <div className="environment-frame__rail" role="group" aria-label="Choose an interior view">
+        {media.map((src, index) => (
+          <button
+            className={`environment-frame__thumb${activeIndex === index ? ' is-active' : ''}`}
+            key={src}
+            type="button"
+            aria-label={`Show ${title} view ${String(index + 1).padStart(2, '0')}`}
+            aria-pressed={activeIndex === index}
+            onClick={() => selectImage(index)}
+          >
+            <img src={assetPath(src)} alt="" loading="eager" decoding="async" draggable="false" />
+            <span>VIEW / {String(index + 1).padStart(2, '0')}</span>
+          </button>
+        ))}
+      </div>
+      <span className="environment-frame__sr-status" aria-live="polite" aria-atomic="true">
+        {title} — view {String(activeIndex + 1).padStart(2, '0')}
+      </span>
+      {isViewerOpen && <FullscreenImageViewer media={media} title={title} index={activeIndex} origin={viewerOrigin} onNavigate={selectImage} onClose={closeViewer} />}
+    </div>
+  )
+}
