@@ -1,22 +1,22 @@
 export const tools = [
   { name: 'Blender', category: '3D', tags: ['3D', 'CGI', 'Modeling', 'Rendering'], priority: 'primary' },
-  { name: 'OctaneRender', category: '3D', tags: ['Rendering', 'Look development'] },
-  { name: 'Cinema 4D', category: '3D', tags: ['3D', 'Motion', 'Modeling'] },
-  { name: 'Corona Renderer', category: '3D', tags: ['Rendering', 'Archviz'] },
+  { name: 'OctaneRender', category: '3D', tags: ['Rendering', 'Look development'], priority: 'primary' },
+  { name: 'Cinema 4D', category: '3D', tags: ['3D', 'Motion', 'Modeling'], priority: 'primary' },
+  { name: 'Corona Renderer', category: '3D', tags: ['Rendering', 'Archviz'], priority: 'primary' },
   { name: 'Adobe After Effects', category: 'VFX', tags: ['VFX', 'Compositing', 'Motion'], priority: 'primary' },
   { name: 'Boris FX Mocha Pro', category: 'VFX', tags: ['Tracking', 'Rotoscoping', 'Compositing'], priority: 'primary' },
   { name: 'Boris FX Silhouette', category: 'VFX', tags: ['Rotoscoping', 'Paint', 'Compositing'], priority: 'primary' },
   { name: 'Keying Suite', category: 'VFX', tags: ['Keying', 'Compositing'] },
   { name: 'Topaz Video AI', category: 'AI', tags: ['Restoration', 'Upscaling'], priority: 'primary' },
-  { name: 'Upscayl', category: 'AI', tags: ['Image', 'Upscaling'] },
-  { name: 'Adobe Photoshop', category: 'PHOTOGRAPHY / IMAGE', tags: ['Image', 'Retouching', 'Design'], priority: 'primary' },
-  { name: 'Adobe Illustrator', category: 'PHOTOGRAPHY / IMAGE', tags: ['Vector', 'Design'] },
+  { name: 'Upscayl', category: 'AI', tags: ['Image', 'Upscaling'], priority: 'primary' },
+  { name: 'Adobe Photoshop', category: 'IMAGE', tags: ['Image', 'Retouching', 'Design'], priority: 'primary' },
+  { name: 'Adobe Illustrator', category: 'IMAGE', tags: ['Vector', 'Design'] },
   { name: 'Adobe Premiere Pro', category: 'EDITING', tags: ['Editing', 'Post-production'], priority: 'primary' },
   { name: 'Adobe Media Encoder', category: 'EDITING', tags: ['Encoding', 'Delivery'] },
   { name: 'HandBrake', category: 'EDITING', tags: ['Encoding', 'Delivery'] },
 ]
 
-const categoryOrder = ['3D', 'VFX', 'AI', 'PHOTOGRAPHY / IMAGE', 'EDITING']
+const categoryOrder = ['3D', 'VFX', 'AI', 'IMAGE', 'EDITING']
 
 export const toolCategories = categoryOrder.map((name, index) => ({
   id: String(index + 1).padStart(2, '0'),

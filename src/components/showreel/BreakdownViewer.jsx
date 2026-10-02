@@ -53,7 +53,7 @@ export default function BreakdownViewer({ items, index, onNavigate, onClose, ret
   return createPortal(<div className="showreel-viewer" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
     <div className="showreel-viewer__dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-label={`${item.title} video breakdown`}>
       <header className="showreel-viewer__header"><p><span>{item.number}</span> / {item.title} · {item.kind}</p><button ref={closeRef} type="button" onClick={onClose} aria-label="Close breakdown viewer">CLOSE ×</button></header>
-      <VideoPlayer key={item.id} src={item.src} poster={item.poster} label={item.title} autoPlay />
+        <VideoPlayer key={item.id} src={item.src} poster={item.poster} label={item.title} durationHint={item.duration} autoPlay />
       <button className="showreel-viewer__nav showreel-viewer__nav--previous" type="button" onClick={() => navigate(-1)} aria-label="Previous breakdown">←</button>
       <button className="showreel-viewer__nav showreel-viewer__nav--next" type="button" onClick={() => navigate(1)} aria-label="Next breakdown">→</button>
       <dl className="showreel-viewer__credits">{credits.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>

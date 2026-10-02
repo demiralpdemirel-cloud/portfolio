@@ -9,48 +9,112 @@ import ProjectMeta from './ProjectMeta'
 import AtmosphericBackground from '../media/AtmosphericBackground'
 import EnvironmentGallery from './EnvironmentGallery'
 
-export default function ProjectChapter({ project, isActive = false }) {
+export default function ProjectChapter({ project, isActive = false, index = 0, total = 1, staticPresentation = false }) {
   const root = useRef(null)
   const breakdownRef = useRef(null)
   const beforeAfterRef = useRef(null)
-  const breakdownScreens = project.presentation === '3d-breakdown' ? Math.max(project.breakdownStages?.length || 0, 1) + 1 : null
+  const galleryRef = useRef(null)
+  const stageControls = useRef(null)
+  const setMediaRatio = ratio => {
+    if (Number.isFinite(ratio) && ratio > 0) root.current?.style.setProperty('--project-media-ratio', String(ratio))
+  }
 
   useLayoutEffect(() => {
     const element = root.current
-    const scrollSpace = element.querySelector('.project__scroll-space')
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) return undefined
+    if (staticPresentation) return undefined
     const context = gsap.context(() => {
-      ScrollTrigger.create({ trigger: scrollSpace, start: 'top top', end: 'bottom bottom', invalidateOnRefresh: true, fastScrollEnd: false, onUpdate: self => { breakdownRef.current?.setProgress(self.progress); beforeAfterRef.current?.setProgress(self.progress) }, onRefresh: self => { breakdownRef.current?.setProgress(self.progress); beforeAfterRef.current?.setProgress(self.progress) } })
-      const title = element.querySelector('.project-title')
-      const meta = element.querySelectorAll('.project-meta, .project__description')
-      gsap.timeline({ scrollTrigger: { trigger: scrollSpace, start: 'top top', end: 'bottom bottom', scrub: .7, invalidateOnRefresh: true } })
-        .fromTo(title, { autoAlpha: 0, scale: .96, filter: 'blur(6px)' }, { autoAlpha: 1, scale: 1, filter: 'blur(0px)', duration: .08, ease: 'none', immediateRender: true })
-        .to(title, { autoAlpha: 1, duration: .7 })
-        .to(title, { autoAlpha: 0, scale: 1.02, filter: 'blur(5px)', duration: .22, ease: 'none' })
-      gsap.fromTo(meta, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: .04, ease: 'none', immediateRender: true, scrollTrigger: { trigger: '.project__info-band', start: 'top 85%', end: 'top 55%', scrub: .35, invalidateOnRefresh: true } })
-      if (project.presentation === 'product') {
-        const media = element.querySelector('.cinematic__media')
-        gsap.fromTo(media, { scale: .88 }, { scale: 1, ease: 'none', immediateRender: true, scrollTrigger: { trigger: scrollSpace, start: 'top top', end: 'bottom bottom', scrub: .8, invalidateOnRefresh: true } })
-      }
+      const match = gsap.matchMedia()
+      match.add({ all: '(min-width: 0px)', desktop: '(min-width: 901px)', reduced: '(prefers-reduced-motion: reduce)' }, ({ conditions }) => {
+        if (conditions.reduced) return
+        const media = element.querySelector('.project-chapter__media')
+        const info = element.querySelector('.project-chapter__info')
+        const items = element.querySelectorAll('[data-project-reveal]')
+        const atmosphere = element.querySelector('.project__atmosphere')
+        const title = element.querySelector('.project-title > span')
+        const mask = element.querySelector('.project-title')
+        const meta = element.querySelector('.project-meta')
+        const textContext = gsap.context(() => {}, element)
+        let observer
+        if ('IntersectionObserver' in window && element.getBoundingClientRect().top >= 0) {
+          gsap.set(items, { opacity: 0, y: 20 })
+          gsap.set(title, { opacity: 0, yPercent: 105 })
+          observer = new IntersectionObserver(entries => {
+            if (!entries.some(entry => entry.isIntersecting)) return
+            observer.disconnect()
+            textContext.add(() => {
+              gsap.set(mask, { overflow: 'hidden' })
+              gsap.timeline({ onComplete: () => {
+                gsap.set([...items, title], { clearProps: 'opacity,transform' })
+                gsap.set(mask, { clearProps: 'overflow' })
+              } })
+                .to(items, { opacity: 1, y: 0, duration: .65, stagger: .08, ease: 'power3.out' }, .08)
+                .to(title, { opacity: 1, yPercent: 0, duration: .75, ease: 'power3.out' }, .16)
+                .fromTo(meta, { '--meta-rule-scale': 0 }, { '--meta-rule-scale': 1, duration: .6, ease: 'power2.out' }, .35)
+            })
+          }, { threshold: 0, rootMargin: '0px 0px -12% 0px' })
+          observer.observe(element)
+        }
+        const cleanupText = () => {
+          observer?.disconnect()
+          textContext.revert()
+          for (const target of [...items, title]) {
+            target.style.removeProperty('opacity')
+            target.style.removeProperty('transform')
+          }
+          mask.style.removeProperty('overflow')
+        }
+        if (!conditions.desktop) {
+          gsap.from(media, { opacity: 0, y: 16, duration: .6, scrollTrigger: { trigger: media, start: 'top 92%', once: true } })
+          return cleanupText
+        }
+        const syncMedia = self => {
+          const progress = gsap.utils.clamp(0, 1, (self.progress - .18) / .64)
+          breakdownRef.current?.setProgress(progress)
+          beforeAfterRef.current?.setProgress(progress)
+          galleryRef.current?.setProgress(progress)
+        }
+        // Scroll distance belongs to the article; visual height belongs to its sticky child.
+        const hasProgressMedia = ['environment', '3d-breakdown', 'vfx-breakdown'].includes(project.presentation)
+        gsap.timeline({ scrollTrigger: {
+          trigger: element, start: 'top 85%', end: 'bottom 15%', scrub: .3, invalidateOnRefresh: true,
+          ...(hasProgressMedia ? { onUpdate: syncMedia } : {}),
+          onRefresh: self => {
+            self.getTween()?.progress(1)
+            self.animation?.progress(self.progress)
+            if (hasProgressMedia) syncMedia(self)
+          },
+        } })
+          .fromTo(media, { opacity: 0, scale: .94, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: .16, ease: 'power2.out' }, 0)
+          .fromTo(atmosphere, { opacity: 0 }, { opacity: 1, duration: .18, ease: 'none' }, 0)
+          .to(media, { opacity: 0, scale: .96, y: -30, duration: .18, ease: 'power2.in' }, .82)
+          .to(info, { opacity: 0, y: -20, duration: .18, ease: 'power2.in' }, .82)
+          .to(atmosphere, { opacity: 0, duration: .18, ease: 'none' }, .82)
+        return cleanupText
+      })
     }, element)
-    let resizeFrame
-    const refreshOnResize = () => { cancelAnimationFrame(resizeFrame); resizeFrame = requestAnimationFrame(() => ScrollTrigger.refresh()) }
-    window.addEventListener('resize', refreshOnResize)
-    return () => { window.removeEventListener('resize', refreshOnResize); cancelAnimationFrame(resizeFrame); context.revert() }
-  }, [project])
+    return () => context.revert()
+  }, [project, staticPresentation])
 
-  return <article ref={root} className={`project project--${project.presentation}${isActive?' is-active':''}`} id={project.id} aria-labelledby={`${project.id}-title`} style={breakdownScreens ? { '--project-scroll-screens': breakdownScreens } : undefined}>
-    <AtmosphericBackground src={project.cover} className="project__atmosphere" opacity={.2} blur={32} brightness={.42} />
-    <div className="project__scroll-space"><div className="project__sticky" data-project-viewport>
-      <p className="project__number">PROJECT / {project.number}<span>{project.placeholder ? 'DEMONSTRATION CHAPTER' : project.date}</span></p>
-      {project.presentation === 'product' && <div className="cinematic__media"><MediaPlaceholder label="3D PRODUCT / OBJECT" path={project.cover} variant="media-placeholder--object" placeholder={project.placeholder} /></div>}
-      {project.presentation === 'vfx-breakdown' && <BeforeAfter ref={beforeAfterRef} data={project.beforeAfter} placeholder={project.placeholder} />}
-      {project.presentation === '3d-breakdown' && <ThreeDBreakdown ref={breakdownRef} stages={project.breakdownStages} placeholder={project.placeholder} />}
-      {project.presentation === 'environment' && <EnvironmentGallery media={project.media} title={project.title} />}
-      {project.presentation === 'video' && <div className={`video-frame${project.video && project.breakdownVideo ? ' video-frame--with-breakdown' : ''}`}><LazyVideo video={project.video} title={project.title} placeholder={project.placeholder} />{project.breakdownVideo && <div className="video-frame__breakdown"><p>BREAKDOWN VIDEO</p><LazyVideo video={project.breakdownVideo} title={`${project.title} breakdown`} placeholder={project.placeholder} /></div>}</div>}
-      <div className="project__title-wrap"><h2 className="project-title" id={`${project.id}-title`}>{project.title}</h2></div>
-    </div></div>
-    <div className="project__info-band"><p className="project__description">{project.description}</p><ProjectMeta project={project} /></div>
+  return <article ref={root} className={`project project-chapter project--${project.presentation}${isActive ? ' is-active' : ''}${staticPresentation ? ' project-chapter--static' : ''}`} id={staticPresentation ? undefined : project.id} aria-labelledby={`${project.id}-title`}>
+    <div className="project-chapter__sticky" data-project-viewport>
+      <AtmosphericBackground src={project.cover} className="project__atmosphere" opacity={.16} blur={32} brightness={.36} />
+      <div className="project-chapter__layout">
+        <div className="project-chapter__media">
+          {project.presentation === 'vfx-breakdown' && project.beforeAfter ? <BeforeAfter ref={beforeAfterRef} data={project.beforeAfter} placeholder={project.placeholder} />
+            : project.presentation === '3d-breakdown' ? <ThreeDBreakdown ref={breakdownRef} controlsRef={stageControls} stages={project.breakdownStages || []} placeholder={project.placeholder} />
+            : project.presentation === 'environment' ? <EnvironmentGallery ref={galleryRef} media={project.media} title={project.title} />
+            : project.video ? <div className="project-chapter__videos"><LazyVideo video={project.video} title={project.title} detail={staticPresentation} muted onAspectRatio={setMediaRatio} placeholder={project.placeholder} />{project.breakdownVideo && <div className="project-chapter__breakdown-video"><p>BREAKDOWN VIDEO</p><LazyVideo video={project.breakdownVideo} title={`${project.title} breakdown`} detail={staticPresentation} muted placeholder={project.placeholder} /></div>}</div>
+            : <MediaPlaceholder label={project.title} path={project.media?.[0] || project.cover} placeholder={project.placeholder} />}
+        </div>
+        <div className="project-chapter__info">
+          <p className="project-chapter__counter" data-project-reveal>PROJECT / {String(index + 1).padStart(3, '0')} <span>/ {String(total).padStart(3, '0')}</span></p>
+          <h2 className="project-title motion-mask" id={`${project.id}-title`}><span>{project.title}</span></h2>
+          <p className="project-chapter__category" data-project-reveal>{project.primaryCategory || project.categories?.[0]}</p>
+          <p className="project__description" data-project-reveal>{project.description}</p>
+          <ProjectMeta project={project} reveal />
+          {project.presentation === '3d-breakdown' && <ol ref={stageControls} className="project-chapter__stages" aria-label="3D breakdown stage" data-project-reveal>{project.breakdownStages?.map((stage, stageIndex) => <li key={stage.label} className={stageIndex === 0 ? 'is-active' : ''}>{stage.label}</li>)}</ol>}
+        </div>
+      </div>
+    </div>
   </article>
 }

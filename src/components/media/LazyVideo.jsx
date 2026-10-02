@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { assetPath } from '../../utils/assetPath'
 import MediaPlaceholder from './MediaPlaceholder'
+import { webVideoSource } from '../../data/webMedia'
+import { observeVideo } from '../../utils/videoPlayback'
 
-export default function LazyVideo({ video, title, detail = false, placeholder = false }) {
+export default function LazyVideo({ video, title, detail = false, muted = !detail, placeholder = false, onAspectRatio }) {
   const ref = useRef(null)
   const sampleCanvas = useRef(null)
   const lastSampledAt = useRef(0)
@@ -22,16 +24,16 @@ export default function LazyVideo({ video, title, detail = false, placeholder = 
   useEffect(() => {
     const element = ref.current
     if (!element || !video?.src) return undefined
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        element.play().then(() => setBlocked(false)).catch(() => setBlocked(true))
-      } else {
-        element.pause()
-      }
-    }, { threshold: 0.55 })
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [video?.src])
+    let disposed = false
+    const activate = () => {
+      if (!element.getAttribute('src')) element.src = assetPath(webVideoSource(video.src))
+      element.play().then(() => { if (!disposed) setBlocked(false) }).catch(error => {
+        if (!disposed && error.name !== 'AbortError') setBlocked(true)
+      })
+    }
+    const unregister = observeVideo(element, { activate, priority: detail ? 2 : 0 })
+    return () => { disposed = true; unregister() }
+  }, [video?.src, detail, failed])
 
   if ((!video?.src || failed) && placeholder) {
     return <MediaPlaceholder label="VIDEO ASSET" path={video?.src || 'Add a video source in projects.js'} variant="media-placeholder--motion" />
@@ -42,6 +44,7 @@ export default function LazyVideo({ video, title, detail = false, placeholder = 
   }
 
   const playVideo = () => {
+    if (ref.current && !ref.current.getAttribute('src')) ref.current.src = assetPath(webVideoSource(video.src))
     ref.current?.play().then(() => setBlocked(false)).catch(() => setBlocked(true))
   }
 
@@ -74,8 +77,8 @@ export default function LazyVideo({ video, title, detail = false, placeholder = 
   }
 
   return <div className={`lazy-video${hasVisualFrame ? ' lazy-video--visual-ready' : ''}`}>
-    {video.poster && <img className="lazy-video__poster" src={assetPath(video.poster)} alt="" aria-hidden="true" />}
-    <video ref={ref} src={assetPath(video.src)} poster={assetPath(video.poster)} muted={!detail} playsInline loop preload="metadata" controls={detail} aria-label={title} onTimeUpdate={checkForVisibleFrame} onError={() => setFailed(true)} />
+    {video.poster && <img className="lazy-video__poster" src={assetPath(video.poster)} alt="" aria-hidden="true" decoding="async" onLoad={event => onAspectRatio?.(event.currentTarget.naturalWidth / event.currentTarget.naturalHeight)} />}
+    <video ref={ref} poster={assetPath(video.poster)} muted={muted} playsInline loop preload="none" controls={detail} aria-label={title} onLoadedMetadata={event => onAspectRatio?.(event.currentTarget.videoWidth / event.currentTarget.videoHeight)} onTimeUpdate={checkForVisibleFrame} onError={() => setFailed(true)} />
     {blocked && <button className="video-play-button" type="button" onClick={playVideo}>PLAY VIDEO</button>}
   </div>
 }

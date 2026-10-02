@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { assetPath } from '../../utils/assetPath'
 import FullscreenImageViewer from './FullscreenImageViewer'
 
-export default function EnvironmentGallery({ media = [], title }) {
+const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], title }, ref) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [visibleIndex, setVisibleIndex] = useState(0)
   const [incomingIndex, setIncomingIndex] = useState(null)
@@ -14,6 +14,18 @@ export default function EnvironmentGallery({ media = [], title }) {
   const viewerWasOpen = useRef(false)
   const requestId = useRef(0)
   const transitionTimer = useRef(null)
+  const scrollIndex = useRef(-1)
+  const desiredIndex = useRef(0)
+
+  useImperativeHandle(ref, () => ({
+    setProgress(progress) {
+      if (!media.length || isViewerOpen) return
+      const index = Math.min(media.length - 1, Math.floor(progress * media.length))
+      if (index === scrollIndex.current) return
+      scrollIndex.current = index
+      selectImage(index)
+    },
+  }))
 
   useEffect(() => () => {
     requestId.current += 1
@@ -33,13 +45,18 @@ export default function EnvironmentGallery({ media = [], title }) {
   }, [isViewerOpen])
 
   const selectImage = index => {
-    if (index === activeIndex) return
+    if (index === desiredIndex.current) return
+    desiredIndex.current = index
 
     const id = ++requestId.current
     let hasStarted = false
     window.clearTimeout(transitionTimer.current)
     setIsTransitioning(false)
     setIncomingIndex(null)
+    if (index === visibleIndex) {
+      setActiveIndex(index)
+      return
+    }
 
     const image = new Image()
     const showImage = () => {
@@ -60,6 +77,9 @@ export default function EnvironmentGallery({ media = [], title }) {
     }
 
     image.onload = showImage
+    image.onerror = () => {
+      if (id === requestId.current) desiredIndex.current = activeIndex
+    }
     image.src = assetPath(media[index])
     if (image.complete && image.naturalWidth > 0) showImage()
   }
@@ -82,6 +102,7 @@ export default function EnvironmentGallery({ media = [], title }) {
       className={`environment-frame__image ${className}`}
       src={assetPath(media[index])}
       alt=""
+      decoding="async"
       draggable="false"
     />
   )
@@ -108,7 +129,7 @@ export default function EnvironmentGallery({ media = [], title }) {
             aria-pressed={activeIndex === index}
             onClick={() => selectImage(index)}
           >
-            <img src={assetPath(src)} alt="" loading="eager" decoding="async" draggable="false" />
+            <img src={assetPath(src)} alt="" loading="lazy" decoding="async" draggable="false" />
             <span>VIEW / {String(index + 1).padStart(2, '0')}</span>
           </button>
         ))}
@@ -119,4 +140,6 @@ export default function EnvironmentGallery({ media = [], title }) {
       {isViewerOpen && <FullscreenImageViewer media={media} title={title} index={activeIndex} origin={viewerOrigin} onNavigate={selectImage} onClose={closeViewer} />}
     </div>
   )
-}
+})
+
+export default EnvironmentGallery

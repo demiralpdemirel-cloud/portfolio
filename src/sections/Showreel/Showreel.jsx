@@ -18,12 +18,12 @@ export default function Showreel() {
   return <section id="showreel" className="showreel" aria-labelledby="showreel-title">
     <AtmosphericBackground src={showreel.poster} className="showreel__atmosphere" opacity={.13} blur={38} brightness={.25} />
     <div className="showreel__content">
-      <header className="showreel__header">
-        <div><p className="section-index">VFX / COMPOSITING / CGI</p><h2 id="showreel-title">VFX SHOWREEL</h2></div>
+      <header className="showreel__header" data-reveal-group>
+        <div><p className="section-index" data-reveal>VFX / COMPOSITING / CGI</p><h2 id="showreel-title" className="motion-mask" data-reveal-mask><span data-reveal>VFX SHOWREEL</span></h2></div>
         <p className="showreel__year">2020 — 2026<br />SELECTED WORK</p>
       </header>
 
-      <VideoPlayer src={showreel.video} poster={showreel.poster} label="Showreel" />
+      <VideoPlayer src={showreel.video} poster={showreel.poster} durationHint={showreel.duration} label="Showreel" />
 
       <section className="showreel__breakdowns" aria-labelledby="breakdowns-title">
         <header><h3 id="breakdowns-title">SELECTED BREAKDOWNS</h3><span>{String(showreel.breakdowns.length).padStart(2, '0')} / REAL PROCESS FILMS</span></header>

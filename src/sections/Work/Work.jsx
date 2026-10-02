@@ -1,8 +1,18 @@
+import { useRef } from 'react'
 import { projects } from '../../data/projects'
+import useReveal from '../../hooks/useReveal'
 import ProjectChapter from '../../components/project/ProjectChapter'
 import AtmosphericBackground from '../../components/media/AtmosphericBackground'
+import Showreel from '../Showreel/Showreel'
 
-export default function Work({activePageId}) {
+export default function Work() {
+  const root = useRef(null)
+  useReveal(root)
   const featured=projects.filter(project=>project.featured)
-  return <section className="work" id="work" aria-label="Selected work"><AtmosphericBackground src="media/backgrounds/selected-work.webp" className="work__atmosphere" opacity={.18} blur={28} brightness={.4} /><header className="work__header"><span>{String(featured.length).padStart(2,'0')} PROJECTS</span></header>{featured.map(project=><ProjectChapter key={project.id} project={project} isActive={activePageId===project.id}/>)}</section>
+  return <section ref={root} className="work" id="work" aria-label="Selected work">
+    <AtmosphericBackground src="media/backgrounds/selected-work.webp" className="work__atmosphere" opacity={.12} blur={30} brightness={.32} />
+    <header className="work__header" data-reveal-group><span data-reveal>{String(featured.length).padStart(2,'0')} PROJECTS</span></header>
+    {featured.map((project, index)=><ProjectChapter key={project.id} project={project} index={index} total={featured.length}/>)}
+    <Showreel />
+  </section>
 }

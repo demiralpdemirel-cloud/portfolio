@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { assetPath } from '../../utils/assetPath'
+import { webVideoSource } from '../../data/webMedia'
+import { observeVideo } from '../../utils/videoPlayback'
 
 function timeLabel(time) {
   if (!Number.isFinite(time)) return '0:00'
@@ -7,13 +9,26 @@ function timeLabel(time) {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 }
 
-export default function VideoPlayer({ src, poster, label, autoPlay = false, videoRef: externalVideoRef, onEnded }) {
+export default function VideoPlayer({ src, poster, label, durationHint = 0, autoPlay = false, videoRef: externalVideoRef, onEnded }) {
   const localVideoRef = useRef(null)
   const videoRef = externalVideoRef || localVideoRef
   const [playing, setPlaying] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const playControl = useRef(null)
   const [muted, setMuted] = useState(false)
-  const [duration, setDuration] = useState(0)
+  const [duration, setDuration] = useState(durationHint)
   const [currentTime, setCurrentTime] = useState(0)
+  const lastDisplayedTime = useRef(-1)
+
+  useEffect(() => {
+    setDuration(durationHint)
+    setFailed(false)
+    setCurrentTime(0)
+    lastDisplayedTime.current = -1
+    const video = videoRef.current
+    if (!video) return
+    return observeVideo(video, { autoPlay: false, priority: 2, activate: () => {} })
+  }, [src, videoRef])
 
   useEffect(() => {
     const video = videoRef.current
@@ -25,7 +40,7 @@ export default function VideoPlayer({ src, poster, label, autoPlay = false, vide
     }
     const playPromise = video.play()
     playPromise?.then(() => setPlaying(true)).catch(() => setPlaying(false))
-  }, [autoPlay, src, videoRef])
+  }, [autoPlay, src, videoRef, durationHint])
 
   const togglePlay = async () => {
     const video = videoRef.current
@@ -51,23 +66,31 @@ export default function VideoPlayer({ src, poster, label, autoPlay = false, vide
     <video
       ref={videoRef}
       className="showreel-player__video"
-      src={assetPath(src)}
+      src={assetPath(webVideoSource(src))}
       poster={assetPath(poster)}
-      preload="metadata"
+      preload="none"
       playsInline
       muted={muted}
       onLoadedMetadata={event => setDuration(event.currentTarget.duration)}
-      onTimeUpdate={event => setCurrentTime(event.currentTarget.currentTime)}
-      onPlay={() => setPlaying(true)}
+      onTimeUpdate={event => {
+        const seconds = Math.floor(event.currentTarget.currentTime)
+        if (seconds !== lastDisplayedTime.current) { lastDisplayedTime.current = seconds; setCurrentTime(event.currentTarget.currentTime) }
+      }}
+      onPlay={event => {
+        if (document.activeElement === event.currentTarget.parentElement.querySelector('.showreel-player__play-overlay')) playControl.current?.focus({ preventScroll: true })
+        setPlaying(true)
+      }}
+      onError={() => { setPlaying(false); setFailed(true) }}
       onPause={() => setPlaying(false)}
       onEnded={() => { setPlaying(false); onEnded?.() }}
       aria-label={label}
     />
-    {!playing && <button className="showreel-player__play-overlay" type="button" onClick={togglePlay} aria-label={`Play ${label}`}>
+    {failed && <p role="alert">VIDEO UNAVAILABLE — {label}</p>}
+    {!playing && !failed && <button className="showreel-player__play-overlay" type="button" onClick={togglePlay} aria-label={`Play ${label}`}>
       <span>PLAY {label.toUpperCase()}</span><span>{timeLabel(duration)}</span>
     </button>}
     <div className="showreel-player__controls">
-      <button type="button" onClick={togglePlay} aria-label={playing ? 'Pause video' : 'Play video'}>{playing ? 'PAUSE' : 'PLAY'}</button>
+      <button ref={playControl} type="button" onClick={togglePlay} aria-label={playing ? 'Pause video' : 'Play video'}>{playing ? 'PAUSE' : 'PLAY'}</button>
       <span className="showreel-player__time" aria-live="off">{timeLabel(currentTime)} / {timeLabel(duration)}</span>
       <input className="showreel-player__seek" type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 0)} onChange={event => { if (videoRef.current) videoRef.current.currentTime = Number(event.target.value) }} aria-label="Seek video" />
       <button type="button" onClick={() => setMuted(value => !value)} aria-label={muted ? 'Unmute video' : 'Mute video'}>{muted ? 'SOUND ON' : 'MUTE'}</button>

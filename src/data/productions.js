@@ -1,3 +1,5 @@
+import { CURRENT_COMPANY } from './professionalProfile'
+
 // Production credits are kept distinct from VFX-studio and personal-role credits.
 // Unknown or unverified fields remain null and are intentionally not rendered.
 export const productions = {
@@ -16,7 +18,7 @@ export const productions = {
     distributor: null,
     brand: null,
     agency: null,
-    vfxStudio: 'Geniuspark VFX',
+    vfxStudio: CURRENT_COMPANY,
     myRole: null,
     notes: 'The video carries the atv ident and its source filename maps to this title. No individual role is stated because it has not been confirmed.',
     sources: [
@@ -38,7 +40,7 @@ export const productions = {
     distributor: null,
     brand: null,
     agency: null,
-    vfxStudio: 'Geniuspark VFX',
+    vfxStudio: CURRENT_COMPANY,
     myRole: ['Compositing', 'Vehicle integration', 'Explosion FX'],
     roleDetail: 'Cleanup, selective blur and shot finishing.',
     notes: 'The source footage includes a TRT 1 ident. Episode-level directing credit is left null because this breakdown covers a specific shot package and the relevant episode was not identified.',
@@ -62,7 +64,7 @@ export const productions = {
     distributor: null,
     brand: null,
     agency: null,
-    vfxStudio: 'Geniuspark VFX',
+    vfxStudio: CURRENT_COMPANY,
     myRole: ['3D camera tracking', 'CG crowd', 'VFX integration'],
     roleDetail: 'Work across numerous shots; environment integration.',
     notes: 'The government film registry and film distributor agree on the 16 February 2024 theatrical release and director; the source breakdown frames show this film’s period crowd imagery.',
@@ -88,7 +90,7 @@ export const productions = {
     distributor: null,
     brand: 'Turkcell',
     agency: 'Rafineri',
-    vfxStudio: 'Geniuspark VFX',
+    vfxStudio: CURRENT_COMPANY,
     myRole: ['Compositing'],
     roleDetail: null,
     notes: 'The video visibly contains the Turkcell 5G / Shaq campaign billboard and Shaquille O’Neal. The official brand release confirms campaign identity, agency and director; no production company is named in the cited item.',
@@ -96,7 +98,7 @@ export const productions = {
       { type: 'WEB-VERIFIED', label: 'Turkcell Medya — campaign, Rafineri, director and Shaquille O’Neal', url: 'https://medya.turkcell.com.tr/bulletins/turkcellin-shaq-diye-5g-reklamina-kristal-elmadan-5-kristal-elma-2-buyuk-odul/' },
       { type: 'WEB-VERIFIED', label: 'Turkcell Medya — official campaign film and launch context', url: 'https://medya.turkcell.com.tr/bulletins/turkcellin-5g-iletisiminde-reklam-yuzu-basketbol-efsanesi-shaquille-oneal/' },
       { type: 'VIDEO-VERIFIED', label: 'Source breakdown — Turkcell 5G campaign graphics and Shaq composite', url: null },
-      { type: 'USER-PROVIDED', label: 'Geniuspark VFX studio context supplied in the brief', url: null },
+      { type: 'USER-PROVIDED', label: `${CURRENT_COMPANY} studio context supplied in the brief`, url: null },
     ],
   },
 }

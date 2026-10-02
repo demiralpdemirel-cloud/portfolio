@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import MediaPlaceholder from './MediaPlaceholder'
 
-const ThreeDBreakdown = forwardRef(function ThreeDBreakdown({ stages, placeholder }, ref) {
+const ThreeDBreakdown = forwardRef(function ThreeDBreakdown({ stages = [], placeholder, controlsRef }, ref) {
   const layerRefs = useRef([])
   const labelRefs = useRef([])
   const countRef = useRef(null)
@@ -18,16 +18,21 @@ const ThreeDBreakdown = forwardRef(function ThreeDBreakdown({ stages, placeholde
         layer.setAttribute('aria-hidden', String(index !== active))
       })
       labelRefs.current.forEach((label, index) => label.classList.toggle('is-active', index === active))
+      if (controlsRef?.current) Array.from(controlsRef.current.children).forEach((label, index) => {
+        label.classList.toggle('is-active', index === active)
+        if (index === active) label.setAttribute('aria-current', 'step')
+        else label.removeAttribute('aria-current')
+      })
       if (countRef.current) countRef.current.textContent = `${String(active + 1).padStart(2, '0')} / ${String(count).padStart(2, '0')}`
     },
-  }), [stages.length])
+  }), [stages.length, controlsRef])
   return <div className="breakdown-stage" data-breakdown-viewport>
     <div className="breakdown-stage__media" data-breakdown-media>
-      {stages.map((stage, index) => <div key={stage.label} ref={node => { layerRefs.current[index] = node }} className="breakdown-stage__layer" aria-hidden={index !== 0}>
+      {stages.map((stage, index) => <div key={stage.label} ref={node => { layerRefs.current[index] = node }} className="breakdown-stage__layer" style={{ opacity: index === 0 ? 1 : 0 }} aria-hidden={index !== 0}>
         <MediaPlaceholder label={stage.label} path={stage.media} placeholder={placeholder} />
       </div>)}
     </div>
-    <ol className="stage-list" aria-label="3D breakdown stage">{stages.map((stage, index) => <li key={stage.label} ref={node => { labelRefs.current[index] = node }} className={index === 0 ? 'is-active' : ''}>{stage.label}</li>)}</ol>
+    {!controlsRef && <ol className="stage-list" aria-label="3D breakdown stage">{stages.map((stage, index) => <li key={stage.label} ref={node => { labelRefs.current[index] = node }} className={index === 0 ? 'is-active' : ''}>{stage.label}</li>)}</ol>}
     <p ref={countRef} className="breakdown-stage__count" aria-hidden="true">01 / {String(Math.max(stages.length, 1)).padStart(2, '0')}</p>
   </div>
 })
