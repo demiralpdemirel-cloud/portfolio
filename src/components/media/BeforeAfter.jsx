@@ -1,7 +1,9 @@
+import { useLanguage } from '../../i18n/LanguageContext'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import MediaPlaceholder from './MediaPlaceholder'
 
 const BeforeAfter = forwardRef(function BeforeAfter({ data, placeholder }, ref) {
+  const { t } = useLanguage()
   const finalRef = useRef(null)
   const splitRef = useRef(null)
   useImperativeHandle(ref, () => ({
@@ -12,8 +14,8 @@ const BeforeAfter = forwardRef(function BeforeAfter({ data, placeholder }, ref) 
     },
   }), [])
   return <div className="before-after">
-    <MediaPlaceholder label="ORIGINAL PLATE" path={data.before} variant="media-placeholder--plate" placeholder={placeholder} />
-    <div ref={finalRef} className="before-after__final"><MediaPlaceholder label="FINAL COMPOSITE" path={data.after} variant="media-placeholder--final" placeholder={placeholder} /></div>
+    <MediaPlaceholder label={t("ORIGINAL PLATE")} path={data.before} variant="media-placeholder--plate" placeholder={placeholder} />
+    <div ref={finalRef} className="before-after__final"><MediaPlaceholder label={t("FINAL COMPOSITE")} path={data.after} variant="media-placeholder--final" placeholder={placeholder} /></div>
     <div ref={splitRef} className="before-after__split" aria-hidden="true" />
   </div>
 })

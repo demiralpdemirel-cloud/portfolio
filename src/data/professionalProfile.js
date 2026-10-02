@@ -1,3 +1,4 @@
+import { bilingual } from '../i18n/translations'
 import { siteConfig } from './siteConfig'
 
 export const CURRENT_COMPANY = 'GeniusPark VFX'
@@ -14,14 +15,14 @@ export const professionalProfile = {
       id: 'linkedin',
       label: 'LINKEDIN',
       name: 'LinkedIn',
-      subtitle: 'PROFESSIONAL PROFILE',
+      subtitle: bilingual('PROFESSIONAL PROFILE'),
       url: 'https://www.linkedin.com/in/demiralp-demirel-1a6b56309/',
     },
     {
       id: 'imdb',
       label: 'IMDb',
       name: 'IMDb',
-      subtitle: 'FILM & TV CREDITS',
+      subtitle: bilingual('FILM & TV CREDITS'),
       url: 'https://www.imdb.com/name/nm17748059/',
     },
   ],

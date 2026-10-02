@@ -1,11 +1,12 @@
+import { useLanguage } from '../../i18n/LanguageContext'
+import LanguageSwitcher from '../../i18n/LanguageSwitcher'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import useModalDialog, { trapModalFocus } from '../../hooks/useModalDialog'
 import { assetPath } from '../../utils/assetPath'
 
-const formatDate = value => value ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`)).toUpperCase() : 'Not confirmed'
-
 function ProductionMetadata({ production }) {
+  const { t, formatDate } = useLanguage()
   const series = production.type === 'TV SERIES'
   const rows = [
     ['TYPE', production.type || 'Not confirmed'],
@@ -15,30 +16,31 @@ function ProductionMetadata({ production }) {
     ['IMDb RATING', production.imdbRating == null ? 'IMDb rating unavailable' : `${production.imdbRating.toFixed(1)} / 10`],
   ]
   return <>
-    <dl className="production-modal__metadata">{rows.map(([label, value], index) => <div key={label} style={{ '--metadata-order': index }}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-    {production.imdbUrl && <a className="production-modal__link" href={production.imdbUrl} target="_blank" rel="noopener noreferrer">VIEW {production.title} ON IMDb ↗</a>}
+    <dl className="production-modal__metadata">{rows.map(([label, value], index) => <div key={label} style={{ '--metadata-order': index }}><dt>{t(label)}</dt><dd>{t(value)}</dd></div>)}</dl>
+    {production.imdbUrl && <a className="production-modal__link" href={production.imdbUrl} target="_blank" rel="noopener noreferrer">{t(`VIEW ${production.title} ON IMDb ↗`)}</a>}
   </>
 }
 
 export default function ProductionDetailModal({ production, onClose, returnFocus }) {
-  const { dialog, close, isClosing } = useModalDialog(onClose, returnFocus)
+  const { t } = useLanguage()
+  const { dialog, close, cancel, isClosing } = useModalDialog(onClose, returnFocus)
   const [imageFailed, setImageFailed] = useState(false)
-  return createPortal(<dialog ref={dialog} className={`project-modal production-modal${isClosing ? ' is-closing' : ''}`} aria-modal="true" aria-labelledby="production-modal-title" onKeyDown={trapModalFocus} onCancel={event => { event.preventDefault(); close() }} onClick={event => { if (event.target === event.currentTarget) close() }}>
+  return createPortal(<dialog ref={dialog} className={`project-modal production-modal${isClosing ? ' is-closing' : ''}`} aria-modal="true" aria-labelledby="production-modal-title" onKeyDown={trapModalFocus} onCancel={cancel} onClick={event => { if (event.target === event.currentTarget) close() }}>
     <div className="project-modal__scroll">
-      <header className="project-modal__header"><p>PRODUCTION / DETAIL</p><button type="button" className="project-modal__close" onClick={close} autoFocus>CLOSE ×</button></header>
+      <header className="project-modal__header"><p>{t("PRODUCTION / DETAIL")}</p><div className="modal-header-actions"><LanguageSwitcher inline /><button type="button" className="project-modal__close" onClick={close} autoFocus>{t("CLOSE ×")}</button></div></header>
       <div className="project-modal__content production-modal__composition">
         <figure className="production-modal__visual">
-          {production.image && !imageFailed ? <img src={assetPath(production.image)} width={production.imageWidth} height={production.imageHeight} alt={`${production.title} — production publicity image`} decoding="async" onError={() => setImageFailed(true)} /> : <div className="production-modal__placeholder">PRODUCTION IMAGE<br />NOT AVAILABLE</div>}
-          {production.imageSource && !imageFailed && <figcaption>{production.imageSource}{production.imageSourceUrl && <> · <a href={production.imageSourceUrl} target="_blank" rel="noopener noreferrer">SOURCE ↗</a></>}</figcaption>}
+          {production.image && !imageFailed ? <img src={assetPath(production.image)} width={production.imageWidth} height={production.imageHeight} alt={t(`${production.title} — production publicity image`)} decoding="async" onError={() => setImageFailed(true)} /> : <div className="production-modal__placeholder">{t("PRODUCTION IMAGE")}<br />{t("NOT AVAILABLE")}</div>}
+          {production.imageSource && !imageFailed && <figcaption>{t(production.imageSource)}{production.imageSourceUrl && <> · <a href={production.imageSourceUrl} target="_blank" rel="noopener noreferrer">{t("SOURCE ↗")}</a></>}</figcaption>}
         </figure>
         <div className="production-modal__info">
           <h2 id="production-modal-title">{production.title}</h2>
-          {production.films ? <section aria-label="Individual film metadata" className="production-modal__films">{production.films.map(film => <article key={film.imdbTitleId}><h3>{film.title}</h3><ProductionMetadata production={film} /><p className="production-modal__credit">{film.personalCredit ? 'PERSONAL WORK CREDIT' : 'SERIES CONTEXT ONLY — NOT A PERSONAL CREDIT'}</p></article>)}</section> : <ProductionMetadata production={production} />}
+          {production.films ? <section aria-label={t("Individual film metadata")} className="production-modal__films">{production.films.map(film => <article key={film.imdbTitleId}><h3>{film.title}</h3><ProductionMetadata production={film} /><p className="production-modal__credit">{t(film.personalCredit ? 'PERSONAL WORK CREDIT' : 'SERIES CONTEXT ONLY — NOT A PERSONAL CREDIT')}</p></article>)}</section> : <ProductionMetadata production={production} />}
           <div className="production-modal__work">
-            <dl><div><dt>COMPANY / VFX STUDIO</dt><dd>{production.company || 'Not confirmed'}</dd></div>{production.period && <div><dt>MY WORK PERIOD</dt><dd>{production.period}</dd></div>}<div><dt>MY ROLE</dt><dd>{production.role.length ? production.role.join(' / ') : 'Not confirmed'}</dd></div></dl>
-            {production.creditNote && <p className="production-modal__credit">{production.creditNote}</p>}
-            <h3>MY WORK</h3><p>{production.description}</p>
-            <h3>DISCIPLINES</h3>{production.disciplines.length ? <ul>{production.disciplines.map(discipline => <li key={discipline}>{discipline}</li>)}</ul> : <p>Not confirmed</p>}
+            <dl><div><dt>{t("COMPANY / VFX STUDIO")}</dt><dd>{production.company || 'Not confirmed'}</dd></div>{production.period && <div><dt>{t("MY WORK PERIOD")}</dt><dd>{production.period}</dd></div>}<div><dt>{t("MY ROLE")}</dt><dd>{t(production.role.length ? production.role.join(' / ') : 'Not confirmed')}</dd></div></dl>
+            {production.creditNote && <p className="production-modal__credit">{t(production.creditNote)}</p>}
+            <h3>{t("MY WORK")}</h3><p>{t(production.description)}</p>
+            <h3>{t("DISCIPLINES")}</h3>{production.disciplines.length ? <ul>{production.disciplines.map(discipline => <li key={discipline}>{t(discipline)}</li>)}</ul> : <p>{t("Not confirmed")}</p>}
           </div>
         </div>
       </div>

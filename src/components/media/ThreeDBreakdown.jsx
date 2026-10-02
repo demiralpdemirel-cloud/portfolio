@@ -1,7 +1,9 @@
+import { useLanguage } from '../../i18n/LanguageContext'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import MediaPlaceholder from './MediaPlaceholder'
 
 const ThreeDBreakdown = forwardRef(function ThreeDBreakdown({ stages = [], placeholder, controlsRef }, ref) {
+  const { t } = useLanguage()
   const layerRefs = useRef([])
   const labelRefs = useRef([])
   const countRef = useRef(null)
@@ -29,10 +31,10 @@ const ThreeDBreakdown = forwardRef(function ThreeDBreakdown({ stages = [], place
   return <div className="breakdown-stage" data-breakdown-viewport>
     <div className="breakdown-stage__media" data-breakdown-media>
       {stages.map((stage, index) => <div key={stage.label} ref={node => { layerRefs.current[index] = node }} className="breakdown-stage__layer" style={{ opacity: index === 0 ? 1 : 0 }} aria-hidden={index !== 0}>
-        <MediaPlaceholder label={stage.label} path={stage.media} placeholder={placeholder} />
+        <MediaPlaceholder label={t(stage.label)} path={stage.media} placeholder={placeholder} />
       </div>)}
     </div>
-    {!controlsRef && <ol className="stage-list" aria-label="3D breakdown stage">{stages.map((stage, index) => <li key={stage.label} ref={node => { labelRefs.current[index] = node }} className={index === 0 ? 'is-active' : ''}>{stage.label}</li>)}</ol>}
+    {!controlsRef && <ol className="stage-list" aria-label={t("3D breakdown stage")}>{stages.map((stage, index) => <li key={stage.label} ref={node => { labelRefs.current[index] = node }} className={index === 0 ? 'is-active' : ''}>{t(stage.label)}</li>)}</ol>}
     <p ref={countRef} className="breakdown-stage__count" aria-hidden="true">01 / {String(Math.max(stages.length, 1)).padStart(2, '0')}</p>
   </div>
 })

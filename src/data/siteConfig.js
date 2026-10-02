@@ -1,7 +1,8 @@
+import { bilingual } from '../i18n/translations'
 export const siteConfig = {
   name: 'Demiralp Demirel',
   title: '3D / VFX / Compositing Artist',
-  about: '3D and VFX artist working across CGI, compositing and cinematic post-production, with professional production experience in television and film.',
+  about: bilingual('3D and VFX artist working across CGI, compositing and cinematic post-production, with professional production experience in television and film.'),
   disciplines: ['3D', 'VFX', 'Compositing'],
   tools: ['Blender', 'After Effects', 'Photoshop'],
   profileImage: 'images/profile-portrait.png',

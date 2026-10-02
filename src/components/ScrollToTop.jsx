@@ -1,8 +1,10 @@
+import { useLanguage } from '../i18n/LanguageContext'
 import { useEffect, useState } from 'react'
 
 const modalSelector = 'dialog[open], [aria-modal="true"]:not(dialog)'
 
 export default function ScrollToTop() {
+  const { t } = useLanguage()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function ScrollToTop() {
     window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }
 
-  return <button type="button" className={`scroll-to-top${visible ? ' is-visible' : ''}`} onClick={goToTop} aria-label="Scroll to top" aria-hidden={!visible} tabIndex={visible ? 0 : -1} disabled={!visible}>
+  return <button type="button" className={`scroll-to-top${visible ? ' is-visible' : ''}`} onClick={goToTop} aria-label={t("Scroll to top")} aria-hidden={!visible} tabIndex={visible ? 0 : -1} disabled={!visible}>
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
   </button>
 }

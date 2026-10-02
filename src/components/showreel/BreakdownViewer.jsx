@@ -1,14 +1,18 @@
+import { useLanguage } from '../../i18n/LanguageContext'
+import LanguageSwitcher from '../../i18n/LanguageSwitcher'
 import { useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import VideoPlayer from './VideoPlayer'
+import { fullscreenJustExited, scopePlayback } from '../../utils/videoPlayback'
 
 export default function BreakdownViewer({ items, index, onNavigate, onClose, returnFocusRef }) {
+  const { t, formatDate } = useLanguage()
   const closeRef = useRef(null)
   const dialogRef = useRef(null)
   const item = items[index]
   const production = item.production
   const credits = [
-    ['TYPE / RELEASE', [production.type, production.release].filter(Boolean).join(' · ')],
+    ['TYPE / RELEASE', [production.type, production.release?.length === 10 ? formatDate(production.release) : production.release].filter(Boolean).join(' · ')],
     ['PRODUCTION COMPANY', production.productionCompany],
     ['BROADCASTER / PLATFORM', [production.broadcaster, production.platform].filter(Boolean).join(' · ') || null],
     ['BRAND / AGENCY', [production.brand, production.agency].filter(Boolean).join(' · ') || null],
@@ -27,15 +31,18 @@ export default function BreakdownViewer({ items, index, onNavigate, onClose, ret
     body.style.width = '100%'
     body.style.overflow = 'hidden'
     closeRef.current?.focus({ preventScroll: true })
+    const resumePlayback = scopePlayback(dialogRef.current)
     return () => {
       Object.entries(previous).forEach(([key, value]) => { body.style[key] = value })
       window.scrollTo(0, scrollY)
       returnFocusRef.current?.focus({ preventScroll: true })
+      resumePlayback()
     }
   }, [returnFocusRef])
 
   useEffect(() => {
     const onKeyDown = event => {
+      if (event.defaultPrevented || fullscreenJustExited() || event.target.closest('.premium-player') && event.key !== 'Tab' && event.key !== 'Escape') return
       if (event.key === 'Escape') { event.preventDefault(); onClose() }
       if (event.key === 'ArrowLeft') { event.preventDefault(); navigate(-1) }
       if (event.key === 'ArrowRight') { event.preventDefault(); navigate(1) }
@@ -51,14 +58,18 @@ export default function BreakdownViewer({ items, index, onNavigate, onClose, ret
   }, [navigate, onClose])
 
   return createPortal(<div className="showreel-viewer" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
-    <div className="showreel-viewer__dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-label={`${item.title} video breakdown`}>
-      <header className="showreel-viewer__header"><p><span>{item.number}</span> / {item.title} · {item.kind}</p><button ref={closeRef} type="button" onClick={onClose} aria-label="Close breakdown viewer">CLOSE ×</button></header>
-        <VideoPlayer key={item.id} src={item.src} poster={item.poster} label={item.title} durationHint={item.duration} autoPlay />
-      <button className="showreel-viewer__nav showreel-viewer__nav--previous" type="button" onClick={() => navigate(-1)} aria-label="Previous breakdown">←</button>
-      <button className="showreel-viewer__nav showreel-viewer__nav--next" type="button" onClick={() => navigate(1)} aria-label="Next breakdown">→</button>
-      <dl className="showreel-viewer__credits">{credits.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-      {production.roleDetail && <p className="showreel-viewer__role-detail">{production.roleDetail}</p>}
-      <footer className="showreel-viewer__footer"><span>{item.kind} · {production.country}</span><span>{String(index + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span></footer>
+    <div className="showreel-viewer__dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-label={t(`${t(item.title)} video breakdown`)}>
+      <header className="showreel-viewer__header"><p><span>{item.number}</span> / {item.title} · {t(item.kind)}</p><div className="modal-header-actions"><LanguageSwitcher inline /><button ref={closeRef} type="button" onClick={onClose} aria-label={t("Close breakdown viewer")}>{t("CLOSE ×")}</button></div></header>
+      <div className="showreel-viewer__media">
+        <VideoPlayer key={item.id} src={item.src} poster={item.poster} label={t(item.title)} durationHint={item.duration} autoPlay />
+        <div className="showreel-viewer__navigation">
+          <button className="showreel-viewer__nav showreel-viewer__nav--previous" type="button" onClick={() => navigate(-1)} aria-label={t("Previous breakdown")}>←</button>
+          <button className="showreel-viewer__nav showreel-viewer__nav--next" type="button" onClick={() => navigate(1)} aria-label={t("Next breakdown")}>→</button>
+        </div>
+      </div>
+      <dl className="showreel-viewer__credits">{credits.map(([label, value]) => <div key={label}><dt>{t(label)}</dt><dd>{t(value)}</dd></div>)}</dl>
+      {production.roleDetail && <p className="showreel-viewer__role-detail">{t(production.roleDetail)}</p>}
+      <footer className="showreel-viewer__footer"><span>{t(item.kind)} · {t(production.country)}</span><span>{String(index + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span></footer>
     </div>
   </div>, document.body)
 }

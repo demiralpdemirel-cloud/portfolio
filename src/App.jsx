@@ -1,3 +1,5 @@
+import { useLanguage } from './i18n/LanguageContext'
+import LanguageSwitcher from './i18n/LanguageSwitcher'
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -15,6 +17,7 @@ gsap.registerPlugin(ScrollTrigger)
 ScrollTrigger.config({ autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load' })
 
 export default function App() {
+  const { t } = useLanguage()
   const root = useRef(null)
   useLayoutEffect(() => {
     let disposed = false
@@ -79,7 +82,8 @@ export default function App() {
     }
   }, [])
   return <div ref={root}>
-    <a className="skip-link" href="#work">Skip to selected work</a>
+    <LanguageSwitcher />
+    <a className="skip-link" href="#work">{t("Skip to selected work")}</a>
     <div className="global-progress" aria-hidden="true"><span className="global-progress__line" /></div>
     <main><Hero /><About /><Work /><Experience /><Capabilities /><PortfolioArchive /><Contact /></main>
     <ScrollToTop />

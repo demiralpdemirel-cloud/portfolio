@@ -1,3 +1,4 @@
+import { useLanguage } from '../../i18n/LanguageContext'
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -10,6 +11,7 @@ import AtmosphericBackground from '../media/AtmosphericBackground'
 import EnvironmentGallery from './EnvironmentGallery'
 
 export default function ProjectChapter({ project, isActive = false, index = 0, total = 1, staticPresentation = false }) {
+  const { t } = useLanguage()
   const root = useRef(null)
   const breakdownRef = useRef(null)
   const beforeAfterRef = useRef(null)
@@ -103,16 +105,16 @@ export default function ProjectChapter({ project, isActive = false, index = 0, t
           {project.presentation === 'vfx-breakdown' && project.beforeAfter ? <BeforeAfter ref={beforeAfterRef} data={project.beforeAfter} placeholder={project.placeholder} />
             : project.presentation === '3d-breakdown' ? <ThreeDBreakdown ref={breakdownRef} controlsRef={stageControls} stages={project.breakdownStages || []} placeholder={project.placeholder} />
             : project.presentation === 'environment' ? <EnvironmentGallery ref={galleryRef} media={project.media} title={project.title} />
-            : project.video ? <div className="project-chapter__videos"><LazyVideo video={project.video} title={project.title} detail={staticPresentation} muted onAspectRatio={setMediaRatio} placeholder={project.placeholder} />{project.breakdownVideo && <div className="project-chapter__breakdown-video"><p>BREAKDOWN VIDEO</p><LazyVideo video={project.breakdownVideo} title={`${project.title} breakdown`} detail={staticPresentation} muted placeholder={project.placeholder} /></div>}</div>
+            : project.video ? <div className="project-chapter__videos"><LazyVideo video={project.video} title={project.title} detail={staticPresentation} muted onAspectRatio={setMediaRatio} placeholder={project.placeholder} />{project.breakdownVideo && <div className="project-chapter__breakdown-video"><p>{t("BREAKDOWN VIDEO")}</p><LazyVideo video={project.breakdownVideo} title={`${project.title} breakdown`} detail={staticPresentation} muted placeholder={project.placeholder} /></div>}</div>
             : <MediaPlaceholder label={project.title} path={project.media?.[0] || project.cover} placeholder={project.placeholder} />}
         </div>
         <div className="project-chapter__info">
-          <p className="project-chapter__counter" data-project-reveal>PROJECT / {String(index + 1).padStart(3, '0')} <span>/ {String(total).padStart(3, '0')}</span></p>
+          <p className="project-chapter__counter" data-project-reveal>{t('PROJECT')} / {String(index + 1).padStart(3, '0')} <span>/ {String(total).padStart(3, '0')}</span></p>
           <h2 className="project-title motion-mask" id={`${project.id}-title`}><span>{project.title}</span></h2>
-          <p className="project-chapter__category" data-project-reveal>{project.primaryCategory || project.categories?.[0]}</p>
-          <p className="project__description" data-project-reveal>{project.description}</p>
+          <p className="project-chapter__category" data-project-reveal>{t(project.primaryCategory || project.categories?.[0])}</p>
+          <p className="project__description" data-project-reveal>{t(project.description)}</p>
           <ProjectMeta project={project} reveal />
-          {project.presentation === '3d-breakdown' && <ol ref={stageControls} className="project-chapter__stages" aria-label="3D breakdown stage" data-project-reveal>{project.breakdownStages?.map((stage, stageIndex) => <li key={stage.label} className={stageIndex === 0 ? 'is-active' : ''}>{stage.label}</li>)}</ol>}
+          {project.presentation === '3d-breakdown' && <ol ref={stageControls} className="project-chapter__stages" aria-label={t("3D breakdown stage")} data-project-reveal>{project.breakdownStages?.map((stage, stageIndex) => <li key={stage.label} className={stageIndex === 0 ? 'is-active' : ''}>{t(stage.label)}</li>)}</ol>}
         </div>
       </div>
     </div>

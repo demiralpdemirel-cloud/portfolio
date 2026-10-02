@@ -1,3 +1,5 @@
+import { useLanguage } from '../../i18n/LanguageContext'
+import LanguageSwitcher from '../../i18n/LanguageSwitcher'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { assetPath } from '../../utils/assetPath'
@@ -25,6 +27,7 @@ function getFitBounds(width, height) {
 }
 
 export default function FullscreenImageViewer({ media, title, index, origin, onNavigate, onClose }) {
+  const { t } = useLanguage()
   const closeButton = useRef(null)
   const dialog = useRef(null)
   const closeTimer = useRef(null)
@@ -153,18 +156,19 @@ export default function FullscreenImageViewer({ media, title, index, origin, onN
       <div className="fullscreen-viewer__dust" aria-hidden="true">
         {dustParticles.map((particle, particleIndex) => <span key={particleIndex} style={{ '--particle-left': particle.left, '--particle-top': particle.top, '--particle-drift': particle.drift, '--particle-duration': particle.duration, '--particle-delay': particle.delay }} />)}
       </div>
-      <div ref={dialog} className="fullscreen-viewer__dialog" role="dialog" aria-modal="true" aria-label={`${title} image viewer`}>
+      <div ref={dialog} className="fullscreen-viewer__dialog" role="dialog" aria-modal="true" aria-label={t(`${title} image viewer`)}>
+        <div className="viewer-language"><LanguageSwitcher inline /></div>
         <img
           key={src}
           className="fullscreen-viewer__image"
           src={src}
-          alt={`${title} — view ${String(index + 1).padStart(2, '0')}`}
+          alt={t(`${title} — view ${String(index + 1).padStart(2, '0')}`)}
           draggable="false"
           style={{ left: bounds.left, top: bounds.top, width: bounds.width, height: bounds.height }}
         />
-        <button ref={closeButton} type="button" className="fullscreen-viewer__close" onClick={close} aria-label="Close image viewer" autoFocus>×</button>
-        <button type="button" className="fullscreen-viewer__nav fullscreen-viewer__nav--previous" onClick={() => navigate(-1)} aria-label="Previous image">‹</button>
-        <button type="button" className="fullscreen-viewer__nav fullscreen-viewer__nav--next" onClick={() => navigate(1)} aria-label="Next image">›</button>
+        <button ref={closeButton} type="button" className="fullscreen-viewer__close" onClick={close} aria-label={t("Close image viewer")} autoFocus>{t("×")}</button>
+        <button type="button" className="fullscreen-viewer__nav fullscreen-viewer__nav--previous" onClick={() => navigate(-1)} aria-label={t("Previous image")}>‹</button>
+        <button type="button" className="fullscreen-viewer__nav fullscreen-viewer__nav--next" onClick={() => navigate(1)} aria-label={t("Next image")}>›</button>
         <p className="fullscreen-viewer__count" aria-live="polite">{String(index + 1).padStart(2, '0')} / {String(media.length).padStart(2, '0')}</p>
       </div>
     </div>

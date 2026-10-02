@@ -1,3 +1,4 @@
+import { bilingual } from '../i18n/translations'
 // Public metadata researched 2026-10-02. Ratings are indexed IMDb snapshots,
 // not a live API; missing/blocked values remain null. Work credits come ONLY
 // from experience.js and the user's existing credit audit, never public cast data.
@@ -14,7 +15,7 @@ export const productionDetails = {
   'KARDEŞ TAKIMI 1–3': {
     researchedAt, type: 'FILM GROUP',
     ...image('kardes-takimi', 1600, 900, 'Med Yapım — official first-film key art', 'https://medyapim.com/filmler/kardes-takimi/', 'https://medyapim.com/wp-content/uploads/2024/02/kardes-takimi.jpg'),
-    creditNote: 'Personal work applies to Kardeş Takımı and Kardeş Takımı 3. Kardeş Takımı 2 is listed for series context only, not as a personal credit.',
+    creditNote: bilingual('Personal work applies to Kardeş Takımı and Kardeş Takımı 3. Kardeş Takımı 2 is listed for series context only, not as a personal credit.'),
     films: [
       { title: 'KARDEŞ TAKIMI', ...imdb('tt28350395'), type: 'FILM', firstReleaseYear: 2024, releaseStart: '2024-01-19', releaseTerritory: 'Turkey', personalCredit: true, sources: ['https://boxofficeturkiye.com/film/kardes-takimi--2016791/box-office'] },
       { title: 'KARDEŞ TAKIMI 2', ...imdb('tt32777683', 3.9), type: 'FILM', firstReleaseYear: 2025, releaseStart: '2025-01-10', releaseTerritory: 'Turkey', personalCredit: false, sources: ['https://www.imdb.com/title/tt32777683/releaseinfo/'] },

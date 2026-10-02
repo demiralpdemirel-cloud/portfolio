@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { scopePlayback } from '../utils/videoPlayback'
+import { fullscreenJustExited, scopePlayback } from '../utils/videoPlayback'
 
 export function trapModalFocus(event) {
   if (event.key !== 'Tab' || event.target.closest('dialog') !== event.currentTarget) return
@@ -56,5 +56,9 @@ export default function useModalDialog(onClose, returnFocus) {
       resumePlayback()
     }
   }, [returnFocus])
-  return { dialog, close, isClosing }
+  const cancel = event => {
+    event.preventDefault()
+    if (!fullscreenJustExited()) close()
+  }
+  return { dialog, close, cancel, isClosing }
 }

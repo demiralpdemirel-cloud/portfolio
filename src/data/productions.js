@@ -1,3 +1,4 @@
+import { bilingual } from '../i18n/translations'
 import { CURRENT_COMPANY } from './professionalProfile'
 
 // Production credits are kept distinct from VFX-studio and personal-role credits.
@@ -42,7 +43,7 @@ export const productions = {
     agency: null,
     vfxStudio: CURRENT_COMPANY,
     myRole: ['Compositing', 'Vehicle integration', 'Explosion FX'],
-    roleDetail: 'Cleanup, selective blur and shot finishing.',
+    roleDetail: bilingual('Cleanup, selective blur and shot finishing.'),
     notes: 'The source footage includes a TRT 1 ident. Episode-level directing credit is left null because this breakdown covers a specific shot package and the relevant episode was not identified.',
     sources: [
       { type: 'WEB-VERIFIED', label: 'TRT 1 — series production, first broadcast and credits', url: 'https://www.trt1.com.tr/diziler/teskilat/ozet/genel-ozet' },
@@ -66,7 +67,7 @@ export const productions = {
     agency: null,
     vfxStudio: CURRENT_COMPANY,
     myRole: ['3D camera tracking', 'CG crowd', 'VFX integration'],
-    roleDetail: 'Work across numerous shots; environment integration.',
+    roleDetail: bilingual('Work across numerous shots; environment integration.'),
     notes: 'The government film registry and film distributor agree on the 16 February 2024 theatrical release and director; the source breakdown frames show this film’s period crowd imagery.',
     sources: [
       { type: 'WEB-VERIFIED', label: 'Republic of Türkiye Ministry of Culture — film registry credits and release', url: 'https://filmsiniflandirmapanel.ktb.gov.tr/detail/zaferin-rengi-1-2-3' },
@@ -91,14 +92,14 @@ export const productions = {
     brand: 'Turkcell',
     agency: 'Rafineri',
     vfxStudio: CURRENT_COMPANY,
-    myRole: ['Compositing'],
-    roleDetail: null,
+    myRole: ['Green Screen Cleanup', '3D Traffic Simulation'],
+    roleDetail: bilingual('Handled green screen removal and cleanup while also building a 3D traffic simulation system to support the production shots.'),
     notes: 'The video visibly contains the Turkcell 5G / Shaq campaign billboard and Shaquille O’Neal. The official brand release confirms campaign identity, agency and director; no production company is named in the cited item.',
     sources: [
       { type: 'WEB-VERIFIED', label: 'Turkcell Medya — campaign, Rafineri, director and Shaquille O’Neal', url: 'https://medya.turkcell.com.tr/bulletins/turkcellin-shaq-diye-5g-reklamina-kristal-elmadan-5-kristal-elma-2-buyuk-odul/' },
       { type: 'WEB-VERIFIED', label: 'Turkcell Medya — official campaign film and launch context', url: 'https://medya.turkcell.com.tr/bulletins/turkcellin-5g-iletisiminde-reklam-yuzu-basketbol-efsanesi-shaquille-oneal/' },
       { type: 'VIDEO-VERIFIED', label: 'Source breakdown — Turkcell 5G campaign graphics and Shaq composite', url: null },
-      { type: 'USER-PROVIDED', label: `${CURRENT_COMPANY} studio context supplied in the brief`, url: null },
+      { type: 'USER-PROVIDED', label: `${CURRENT_COMPANY} studio context; green screen removal / cleanup and building / developing a 3D traffic simulation system confirmed by the artist`, url: null },
     ],
   },
 }
