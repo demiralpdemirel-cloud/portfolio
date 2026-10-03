@@ -1,6 +1,7 @@
 /* Shared player geometry stays inside each existing chapter/modal frame. */
-.premium-player { overflow: visible; background: transparent; }
-.player-viewport { position: relative; width: 100%; height: 100%; overflow: hidden; background: #030303; }
+.premium-player { overflow: visible; background: transparent; isolation: isolate; }
+.player-viewport { position: relative; z-index: 1; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+.premium-player .showreel-player__video { background: transparent; }
 .premium-player.lazy-video { aspect-ratio: auto; width: 100%; height: 100%; margin: 0; }
 .premium-player.lazy-video video { opacity: 1; z-index: auto; object-fit: contain; }
 .player-ratio-probe { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
@@ -24,7 +25,6 @@
 .player-speed__menu button[aria-pressed="true"] { background: #ffffff10; }
 .premium-player .player-ambient-toggle { font-size: 10px; opacity: .45; }
 .premium-player .player-ambient-toggle[aria-pressed="true"] { opacity: 1; }
-.premium-player .player-ambient-toggle:disabled { opacity: .3; cursor: default; }
 .player-timeline { position: relative; height: 24px; display: flex; align-items: center; }
 .player-timeline__track { position: absolute; left: 0; right: 0; height: 4px; background: #ffffff24; transition: height .18s; pointer-events: none; }
 .player-timeline__track i, .player-timeline__track b { display: block; position: absolute; left: 0; top: 0; bottom: 0; }
@@ -41,17 +41,21 @@
 .player-timeline__tooltip { position: absolute; bottom: 28px; transform: translateX(-50%); padding: 4px 7px; font: 11px Space Mono, monospace; color: #eee; background: #101010; pointer-events: none; }
 .player-loading { position: absolute; left: 50%; top: 50%; width: 25px; height: 25px; margin: -12px; border: 1px solid #ffffff30; border-top-color: #eee; border-radius: 50%; animation: player-spin .8s linear infinite; pointer-events: none; }
 .player-error { position: absolute; left: 16px; top: 16px; color: #eee; font: 11px Space Mono, monospace; }
-.player-ambient { position: absolute; inset: -12px; z-index: -1; opacity: 0; pointer-events: none; filter: blur(28px); transition: opacity .25s; contain: layout style; }
-.player-ambient--enabled { opacity: .16; }
-.player-ambient i { position: absolute; transition: background-color .25s linear; }
-.player-ambient i:nth-child(1) { left: 10%; right: 10%; top: 0; height: 36px; background: rgb(var(--ambient-top, 0 0 0)); }
-.player-ambient i:nth-child(2) { top: 10%; bottom: 10%; right: 0; width: 36px; background: rgb(var(--ambient-right, 0 0 0)); }
-.player-ambient i:nth-child(3) { left: 10%; right: 10%; bottom: 0; height: 36px; background: rgb(var(--ambient-bottom, 0 0 0)); }
-.player-ambient i:nth-child(4) { top: 10%; bottom: 10%; left: 0; width: 36px; background: rgb(var(--ambient-left, 0 0 0)); }
+/* The ambient picture is positioned by the engine to match object-fit: contain.
+   All layers stay in a positive stacking context, behind video and controls. */
+.player-ambient { position: absolute; inset: 0; z-index: 0; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.player-ambient--enabled { opacity: .5; }
+.player-ambient i { position: absolute; filter: blur(clamp(28px, 4vw, 64px)); }
+.player-ambient i:nth-child(1) { left: 3%; right: 3%; top: -12%; height: 25%; background: linear-gradient(transparent, rgb(var(--ambient-top, 0 0 0))); }
+.player-ambient i:nth-child(2) { top: 3%; bottom: 3%; right: -12%; width: 25%; background: linear-gradient(90deg, rgb(var(--ambient-right, 0 0 0)), transparent); }
+.player-ambient i:nth-child(3) { left: 3%; right: 3%; bottom: -12%; height: 25%; background: linear-gradient(rgb(var(--ambient-bottom, 0 0 0)), transparent); }
+.player-ambient i:nth-child(4) { top: 3%; bottom: 3%; left: -12%; width: 25%; background: linear-gradient(90deg, transparent, rgb(var(--ambient-left, 0 0 0))); }
+.player-ambient__visual { position: absolute; inset: 0; display: block; width: 100%; height: 100%; transform: scale(1.14); filter: blur(clamp(28px, 4vw, 64px)) saturate(1.35) brightness(.85); }
+.player-ambient canvas.player-ambient__visual { inset: auto; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--ambient-visual-scale-x, 1), var(--ambient-visual-scale-y, 1)); filter: blur(4.5px) saturate(1.35) brightness(.85); }
+.player-ambient[data-mode="fallback"] i { visibility: hidden; }
 .premium-player:fullscreen { width: 100vw; height: 100dvh; max-width: none; aspect-ratio: auto; margin: 0; padding: 4svh 4vw; background: #030303; }
 .premium-player:fullscreen .showreel-player__controls { left: 4vw; right: 4vw; bottom: 4svh; }
-.premium-player:fullscreen .player-ambient { inset: 3svh 3vw; }
-.premium-player:fullscreen .player-ambient--enabled { opacity: .1; }
+.premium-player:fullscreen .player-ambient--enabled { opacity: .5; }
 @keyframes player-spin { to { transform: rotate(360deg); } }
 @keyframes player-menu-in { from { opacity: 0; transform: translateY(3px) scale(.98); } to { opacity: 1; transform: none; } }
 @media (max-width: 900px) {
@@ -67,7 +71,10 @@
   .player-speed__menu { bottom: calc(100% + 6px); }
   .player-speed__menu { display: grid; grid-template-columns: 1fr 1fr; min-width: 160px; }
   .premium-player .player-speed__menu button { min-height: 36px; }
-  .player-ambient { filter: blur(18px); }
-  .player-ambient--enabled { opacity: .1; }
+  .player-ambient i { filter: blur(24px); }
+  .player-ambient__visual { filter: blur(24px) saturate(1.3) brightness(.85); }
+  .player-ambient canvas.player-ambient__visual { filter: blur(3px) saturate(1.3) brightness(.85); }
+  .player-ambient--enabled { opacity: .45; }
 }
+.player-ambient canvas[data-filtered="true"] { filter: none; mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent), linear-gradient(transparent, #000 15%, #000 85%, transparent); mask-composite: intersect; }
 @media (prefers-reduced-motion: reduce) { .premium-player *, .player-ambient { transition: none !important; animation-duration: .01ms !important; } }

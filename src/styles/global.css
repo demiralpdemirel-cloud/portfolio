@@ -127,7 +127,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 .experience__education strong { color: var(--paper); font: 400 clamp(1.4rem, 2.2vw, 2.5rem)/1 Archivo, sans-serif; letter-spacing: -.04em; }
 .experience__education em { font-style: normal; }
 
-.showreel { position: relative; isolation: isolate; overflow: clip; min-height: 100svh; padding: clamp(104px, 12vh, 150px) var(--page-gutter) clamp(88px, 10vh, 128px); border-bottom: 1px solid var(--line); background: var(--ink); }
+.showreel { position: relative; isolation: isolate; overflow: visible; min-height: 100svh; padding: clamp(104px, 12vh, 150px) var(--page-gutter) clamp(88px, 10vh, 128px); border-bottom: 1px solid var(--line); background: var(--ink); }
 .showreel > .showreel__atmosphere { z-index: -1; }
 .showreel__content { position: relative; z-index: 1; width: min(100%, var(--content-max)); margin: 0 auto; }
 .showreel__header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin: 0 auto clamp(24px, 4vh, 42px); }
@@ -591,7 +591,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 
 /* Featured chapters: one viewport for both artwork and information. */
 .project-chapter { height: 190svh; min-height: 0; background: var(--ink); isolation: isolate; }
-.project-chapter__sticky { position: sticky; top: 0; height: 100svh; overflow: clip; display: grid; align-items: center; }
+.project-chapter__sticky { position: sticky; top: 0; height: 100svh; overflow: visible; display: grid; align-items: center; }
 .project-chapter__layout { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr); align-items: center; gap: clamp(40px, 4.2vw, 90px); width: min(94%, 2060px); margin: 0 auto; padding: clamp(32px, 5svh, 72px) 0; }
 .project-chapter__media { min-width: 0; height: min(76svh, calc(100svh - 112px)); position: relative; transform-origin: center; }
 .project-chapter__info { min-width: 0; }
@@ -636,7 +636,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 }
 @media (max-width: 900px) {
   .project-chapter { height: auto; min-height: 0; }
-  .project-chapter__sticky { position: relative; height: auto; overflow: clip; }
+  .project-chapter__sticky { position: relative; height: auto; overflow: visible; }
   .project-chapter__layout { width: calc(100% - 36px); display: grid; grid-template-columns: 1fr; gap: 0; padding: 48px 0 56px; }
   .project-chapter__info { display: contents; }
   .project-chapter__counter { grid-row: 1; margin-bottom: 24px; }

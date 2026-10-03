@@ -34,7 +34,7 @@ export default function PlayerControls({ playing, ended, time, duration, buffere
         <button ref={speedButton} type="button" onClick={() => setMenu(value => !value)} aria-label={t('Playback speed')} aria-expanded={menu} title={t('Playback speed')}>{speed}×</button>
         {menu && <div className="player-speed__menu" role="group" aria-label={t('Playback speed')} onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setMenu(false); speedButton.current?.focus() } }}>{playbackRates.map(rate => <button key={rate} type="button" aria-pressed={speed === rate} onClick={() => { setSpeed(rate); setMenu(false); speedButton.current?.focus() }}>{rate}× <span aria-hidden="true">{speed === rate ? '✓' : ''}</span></button>)}</div>}
       </div>
-      <button className="player-ambient-toggle" type="button" onClick={ambient.toggle} disabled={!ambient.available} aria-pressed={ambient.enabled && ambient.available} aria-label={t(!ambient.available ? 'Ambient light unavailable for this source' : ambient.enabled ? 'Turn ambient light off' : 'Turn ambient light on')} title={!ambient.available ? t('Ambient light unavailable for this source') : undefined}>{t('LIGHT')}</button>
+      <button className="player-ambient-toggle" type="button" onClick={ambient.toggle} aria-pressed={ambient.enabled} aria-label={t(ambient.enabled ? 'Turn ambient light off' : 'Turn ambient light on')}>{t('LIGHT')}</button>
       <button type="button" onClick={toggleFullscreen} aria-label={t(fullscreen ? 'Exit fullscreen' : 'Open fullscreen')} title={t('Fullscreen (F)')}><PlayerIcon name={fullscreen ? 'exit' : 'fullscreen'} /></button>
     </div>
   </div>
