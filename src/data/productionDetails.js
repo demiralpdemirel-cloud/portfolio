@@ -1,4 +1,5 @@
 import { bilingual } from '../i18n/translations'
+import { productions } from './productions'
 // Public metadata researched 2026-10-02. Ratings are indexed IMDb snapshots,
 // not a live API; missing/blocked values remain null. Work credits come ONLY
 // from experience.js and the user's existing credit audit, never public cast data.
@@ -7,6 +8,33 @@ const imdb = (id, rating = null) => ({ imdbTitleId: id, imdbUrl: `https://www.im
 const image = (name, width, height, source, sourceUrl, assetUrl) => ({ image: `/media/productions/${name}.webp`, imageWidth: width, imageHeight: height, imageSource: source, imageSourceUrl: sourceUrl, imageAssetUrl: assetUrl })
 
 export const productionDetails = {
+  'AŞK VE TAHT': {
+    ...imdb('tt45351792'), researchedAt: '2026-10-04',
+    type: 'TV SERIES', genre: 'HISTORICAL / ACTION / DRAMA',
+    firstReleaseYear: 2026, releaseStart: '2026-09-09', status: 'ONGOING', seasons: 1,
+    broadcastYears: bilingual('2026 — PRESENT'),
+    productionCompany: 'Bozdağ Film', broadcaster: 'atv', producer: 'Mehmet Bozdağ',
+    directors: ['Yağmur Taylan', 'Durul Taylan', 'Cem Toluay'], writer: 'Serdar Özönalan',
+    productionDescription: bilingual("A historical drama centered on Sultan Alaeddin Keykubat and his journey from imprisonment to the Seljuk throne. Set against the political struggles of the Anatolian Seljuk State, the series combines a major love story with court intrigue, conflicts over power and large-scale period action. Produced by Bozdağ Film, the production builds an extensive historical world around Alaeddin's rise to power and his relationship with Destina."),
+    hideUnknownFields: true,
+    sources: ['https://www.atv.com.tr/ask-ve-taht/1-bolum/izle', 'https://www.atv.com.tr/haberler/2026/09/17/ask-ve-tahtin-2-bolumunde-neler-oldu', 'https://www.imdb.com/title/tt45351792/'],
+  },
+  'KURULUŞ ORHAN': {
+    ...imdb('tt38607251'), type: productions['kurulus-orhan'].type,
+    firstReleaseYear: 2025, releaseStart: productions['kurulus-orhan'].release,
+    status: 'ONGOING', seasons: productions['kurulus-orhan'].seasons,
+    genre: productions['kurulus-orhan'].genre, broadcastYears: productions['kurulus-orhan'].broadcastYears,
+    productionCompany: productions['kurulus-orhan'].productionCompany,
+    broadcaster: productions['kurulus-orhan'].broadcaster,
+    director: productions['kurulus-orhan'].director, producer: productions['kurulus-orhan'].producer,
+    projectDesign: productions['kurulus-orhan'].projectDesign, creator: productions['kurulus-orhan'].creator,
+    productionDescription: productions['kurulus-orhan'].description,
+    image: '/media/showreel/breakdowns/kurulus-orhan/poster.webp',
+    imageWidth: 1000, imageHeight: 562,
+    imageSource: bilingual('Existing Kuruluş Orhan breakdown poster'),
+    hideUnknownFields: true,
+    sources: productions['kurulus-orhan'].sources,
+  },
   'EŞREF RÜYA': {
     ...imdb('tt35069642', 6.7), type: 'TV SERIES', firstReleaseYear: 2025, releaseStart: '2025-03-19', releaseEnd: '2026-06-10', status: 'ENDED', seasons: 2,
     ...image('esref-ruya', 1200, 586, 'Kanal D — official key art', 'https://www.kanald.com.tr/esref-ruya', 'https://image.kanald.com.tr/i/kanald/100/1200x0/691366006b2d104147cf6e89.jpg'),
@@ -39,7 +67,10 @@ export const productionDetails = {
   },
   'KURULUŞ OSMAN': {
     ...imdb('tt11093718', 7.4), type: 'TV SERIES', firstReleaseYear: 2019, releaseStart: '2019-11-20', releaseEnd: '2025-06-04', status: 'ENDED', seasons: 6,
-    ...image('kurulus-osman', 1600, 1020, 'atv — official season-six production still', 'https://www.atv.com.tr/kurulus-osman/galeri/100-karede-kurulus-osman-6-sezon', 'https://iatv.tmgrup.com.tr/album/2025/05/26/100-karede-kurulus-osman-6-sezon-1748248046666.jpg'),
+    image: '/media/productions/kurulus-osman-key-art.jpg', imageWidth: 1433, imageHeight: 2047,
+    imageSource: bilingual('atv — official Kuruluş Osman season-two key art'),
+    imageSourceUrl: 'https://www.atv.com.tr/haberler/2020/09/02/kurulus-osmanin-yeni-sezon-afisi-gorucuye-cikti',
+    imageAssetUrl: 'https://iatv.tmgrup.com.tr/2020/09/02/kurulus-osmanin-yeni-sezon-afisi-gorucuye-cikti-1599030404993.jpg',
     sources: ['https://www.atv.com.tr/kurulus-osman/194-bolum/izle', 'https://pro.imdb.com/title/tt11256554/'],
   },
 }

@@ -3,6 +3,35 @@ import assert from 'node:assert/strict'
 import { createAmbientZoneMap, sampleAmbientZones, smoothAmbientZones, interpolateAmbientZones } from '../src/utils/ambientZones.js'
 import { createAmbientScheduler } from '../src/utils/ambientScheduler.js'
 import { convertAmbientYuv } from '../src/utils/ambientNativeFrame.js'
+import { ambientFeather, renderAmbientStrip } from '../src/utils/ambientColors.js'
+import { readFileSync } from 'node:fs'
+
+test('spatial renderer feathers both orientations, keeps local colour and makes black transparent', () => {
+  const feather = ambientFeather(16)
+  assert.equal(feather[0], 0); assert.equal(feather[15], 0)
+  assert.ok(feather[7] > .98)
+  const line = new Uint8ClampedArray(64 * 4)
+  for (let i = 28; i < 36; i++) line.set([0, 200, 255, 255], i * 4)
+  for (const horizontal of [true, false]) {
+    const w = horizontal ? 64 : 16, h = horizontal ? 16 : 64
+    const output = new Uint8ClampedArray(w * h * 4)
+    renderAmbientStrip(line, output, w, h, horizontal, feather)
+    const at = (along, cross) => ((horizontal ? cross * w + along : along * w + cross) * 4)
+    assert.equal(output[at(0, 7) + 3], 0)
+    assert.equal(output[at(32, 0) + 3], 0)
+    assert.ok(output[at(32, 7) + 3] > 250)
+    assert.deepEqual(Array.from(output.slice(at(32, 7), at(32, 7) + 3)), [0,200,255])
+  }
+})
+
+test('pixel and CORS strip surfaces share static elliptical masks, without zone-sized filters', () => {
+  const css = readFileSync(new URL('../src/styles/player.css', import.meta.url), 'utf8')
+  assert.match(css, /\.player-ambient__edge \.player-ambient__visual \{ mask-image: radial-gradient/)
+  assert.match(css, /ellipse 50% 85%/)
+  assert.match(css, /overflow: visible/)
+  assert.match(css, /\[data-mode="fallback"\] \.player-ambient__edge \.player-ambient__visual \{ mix-blend-mode: screen/)
+  assert.match(css, /background: var\(--ambient-backdrop\); isolation: isolate/)
+})
 
 const width = 64, height = 36, mapping = createAmbientZoneMap(width, height)
 function image(color) {

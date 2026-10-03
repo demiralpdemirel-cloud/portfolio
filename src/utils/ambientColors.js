@@ -1,5 +1,25 @@
 export const ambientEdges = ['top', 'right', 'bottom', 'left']
 
+// Static transverse Gaussian, shared by all strip radii. Zero at raster bounds
+// avoids a clipped filter box. Sampling / temporal zone values are untouched.
+export function ambientFeather(size = 16) {
+  return Float32Array.from({ length: size }, (_, i) => {
+    const distance = Math.abs(2 * i / (size - 1) - 1)
+    return Math.max(0, (Math.exp(-3 * distance * distance) - Math.exp(-3)) / (1 - Math.exp(-3)))
+  })
+}
+
+export function renderAmbientStrip(line, image, width, height, horizontal, feather) {
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const source = (horizontal ? x : y) * 4, target = (y * width + x) * 4
+    const r = line[source], g = line[source + 1], b = line[source + 2]
+    image[target] = r; image[target + 1] = g; image[target + 2] = b
+    // Black means no emitted light, not an opaque black rectangle. Bright
+    // sources retain full strength; interpolation still preserves each zone.
+    image[target + 3] = 255 * Math.sqrt(Math.max(r, g, b) / 255) * feather[horizontal ? y : x]
+  }
+}
+
 // The visual CORS path uses the same outer bands without reading their pixels.
 export function ambientEdgeCrop(edge, width, height) {
   const bandX = Math.max(1, Math.round(width * .08))

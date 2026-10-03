@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ambientEdges, ambientEdgeCrop } from '../utils/ambientColors'
+import { ambientEdges, ambientEdgeCrop, ambientFeather, renderAmbientStrip } from '../utils/ambientColors'
 import { createAmbientZoneMap, sampleAmbientZones, smoothAmbientZones, interpolateAmbientZones } from '../utils/ambientZones'
 import { createAmbientScheduler } from '../utils/ambientScheduler'
 import { createNativeAmbientSampler } from '../utils/ambientNativeFrame'
@@ -44,7 +44,7 @@ export default function useAmbientLight(videoRef, layerRef, source) {
     let visible = false, disposed = false, mode = context ? 'pixel' : 'fallback'
     let frame = null, raf = null, lastPaint = null, samples = 0, lastMetrics = 0
     let colors = null, refresh = true, logged = false, duplicate = null
-    const strips = [], bases = []
+    const strips = [], bases = [], feather = ambientFeather(16)
     const mapping = createAmbientZoneMap(canvas.width, canvas.height)
     let native = createNativeAmbientSampler(canvas.width, canvas.height), pending = false, generation = 0
     const crops = new Map()
@@ -140,7 +140,7 @@ export default function useAmbientLight(videoRef, layerRef, source) {
       }
       for (const { node, ctx, base } of strips) {
         ctx.globalAlpha = mode === 'pixel' || refresh ? 1 : .65
-        if (refresh) ctx.clearRect(0, 0, node.width, node.height)
+        if (refresh || mode === 'pixel') ctx.clearRect(0, 0, node.width, node.height)
         ctx.drawImage(base, 0, 0, node.width, node.height)
       }
     }
@@ -176,12 +176,7 @@ export default function useAmbientLight(videoRef, layerRef, source) {
               if (!createSurfaces()) { fallback(new Error('Edge canvas unavailable'), true); return }
               bases.forEach(({ ctx, image, horizontal, line, node }, index) => {
                 interpolateAmbientZones(colors[index], line)
-                if (horizontal) for (let row = 0; row < node.height; row++) image.data.set(line, row * line.length)
-                else for (let row = 0; row < node.height; row++) for (let column = 0; column < node.width; column++) {
-                  const target = (row * node.width + column) * 4
-                  image.data[target] = line[row * 4]; image.data[target + 1] = line[row * 4 + 1]
-                  image.data[target + 2] = line[row * 4 + 2]; image.data[target + 3] = 255
-                }
+                renderAmbientStrip(line, image.data, node.width, node.height, horizontal, feather)
                 ctx.putImageData(image, 0, 0)
               })
               drawStrips()

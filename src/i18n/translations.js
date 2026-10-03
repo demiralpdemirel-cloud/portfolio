@@ -2,6 +2,15 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'atv — official Kuruluş Osman season-two key art': 'atv — resmî Kuruluş Osman ikinci sezon afişi',
+    'DIRECTORS': 'YÖNETMENLER', 'WRITER': 'SENARİST',
+    'HISTORICAL / ACTION / DRAMA': 'TARİHİ / AKSİYON / DRAMA', '2026 — PRESENT': '2026 — GÜNÜMÜZ',
+    "A historical drama centered on Sultan Alaeddin Keykubat and his journey from imprisonment to the Seljuk throne. Set against the political struggles of the Anatolian Seljuk State, the series combines a major love story with court intrigue, conflicts over power and large-scale period action. Produced by Bozdağ Film, the production builds an extensive historical world around Alaeddin's rise to power and his relationship with Destina.": "Anadolu Selçuklu Sultanı Alaeddin Keykubat'ın zindandan tahta uzanan yolculuğunu merkezine alan tarihi drama. Dizi; Alaeddin'in iktidara yükselişini ve Destina ile ilişkisini, Anadolu Selçuklu Devleti içerisindeki güç mücadeleleri, saray entrikaları, taht çatışmaları ve büyük ölçekli dönem aksiyonu ile birlikte ele alıyor. Bozdağ Film imzalı yapım, Alaeddin Keykubat dönemini geniş kapsamlı bir tarihi dünya içerisinde anlatıyor.",
+    'GENRE': 'TÜR', 'ACTION / DRAMA': 'AKSİYON / DRAMA', 'YEAR': 'YIL',
+    'BROADCASTER': 'YAYINCI', 'PRODUCER': 'YAPIMCI', 'PROJECT DESIGN': 'PROJE TASARIMI', 'CREATOR': 'YARATICI',
+    'PRODUCTION DESCRIPTION': 'YAPIM HAKKINDA', '2025 — PRESENT': '2025 — GÜNÜMÜZ',
+    'Existing Kuruluş Orhan breakdown poster': 'Mevcut Kuruluş Orhan breakdown posteri',
+    "A historical action drama following Orhan Bey as he carries forward Osman Bey's legacy and leads the growing principality into a new era. Produced by Bozdağ Film, the series expands the world established in the preceding Kuruluş productions with large-scale battles, historical environments and extensive visual effects work.": "Osman Bey'in mirasını devralan Orhan Bey'in büyüyen beyliği yeni bir döneme taşımasını konu alan tarihi aksiyon ve drama dizisi. Bozdağ Film imzalı yapım; büyük ölçekli savaş sahneleri, dönem ortamları ve kapsamlı görsel efekt çalışmalarıyla Kuruluş yapımlarında oluşturulan dünyayı yeni bir döneme taşıyor.",
     'THEME': 'TEMA', 'Switch to light theme': 'Açık temaya geç', 'Switch to dark theme': 'Koyu temaya geç',
     'Replay video': 'Videoyu yeniden oynat', 'Volume': 'Ses seviyesi', 'Playback speed': 'Oynatma hızı',
     'Exit fullscreen': 'Tam ekrandan çık', 'Loading video': 'Video yükleniyor', 'LIGHT': 'IŞIK',
