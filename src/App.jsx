@@ -11,6 +11,7 @@ import Capabilities from './sections/Capabilities/Capabilities'
 import PortfolioArchive from './sections/Archive/PortfolioArchive'
 import Contact from './sections/Contact/Contact'
 import ScrollToTop from './components/ScrollToTop'
+import ThemeController from './components/ThemeController'
 
 gsap.registerPlugin(ScrollTrigger)
 // Resize refreshes are coordinated once here rather than once per chapter.
@@ -83,6 +84,7 @@ export default function App() {
   }, [])
   return <div ref={root}>
     <LanguageSwitcher />
+    <ThemeController />
     <a className="skip-link" href="#work">{t("Skip to selected work")}</a>
     <div className="global-progress" aria-hidden="true"><span className="global-progress__line" /></div>
     <main><Hero /><About /><Work /><Experience /><Capabilities /><PortfolioArchive /><Contact /></main>

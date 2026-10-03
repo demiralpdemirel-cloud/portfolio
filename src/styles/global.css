@@ -86,17 +86,33 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 .professional-stat + .professional-stat { padding-left: clamp(18px, 2.4vw, 34px); border-left: 1px solid var(--line); }
 .professional-stat--profile { grid-column: span 3; border-top: 1px solid var(--line); }
 .professional-stat--profile:nth-child(4) { padding-left: 0; border-left: 0; }
-.status-ring { display: block; width: 48px; height: 48px; overflow: visible; transform: rotate(-90deg); }
-.status-ring__track, .status-ring__progress { fill: none; stroke-width: 1; }
+.status-marker { display: block; position: relative; width: 48px; height: 48px; }
+.status-ring { display: block; width: 48px; height: 48px; overflow: visible; transform-origin: center; transform: translate(20px, var(--status-dot-y, -24px)) scale(.2); }
+.status-ring__track, .status-ring__progress { fill: none; stroke-width: 4; opacity: 0; }
 .status-ring__track { stroke: #353530; }
-.status-ring__progress { stroke: #c9c9c1; stroke-dasharray: 100; stroke-dashoffset: 0; stroke-linecap: butt; }
+.status-ring__progress { stroke: var(--paper); stroke-dasharray: 100; stroke-dashoffset: 0; stroke-linecap: butt; }
+.status-ring__dot { fill: var(--paper); transition: opacity .18s ease; }
+.professional-stat:has(a:hover) .status-ring__dot { opacity: .7; }
 .professional-stat__body { min-width: 0; display: grid; justify-items: start; gap: 7px; }
 .professional-stat__label, .professional-stat__meta { display: block; max-width: 100%; color: var(--muted); font: 9px/1.45 Space Mono, monospace; letter-spacing: .035em; }
 .professional-stat__current { color: var(--muted-deep); }
 .professional-stat__value { position: relative; display: inline-flex; align-items: baseline; gap: 8px; max-width: 100%; color: var(--paper); font-size: clamp(1.25rem, 1.75vw, 2rem); line-height: 1.15; letter-spacing: -.035em; overflow-wrap: anywhere; text-underline-offset: 5px; transition: opacity var(--duration-fast) var(--ease-primary); }
-.professional-stat__value[href]:hover { opacity: .76; text-decoration: underline; }
-.professional-stat__arrow { display: inline-block; flex: 0 0 auto; font: 11px Space Mono, monospace; transition: transform var(--duration-fast) var(--ease-primary); }
-.professional-stat__value[href]:hover .professional-stat__arrow { transform: translate(3px, -3px); }
+.professional-stat__value[href]:hover { opacity: 1; text-decoration: none; }
+.professional-stat__arrow { display: inline-block; flex: 0 0 auto; font: 11px Space Mono, monospace; opacity: .5; transition: transform var(--duration-fast) var(--ease-primary), opacity var(--duration-fast) var(--ease-primary); }
+/* One directional link cue, not a new entrance effect. The type and grid stay
+   anchored; only the small outbound arrow and supporting metadata respond. */
+.professional-stat:has(.professional-stat__value[href]) .professional-stat__meta { opacity: .85; transition: opacity var(--duration-fast) var(--ease-primary); }
+.professional-stat__value[href]:focus-visible .professional-stat__arrow { opacity: 1; transform: translate(2px, -2px); }
+.professional-stat:has(.professional-stat__value[href]:focus-visible) .professional-stat__meta { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .professional-stat__value[href]:hover .professional-stat__arrow { opacity: 1; transform: translate(2px, -2px); }
+  .professional-stat:has(.professional-stat__value[href]:hover) .professional-stat__meta { opacity: 1; }
+}
+.professional-stat__value[href]:active .professional-stat__arrow { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .professional-stat__arrow, .professional-stat:has(.professional-stat__value[href]) .professional-stat__meta { transition: none; }
+  .professional-stat__value[href]:is(:hover, :focus-visible) .professional-stat__arrow { transform: none; }
+}
 .professional-stat__value--hours { gap: 0; margin: 0; white-space: nowrap; font-size: clamp(1.8rem, 2.4vw, 2.8rem); letter-spacing: -.055em; }
 .professional-stat__meta { color: var(--muted-deep); font-size: 8px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
@@ -489,7 +505,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
   .professional-stat { grid-column: span 1; }
   .professional-stat, .professional-stat + .professional-stat { min-height: 126px; grid-template-columns: 44px minmax(0, 1fr); gap: 18px; padding: 20px 0; border-left: 0; }
   .professional-stat + .professional-stat { border-top: 1px solid var(--line); }
-  .status-ring { width: 44px; height: 44px; }
+  .status-marker { width: 44px; height: 44px; }
+  .status-ring { position: absolute; top: 2px; left: 2px; width: 40px; height: 40px; transform: translate(18px, var(--status-dot-y, -24px)) scale(.19); }
   .professional-stat__value { font-size: clamp(1.3rem, 5vw, 1.8rem); }
   .professional-stat__value--hours { font-size: clamp(2rem, 8vw, 3.4rem); }
   .professional-stat__meta { font-size: 8px; }

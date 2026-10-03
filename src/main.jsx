@@ -4,6 +4,7 @@ import App from './App'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './styles/global.css'
 import './styles/player.css'
+import './styles/theme.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode><LanguageProvider><App /></LanguageProvider></React.StrictMode>,

@@ -13,55 +13,88 @@ export default function ProfessionalSnapshot() {
   useLayoutEffect(() => {
     const element = root.current
     if (!element) return undefined
-    const rings = element.querySelectorAll('[data-status-ring]')
-    const revealParts = element.querySelectorAll('[data-reveal-part]')
     const headerRule = element.querySelector('[data-header-rule]')
     const hours = professionalProfile.softwareHours[0]
     const hoursValue = element.querySelector('[data-hours-value]')
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reducedMotion || !('IntersectionObserver' in window)) return undefined
-
-    const context = gsap.context(() => {}, element)
-    const observer = new IntersectionObserver(entries => {
-      if (!entries.some(entry => entry.isIntersecting)) return
-      observer.disconnect()
-
-      context.add(() => { try {
-        gsap.set(rings, { strokeDashoffset: 100 })
-        gsap.set(headerRule, { scaleX: 0, transformOrigin: 'left center' })
-        gsap.set(revealParts, { autoAlpha: 0, y: 8 })
-
-        const counter = { value: 0 }
-        const timeline = gsap.timeline()
-          .to(headerRule, { scaleX: 1, duration: .38, ease: 'power2.out' })
-
-        const stats = [...element.querySelectorAll('.professional-stat')]
-        stats.forEach((stat, index) => {
-          const ring = stat.querySelector('[data-status-ring]')
-          const parts = stat.querySelectorAll('[data-reveal-part]')
-          if (ring) timeline.to(ring, { strokeDashoffset: 0, duration: .38, ease: 'power2.out' }, index === 0 ? '>-0.04' : '>-0.05')
-          timeline.to(parts, { autoAlpha: 1, y: 0, duration: .28, stagger: .08, ease: 'power2.out' }, ring ? '<0.08' : '>-0.05')
-
-          const counterNode = stat.querySelector('[data-hours-value]')
-          if (counterNode && hours) {
-            timeline.call(() => { counterNode.textContent = '0.0' })
-            timeline.to(counter, {
-              value: hours.hours,
-              duration: 1.15,
-              ease: 'power2.out',
-              onUpdate: () => { counterNode.textContent = numberFormat.format(counter.value) },
-            }, '<')
-          }
+    const stats = [...element.querySelectorAll('.professional-stat')]
+    // Read geometry only on resize, never in an animation frame. The reserved
+    // marker column remains unchanged while the final dot aligns to its label.
+    const alignDots = () => stats.forEach(stat => {
+      const marker = stat.querySelector('.status-marker')
+      const label = stat.querySelector('.professional-stat__label')
+      const box = marker.getBoundingClientRect(), text = label.getBoundingClientRect()
+      const revealY = Number(gsap.getProperty(label, 'y')) || 0
+      marker.style.setProperty('--status-dot-y', `${text.top - revealY + text.height / 2 - box.top - box.height / 2}px`)
+    })
+    alignDots()
+    const resize = new ResizeObserver(alignDots)
+    stats.forEach(stat => {
+      resize.observe(stat)
+      resize.observe(stat.querySelector('.professional-stat__body'))
+    })
+    const context = gsap.context(() => {
+      const match = gsap.matchMedia()
+      match.add({ all: '(min-width: 0px)', reduced: '(prefers-reduced-motion: reduce)' }, ({ conditions }) => {
+        if (conditions.reduced || !('IntersectionObserver' in window)) return
+        const pending = stats.filter(stat => stat.dataset.statusComplete !== 'true' && stat.getBoundingClientRect().bottom > 0)
+        pending.forEach(stat => {
+          gsap.set(stat.querySelector('.status-ring'), { x: 0, y: 0, scale: 1, rotation: -90, opacity: 0 })
+          gsap.set(stat.querySelectorAll('.status-ring__track, .status-ring__progress'), { opacity: 1 })
+          gsap.set(stat.querySelector('[data-status-ring]'), { strokeDashoffset: 88 })
+          gsap.set(stat.querySelector('.status-ring__dot'), { opacity: 0 })
+          gsap.set(stat.querySelectorAll('[data-reveal-part]'), { autoAlpha: 0, y: 8 })
         })
-      } catch {
-        gsap.set([...rings, headerRule, ...revealParts].filter(Boolean), { clearProps: 'all' })
-        if (hoursValue && hours) hoursValue.textContent = numberFormat.format(hours.hours)
-      } })
-    }, { threshold: .12, rootMargin: '0px 0px -5% 0px' })
-
-    observer.observe(element)
+        let headerRevealed = false
+        const animations = []
+        const observer = new IntersectionObserver(entries => {
+          const visible = entries.filter(entry => entry.isIntersecting).map(entry => entry.target)
+          visible.sort((a, b) => stats.indexOf(a) - stats.indexOf(b))
+          visible.forEach((stat, index) => {
+            observer.unobserve(stat)
+            const animation = gsap.context(() => {
+              const ring = stat.querySelector('.status-ring')
+              const arc = stat.querySelector('[data-status-ring]')
+              const parts = stat.querySelectorAll('[data-reveal-part]')
+              const timeline = gsap.timeline({ delay: index * .08, onComplete: () => {
+                stat.dataset.statusComplete = 'true'
+                gsap.set([ring, ...parts], { clearProps: 'transform,opacity,visibility' })
+                gsap.set(stat.querySelectorAll('circle'), { clearProps: 'opacity,strokeDashoffset' })
+              } })
+              if (!headerRevealed) {
+                timeline.fromTo(headerRule, { scaleX: 0 }, { scaleX: 1, duration: .38, ease: 'power2.out' }, 0)
+                headerRevealed = true
+              }
+              timeline.to(ring, { opacity: 1, duration: .1 }, 0)
+                .to(arc, { strokeDashoffset: 0, duration: .65, ease: 'power2.inOut' }, 0)
+                .to(ring, { rotation: 0, duration: .65, ease: 'power2.out' }, 0)
+                .to(parts, { autoAlpha: 1, y: 0, duration: .4, stagger: .1, ease: 'power3.out' }, .1)
+                .to(stat.querySelectorAll('.status-ring__track, .status-ring__progress'), { opacity: 0, duration: .16 }, .68)
+                .to(stat.querySelector('.status-ring__dot'), { opacity: 1, duration: .16 }, .68)
+                .to(ring, { scale: () => ring.clientWidth < 48 ? .19 : .2,
+                  x: () => ring.clientWidth < 48 ? 18 : 20,
+                  y: () => Number.parseFloat(stat.querySelector('.status-marker').style.getPropertyValue('--status-dot-y')),
+                  duration: .28, ease: 'power3.inOut' }, .7)
+              const counterNode = stat.querySelector('[data-hours-value]')
+              if (counterNode && hours) {
+                const counter = { value: 0 }
+                timeline.to(counter, { value: hours.hours, duration: .55, ease: 'power2.out',
+                  onUpdate: () => { counterNode.textContent = numberFormat.format(counter.value) },
+                }, .2)
+              }
+            }, stat)
+            animations.push(animation)
+          })
+        }, { threshold: .12, rootMargin: '0px 0px -5% 0px' })
+        pending.forEach(stat => observer.observe(stat))
+        return () => {
+          observer.disconnect()
+          animations.forEach(animation => animation.revert())
+          if (hoursValue && hours) hoursValue.textContent = numberFormat.format(hours.hours)
+        }
+      })
+    }, element)
     return () => {
-      observer.disconnect()
+      resize.disconnect()
       context.revert()
       if (hoursValue && hours) hoursValue.textContent = numberFormat.format(hours.hours)
     }

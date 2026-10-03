@@ -2,6 +2,7 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'THEME': 'TEMA', 'Switch to light theme': 'Açık temaya geç', 'Switch to dark theme': 'Koyu temaya geç',
     'Replay video': 'Videoyu yeniden oynat', 'Volume': 'Ses seviyesi', 'Playback speed': 'Oynatma hızı',
     'Exit fullscreen': 'Tam ekrandan çık', 'Loading video': 'Video yükleniyor', 'LIGHT': 'IŞIK',
     'Turn ambient light off': 'Ortam ışığını kapat', 'Turn ambient light on': 'Ortam ışığını aç',
