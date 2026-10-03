@@ -1,5 +1,15 @@
 export const ambientEdges = ['top', 'right', 'bottom', 'left']
 
+// The visual CORS path uses the same outer bands without reading their pixels.
+export function ambientEdgeCrop(edge, width, height) {
+  const bandX = Math.max(1, Math.round(width * .12))
+  const bandY = Math.max(1, Math.round(height * .12))
+  if (edge === 'top') return [0, 0, width, bandY]
+  if (edge === 'right') return [width - bandX, 0, bandX, height]
+  if (edge === 'bottom') return [0, height - bandY, width, bandY]
+  return [0, 0, bandX, height]
+}
+
 // Black backgrounds must not dilute visible edge detail into a black average.
 export function sampleAmbientEdges(pixels, width, height) {
   const bandX = Math.max(2, Math.round(width * .12))

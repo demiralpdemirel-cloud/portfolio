@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ambientEdges, sampleAmbientEdges, smoothAmbientEdges } from '../utils/ambientColors'
+import { ambientEdges, ambientEdgeCrop, sampleAmbientEdges, smoothAmbientEdges } from '../utils/ambientColors'
 
 const preferenceKey = 'portfolio-video-ambient'
 function initialPreference() {
@@ -38,6 +38,7 @@ export default function useAmbientLight(videoRef, layerRef, source) {
     let visible = false, disposed = false, mode = context ? 'pixel' : 'fallback'
     let frame = null, raf = null, lastSample = -Infinity, samples = 0
     let colors = null, refresh = true, logged = false, duplicate = null
+    const strips = []
     layer.dataset.resolution = `${canvas.width}x${canvas.height}`
     layer.dataset.hz = String(1000 / interval)
     const report = (message, error) => {
@@ -60,27 +61,39 @@ export default function useAmbientLight(videoRef, layerRef, source) {
         top: `${(box.top - parent.top) / scaleY + (video.clientHeight - height) / 2}px`,
         width: `${width}px`, height: `${height}px`,
       })
-      layer.style.setProperty('--ambient-visual-scale-x', String(width / canvas.width * 1.14))
-      layer.style.setProperty('--ambient-visual-scale-y', String(height / canvas.height * 1.14))
+      for (const strip of strips) {
+        strip.node.style.setProperty('--strip-scale-x', String(strip.node.parentElement.clientWidth / strip.node.width))
+        strip.node.style.setProperty('--strip-scale-y', String(strip.node.parentElement.clientHeight / strip.node.height))
+      }
     }
     const fallback = (error, cannotDraw = false) => {
       mode = 'fallback'; layer.dataset.mode = mode
       report(`canvas unavailable: ${error?.name === 'SecurityError' ? 'CORS' : error?.message || '2D context unavailable'}; visual video fallback active`, error)
-      if (cannotDraw) { context = null; canvas.remove() }
+      if (cannotDraw) {
+        context = null
+        strips.forEach(strip => strip.node.remove()); strips.length = 0
+      }
       if (context) {
-        // A tainted canvas can still display video: no pixel reads, extra media
-        // requests or second decoder, even for cross-origin GitHub releases.
-        // Blur this tiny surface BEFORE scaling it, rather than rasterizing a
-        // player-sized filtered video on every update. Preserve portrait ratio.
-        canvas.height = Math.max(1, Math.round(canvas.width * video.videoHeight / video.videoWidth))
-        canvas.style.width = `${canvas.width}px`; canvas.style.height = `${canvas.height}px`
-        if ('filter' in context) {
-          context.filter = `blur(${mobile ? 3 : 4.5}px) saturate(1.35) brightness(.85)`
-          if (context.filter.includes('blur(')) canvas.dataset.filtered = 'true'
+        // Only the four outer bands are drawn. Each band feeds three tiny
+        // surfaces, filtered before scaling; no readback or extra video decode.
+        for (const edge of ambientEdges) for (const level of ['core', 'mid', 'outer']) {
+          const node = document.createElement('canvas')
+          const horizontal = edge === 'top' || edge === 'bottom'
+          node.width = horizontal ? canvas.width : 16
+          node.height = horizontal ? 16 : canvas.height
+          node.className = 'player-ambient__visual'
+          node.style.width = `${node.width}px`; node.style.height = `${node.height}px`
+          const ctx = node.getContext('2d')
+          if (!ctx) { fallback(new Error('Edge canvas unavailable'), true); return }
+          const blur = level === 'core' ? 1 : level === 'mid' ? 2 : 3
+          const filter = `blur(${blur}px) saturate(1.15) brightness(1.65)`
+          if ('filter' in ctx) ctx.filter = filter
+          if (!ctx.filter?.includes('blur(')) node.style.filter = filter
+          layer.querySelector(`[data-edge="${edge}"] [data-level="${level}"]`).append(node)
+          strips.push({ node, ctx, edge })
         }
-        context.drawImage(video, 0, 0, canvas.width, canvas.height)
         geometry()
-        layer.append(canvas)
+        drawStrips()
       } else {
         // Only browsers unable to draw video at all need a second element.
         duplicate = document.createElement('video')
@@ -97,14 +110,20 @@ export default function useAmbientLight(videoRef, layerRef, source) {
       layer.dataset.sampling = 'idle'
     }
     const active = () => !disposed && visible && !document.hidden && !video.paused && !video.ended
+    const drawStrips = () => {
+      for (const { node, ctx, edge } of strips) {
+        ctx.globalAlpha = refresh ? 1 : .25
+        if (refresh) ctx.clearRect(0, 0, node.width, node.height)
+        ctx.drawImage(video, ...ambientEdgeCrop(edge, video.videoWidth, video.videoHeight), 0, 0, node.width, node.height)
+      }
+    }
     const paint = () => {
       if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) return
       if (context) {
-        if (mode === 'fallback') {
-          context.globalAlpha = refresh ? 1 : .25
-          if (refresh) context.clearRect(0, 0, canvas.width, canvas.height)
+        try {
+          if (mode === 'fallback') drawStrips()
+          else context.drawImage(video, 0, 0, canvas.width, canvas.height)
         }
-        try { context.drawImage(video, 0, 0, canvas.width, canvas.height) }
         catch (error) { fallback(error, true); paint(); return }
         if (mode === 'pixel') {
           try {
@@ -163,6 +182,7 @@ export default function useAmbientLight(videoRef, layerRef, source) {
       document.removeEventListener('visibilitychange', sync)
       document.removeEventListener('fullscreenchange', geometry)
       canvas.remove()
+      strips.forEach(strip => strip.node.remove())
       if (duplicate) { duplicate.removeAttribute('src'); duplicate.load(); duplicate.remove() }
       delete layer.dataset.mode
     }

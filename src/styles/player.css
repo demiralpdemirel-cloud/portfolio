@@ -41,21 +41,34 @@
 .player-timeline__tooltip { position: absolute; bottom: 28px; transform: translateX(-50%); padding: 4px 7px; font: 11px Space Mono, monospace; color: #eee; background: #101010; pointer-events: none; }
 .player-loading { position: absolute; left: 50%; top: 50%; width: 25px; height: 25px; margin: -12px; border: 1px solid #ffffff30; border-top-color: #eee; border-radius: 50%; animation: player-spin .8s linear infinite; pointer-events: none; }
 .player-error { position: absolute; left: 16px; top: 16px; color: #eee; font: 11px Space Mono, monospace; }
-/* The ambient picture is positioned by the engine to match object-fit: contain.
-   All layers stay in a positive stacking context, behind video and controls. */
-.player-ambient { position: absolute; inset: 0; z-index: 0; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
-.player-ambient--enabled { opacity: .5; }
-.player-ambient i { position: absolute; filter: blur(clamp(28px, 4vw, 64px)); }
-.player-ambient i:nth-child(1) { left: 3%; right: 3%; top: -12%; height: 25%; background: linear-gradient(transparent, rgb(var(--ambient-top, 0 0 0))); }
-.player-ambient i:nth-child(2) { top: 3%; bottom: 3%; right: -12%; width: 25%; background: linear-gradient(90deg, rgb(var(--ambient-right, 0 0 0)), transparent); }
-.player-ambient i:nth-child(3) { left: 3%; right: 3%; bottom: -12%; height: 25%; background: linear-gradient(rgb(var(--ambient-bottom, 0 0 0)), transparent); }
-.player-ambient i:nth-child(4) { top: 3%; bottom: 3%; left: -12%; width: 25%; background: linear-gradient(90deg, transparent, rgb(var(--ambient-left, 0 0 0))); }
-.player-ambient__visual { position: absolute; inset: 0; display: block; width: 100%; height: 100%; transform: scale(1.14); filter: blur(clamp(28px, 4vw, 64px)) saturate(1.35) brightness(.85); }
-.player-ambient canvas.player-ambient__visual { inset: auto; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--ambient-visual-scale-x, 1), var(--ambient-visual-scale-y, 1)); filter: blur(4.5px) saturate(1.35) brightness(.85); }
-.player-ambient[data-mode="fallback"] i { visibility: hidden; }
+/* Each strip starts at the contained picture edge. Three independently masked
+   radii put the strongest light at the frame, with a diminishing outward spill.
+   The middle of the video is never an ambient rendering surface. */
+.player-ambient { --ambient-core: 64px; --ambient-mid: 160px; --ambient-outer: 300px; position: absolute; inset: 0; z-index: 0; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.player-ambient--enabled { opacity: 1; }
+.player-ambient__edge { position: absolute; inset: 0; }
+.player-ambient__edge i { --reach: var(--ambient-core); --softness: 20px; position: absolute; display: block; opacity: .9; mask-image: var(--edge-fade), var(--end-fade); mask-composite: intersect; }
+.player-ambient__edge i[data-level="mid"] { --reach: var(--ambient-mid); --softness: 55px; opacity: .6; }
+.player-ambient__edge i[data-level="outer"] { --reach: var(--ambient-outer); --softness: 110px; opacity: .32; }
+.player-ambient__edge i::before { content: ''; position: absolute; inset: 0; background: rgb(var(--edge-color, 0 0 0)); filter: blur(var(--softness)) brightness(1.65); }
+.player-ambient__edge[data-edge="top"], .player-ambient__edge[data-edge="bottom"] { --end-fade: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.player-ambient__edge[data-edge="left"], .player-ambient__edge[data-edge="right"] { --end-fade: linear-gradient(transparent, #000 8%, #000 92%, transparent); }
+.player-ambient__edge[data-edge="top"] { --edge-color: var(--ambient-top, 0 0 0); --edge-fade: linear-gradient(transparent, #0003 35%, #0009 70%, #000 94%); }
+.player-ambient__edge[data-edge="top"] i { left: -2%; width: 104%; bottom: calc(100% - 12px); height: calc(var(--reach) + 12px); }
+.player-ambient__edge[data-edge="right"] { --edge-color: var(--ambient-right, 0 0 0); --edge-fade: linear-gradient(90deg, #000 6%, #0009 30%, #0003 65%, transparent); }
+.player-ambient__edge[data-edge="right"] i { top: -2%; height: 104%; left: calc(100% - 12px); width: calc(var(--reach) + 12px); }
+.player-ambient__edge[data-edge="bottom"] { --edge-color: var(--ambient-bottom, 0 0 0); --edge-fade: linear-gradient(#000 6%, #0009 30%, #0003 65%, transparent); }
+.player-ambient__edge[data-edge="bottom"] i { left: -2%; width: 104%; top: calc(100% - 12px); height: calc(var(--reach) + 12px); }
+.player-ambient__edge[data-edge="left"] { --edge-color: var(--ambient-left, 0 0 0); --edge-fade: linear-gradient(90deg, transparent, #0003 35%, #0009 70%, #000 94%); }
+.player-ambient__edge[data-edge="left"] i { top: -2%; height: 104%; right: calc(100% - 12px); width: calc(var(--reach) + 12px); }
+.player-ambient[data-mode="fallback"] i::before { display: none; }
+/* Tiny cropped canvases are blurred before enlargement. CSS masks then taper
+   each strip outwards; no player-sized CSS filter or centre-frame haze. */
+.player-ambient__visual { position: absolute; display: block; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--strip-scale-x, 1), var(--strip-scale-y, 1)); }
+.player-ambient > video.player-ambient__visual { inset: -8%; width: 116%; height: 116%; transform: none; object-fit: fill; filter: blur(20px) brightness(1.5); mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000); mask-size: 100% 100%, 78% 78%; mask-position: center; mask-repeat: no-repeat; mask-composite: exclude; }
 .premium-player:fullscreen { width: 100vw; height: 100dvh; max-width: none; aspect-ratio: auto; margin: 0; padding: 4svh 4vw; background: #030303; }
 .premium-player:fullscreen .showreel-player__controls { left: 4vw; right: 4vw; bottom: 4svh; }
-.premium-player:fullscreen .player-ambient--enabled { opacity: .5; }
+
 @keyframes player-spin { to { transform: rotate(360deg); } }
 @keyframes player-menu-in { from { opacity: 0; transform: translateY(3px) scale(.98); } to { opacity: 1; transform: none; } }
 @media (max-width: 900px) {
@@ -71,10 +84,9 @@
   .player-speed__menu { bottom: calc(100% + 6px); }
   .player-speed__menu { display: grid; grid-template-columns: 1fr 1fr; min-width: 160px; }
   .premium-player .player-speed__menu button { min-height: 36px; }
-  .player-ambient i { filter: blur(24px); }
-  .player-ambient__visual { filter: blur(24px) saturate(1.3) brightness(.85); }
-  .player-ambient canvas.player-ambient__visual { filter: blur(3px) saturate(1.3) brightness(.85); }
-  .player-ambient--enabled { opacity: .45; }
+  .player-ambient { --ambient-core: 36px; --ambient-mid: 80px; --ambient-outer: 140px; }
+  .player-ambient__edge i { --softness: 12px; }
+  .player-ambient__edge i[data-level="mid"] { --softness: 28px; }
+  .player-ambient__edge i[data-level="outer"] { --softness: 48px; }
 }
-.player-ambient canvas[data-filtered="true"] { filter: none; mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent), linear-gradient(transparent, #000 15%, #000 85%, transparent); mask-composite: intersect; }
 @media (prefers-reduced-motion: reduce) { .premium-player *, .player-ambient { transition: none !important; animation-duration: .01ms !important; } }

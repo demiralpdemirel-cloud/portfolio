@@ -594,7 +594,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 .project-chapter__sticky { position: sticky; top: 0; height: 100svh; overflow: visible; display: grid; align-items: center; }
 .project-chapter__layout { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr); align-items: center; gap: clamp(40px, 4.2vw, 90px); width: min(94%, 2060px); margin: 0 auto; padding: clamp(32px, 5svh, 72px) 0; }
 .project-chapter__media { min-width: 0; height: min(76svh, calc(100svh - 112px)); position: relative; transform-origin: center; }
-.project-chapter__info { min-width: 0; }
+.project-chapter__info { position: relative; z-index: 1; min-width: 0; }
 .project-chapter .project-title { width: auto; max-width: 100%; margin: 0 0 clamp(14px, 2svh, 28px); opacity: 1; visibility: visible; font-size: clamp(2.8rem, 4.2vw, 5.8rem); line-height: .98; letter-spacing: -.055em; overflow-wrap: anywhere; text-wrap: balance; }
 .project-chapter__counter { margin: 0 0 clamp(24px, 4svh, 48px); color: var(--paper); font: 11px/1.4 Space Mono, monospace; letter-spacing: .04em; }
 .project-chapter__counter span { color: var(--muted); margin-left: 8px; }

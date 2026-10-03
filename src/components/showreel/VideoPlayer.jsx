@@ -95,7 +95,11 @@ export default function VideoPlayer({ src, poster, label, durationHint = 0, auto
     if (action) { event.preventDefault(); event.stopPropagation(); action(); reveal() }
   }
   return <div ref={shell} className={`showreel-player premium-player ${className}${visibleControls || !playing ? ' player-controls-visible' : ''}`} role="group" tabIndex="0" aria-label={t(label)} onKeyDown={keyboard} onPointerMove={reveal} onPointerEnter={reveal} onFocus={reveal}>
-    <div ref={layer} className={`player-ambient${ambient.enabled ? ' player-ambient--enabled' : ''}`} aria-hidden="true"><i /><i /><i /><i /></div>
+    <div ref={layer} className={`player-ambient${ambient.enabled ? ' player-ambient--enabled' : ''}`} aria-hidden="true">
+      {['top', 'right', 'bottom', 'left'].map(edge => <span key={edge} className="player-ambient__edge" data-edge={edge}>
+        {['core', 'mid', 'outer'].map(level => <i key={level} data-level={level} />)}
+      </span>)}
+    </div>
     <div className="player-viewport">
       <video ref={videoRef} className="showreel-player__video" src={lazy ? undefined : assetPath(webVideoSource(src))} poster={assetPath(poster)} preload="none" playsInline loop={loop} muted={muted} aria-label={t(label)}
         onClick={() => { shell.current?.focus({ preventScroll: true }); togglePlay() }}

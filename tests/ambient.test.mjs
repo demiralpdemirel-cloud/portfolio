@@ -1,8 +1,21 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { sampleAmbientEdges, smoothAmbientEdges } from '../src/utils/ambientColors.js'
+import { ambientEdgeCrop, sampleAmbientEdges, smoothAmbientEdges } from '../src/utils/ambientColors.js'
 
 const width = 64, height = 36
+test('visual fallback crops only the matching outer edge, including portrait video', () => {
+  for (const [w, h] of [[1920, 1080], [1080, 1920]]) {
+    for (const edge of ['top', 'right', 'bottom', 'left']) {
+      const [x, y, cw, ch] = ambientEdgeCrop(edge, w, h)
+      assert.ok(x >= 0 && y >= 0 && x + cw <= w && y + ch <= h)
+      assert.ok(!(x <= w / 2 && x + cw >= w / 2 && y <= h / 2 && y + ch >= h / 2), 'centre must not become a light source')
+      if (edge === 'top') assert.equal(y, 0)
+      if (edge === 'right') assert.equal(x + cw, w)
+      if (edge === 'bottom') assert.equal(y + ch, h)
+      if (edge === 'left') assert.equal(x, 0)
+    }
+  }
+})
 function image(pixel) {
   const data = new Uint8ClampedArray(width * height * 4)
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) data.set([...pixel(x, y), 255], (y * width + x) * 4)
