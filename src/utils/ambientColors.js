@@ -2,8 +2,8 @@ export const ambientEdges = ['top', 'right', 'bottom', 'left']
 
 // The visual CORS path uses the same outer bands without reading their pixels.
 export function ambientEdgeCrop(edge, width, height) {
-  const bandX = Math.max(1, Math.round(width * .12))
-  const bandY = Math.max(1, Math.round(height * .12))
+  const bandX = Math.max(1, Math.round(width * .08))
+  const bandY = Math.max(1, Math.round(height * .08))
   if (edge === 'top') return [0, 0, width, bandY]
   if (edge === 'right') return [width - bandX, 0, bandX, height]
   if (edge === 'bottom') return [0, height - bandY, width, bandY]

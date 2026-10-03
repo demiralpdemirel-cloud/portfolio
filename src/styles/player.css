@@ -50,7 +50,6 @@
 .player-ambient__edge i { --reach: var(--ambient-core); --softness: 20px; position: absolute; display: block; opacity: .9; mask-image: var(--edge-fade), var(--end-fade); mask-composite: intersect; }
 .player-ambient__edge i[data-level="mid"] { --reach: var(--ambient-mid); --softness: 55px; opacity: .6; }
 .player-ambient__edge i[data-level="outer"] { --reach: var(--ambient-outer); --softness: 110px; opacity: .32; }
-.player-ambient__edge i::before { content: ''; position: absolute; inset: 0; background: rgb(var(--edge-color, 0 0 0)); filter: blur(var(--softness)) brightness(1.65); }
 .player-ambient__edge[data-edge="top"], .player-ambient__edge[data-edge="bottom"] { --end-fade: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .player-ambient__edge[data-edge="left"], .player-ambient__edge[data-edge="right"] { --end-fade: linear-gradient(transparent, #000 8%, #000 92%, transparent); }
 .player-ambient__edge[data-edge="top"] { --edge-color: var(--ambient-top, 0 0 0); --edge-fade: linear-gradient(transparent, #0003 35%, #0009 70%, #000 94%); }
@@ -61,7 +60,6 @@
 .player-ambient__edge[data-edge="bottom"] i { left: -2%; width: 104%; top: calc(100% - 12px); height: calc(var(--reach) + 12px); }
 .player-ambient__edge[data-edge="left"] { --edge-color: var(--ambient-left, 0 0 0); --edge-fade: linear-gradient(90deg, transparent, #0003 35%, #0009 70%, #000 94%); }
 .player-ambient__edge[data-edge="left"] i { top: -2%; height: 104%; right: calc(100% - 12px); width: calc(var(--reach) + 12px); }
-.player-ambient[data-mode="fallback"] i::before { display: none; }
 /* Tiny cropped canvases are blurred before enlargement. CSS masks then taper
    each strip outwards; no player-sized CSS filter or centre-frame haze. */
 .player-ambient__visual { position: absolute; display: block; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--strip-scale-x, 1), var(--strip-scale-y, 1)); }
