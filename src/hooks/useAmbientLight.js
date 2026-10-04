@@ -30,23 +30,26 @@ export default function useAmbientLight(videoRef, layerRef, source) {
     ambientEdges.forEach(edge => layer.style.removeProperty(`--ambient-${edge}`))
     layer.dataset.mode = 'pending'; layer.dataset.sampling = 'idle'; layer.dataset.samples = '0'
     layer.dataset.averageSampleMs = '0'; layer.dataset.maxSampleMs = '0'; layer.dataset.frameLagMs = '0'
+    layer.dataset.captureMs = '0'; layer.dataset.renderMs = '0'
     delete layer.dataset.pixelTransport
     if (!enabled) return
     const mobile = window.matchMedia('(pointer: coarse), (max-width: 900px)').matches
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const scheduler = createAmbientScheduler({ mobile, reduced })
-    const canvas = document.createElement('canvas')
+    let canvas = document.createElement('canvas')
     canvas.width = mobile ? 48 : 64; canvas.height = mobile ? 27 : 36
     canvas.className = 'player-ambient__visual'
     let context
-    try { context = canvas.getContext('2d', { willReadFrequently: false }) } catch { /* Use a visual fallback. */ }
+    try { context = canvas.getContext('2d', { willReadFrequently: true }) } catch { /* Use a visual fallback. */ }
     if (context) context.imageSmoothingEnabled = false
     let visible = false, disposed = false, mode = context ? 'pixel' : 'fallback'
     let frame = null, raf = null, lastPaint = null, samples = 0, lastMetrics = 0
-    let colors = null, refresh = true, logged = false, duplicate = null
+    let colors = null, refresh = true, logged = false
+    let captureMs = 0, renderMs = 0
     const strips = [], bases = [], feather = ambientFeather(16)
     const mapping = createAmbientZoneMap(canvas.width, canvas.height)
-    let native = createNativeAmbientSampler(canvas.width, canvas.height), pending = false, generation = 0
+    let pending = false, generation = 0
+    let native = createNativeAmbientSampler(canvas.width, canvas.height)
     const crops = new Map()
     for (const edge of ambientEdges) crops.set(edge, ambientEdgeCrop(edge, canvas.width, canvas.height))
     layer.dataset.zones = '16/10/16/10'
@@ -112,25 +115,30 @@ export default function useAmbientLight(videoRef, layerRef, source) {
     }
     const fallback = (error, cannotDraw = false) => {
       mode = 'fallback'; layer.dataset.mode = mode; layer.dataset.pixelTransport = 'visual'
+      if (error?.name === 'SecurityError' && !cannotDraw) {
+        // CORS strips never read pixels. Do not retain the CPU/readback canvas
+        // chosen for readable media: capture this protected texture on GPU.
+        const visual = document.createElement('canvas')
+        visual.width = canvas.width; visual.height = canvas.height
+        const visualContext = visual.getContext('2d', { willReadFrequently: false })
+        if (visualContext) { canvas = visual; context = visualContext; context.imageSmoothingEnabled = false }
+      }
       report(`canvas unavailable: ${error?.name === 'SecurityError' ? 'CORS' : error?.message || '2D context unavailable'}; visual video fallback active`, error)
       if (cannotDraw || !context || !createSurfaces()) {
         context = null
         strips.forEach(strip => strip.node.remove()); strips.length = 0; bases.length = 0
-        // Retain the existing capability fallback only if canvas drawing fails.
-        duplicate = document.createElement('video')
-        duplicate.className = 'player-ambient__visual'; duplicate.muted = true
-        duplicate.playsInline = true; duplicate.preload = 'none'
-        duplicate.tabIndex = -1; duplicate.setAttribute('aria-hidden', 'true')
-        layer.append(duplicate)
+        // An unavailable drawing capability must not open a second decoder.
+        layer.dataset.pixelTransport = 'unavailable'
       }
     }
     const stop = () => {
+      generation++ // Ignore an in-flight worker result after pause/hide/stop.
       if (frame !== null) video.cancelVideoFrameCallback?.(frame)
       if (raf !== null) cancelAnimationFrame(raf)
-      frame = null; raf = null; duplicate?.pause()
+      frame = null; raf = null
       layer.dataset.sampling = 'idle'
     }
-    const active = () => !disposed && visible && !document.hidden && !video.paused && !video.ended
+    const active = () => Boolean(context) && !disposed && visible && !document.hidden && !video.paused && !video.ended
     const drawStrips = () => {
       if (mode === 'fallback') {
         // One protected thumbnail capture. All edge views share it, and no
@@ -152,6 +160,8 @@ export default function useAmbientLight(videoRef, layerRef, source) {
         if (context) {
           try {
             if (mode === 'fallback') drawStrips()
+            // Downsample before readback: never copy a full HD YUV frame to CPU
+            // just to inspect the 64x36 analysis buffer.
             else if (!native) context.drawImage(video, 0, 0, canvas.width, canvas.height)
           }
           catch (error) { fallback(error, true); return }
@@ -161,17 +171,18 @@ export default function useAmbientLight(videoRef, layerRef, source) {
               if (native) {
                 try { pixels = await native.sample(video) }
                 catch (error) {
-                  native.dispose(); native = null
-                  if (error.name === 'SecurityError') { fallback(error); drawStrips(); return }
-                }
-                if (disposed || token !== generation || !visible || document.hidden) return
-                if (!pixels) {
+                  if (disposed) return
                   native?.dispose(); native = null
+                  if (error.name === 'SecurityError') { fallback(error); drawStrips(); return }
                   context.drawImage(video, 0, 0, canvas.width, canvas.height)
                 }
+                if (disposed || token !== generation || !visible || document.hidden || video.paused) return
               }
-              layer.dataset.pixelTransport = native ? 'native-yuv' : 'canvas'
-              const sampled = sampleAmbientZones(pixels || context.getImageData(0, 0, canvas.width, canvas.height).data, mapping)
+              layer.dataset.pixelTransport = native ? 'worker-downsampled' : 'canvas-downsampled'
+              pixels ||= context.getImageData(0, 0, canvas.width, canvas.height).data
+              captureMs = performance.now() - started
+              const renderStarted = performance.now()
+              const sampled = sampleAmbientZones(pixels, mapping)
               colors = !colors || refresh ? sampled : smoothAmbientZones(colors, sampled, lastPaint === null ? 1000 / 24 : now - lastPaint)
               if (!createSurfaces()) { fallback(new Error('Edge canvas unavailable'), true); return }
               bases.forEach(({ ctx, image, horizontal, line, node }, index) => {
@@ -180,18 +191,14 @@ export default function useAmbientLight(videoRef, layerRef, source) {
                 ctx.putImageData(image, 0, 0)
               })
               drawStrips()
+              renderMs = performance.now() - renderStarted
               if (!logged) { report('pixel sampling active'); logged = true }
               layer.dataset.mode = 'pixel'
             } catch (error) { fallback(error); if (context) drawStrips() }
           }
-        } else if (duplicate) {
-          if (duplicate.getAttribute('src') !== video.currentSrc) duplicate.src = video.currentSrc
-          duplicate.playbackRate = video.playbackRate; duplicate.loop = video.loop
-          if (Math.abs(duplicate.currentTime - video.currentTime) > .15 || refresh) duplicate.currentTime = video.currentTime
-          if (active() && duplicate.paused) duplicate.play()?.catch(error => { if (!logged) { report('visual fallback playback unavailable', error); logged = true } })
         }
       } finally {
-        if (!disposed && token === generation && visible && !document.hidden) {
+        if (!disposed && token === generation && active()) {
           lastPaint = now; refresh = false; layer.dataset.samples = String(++samples)
           // Visual capture has no pixel analysis. Software rasterization gets
           // a bounded 4 ms budget; pixel sampling retains its 2 ms budget.
@@ -206,11 +213,12 @@ export default function useAmbientLight(videoRef, layerRef, source) {
             layer.dataset.hz = String(scheduler.rate)
             layer.dataset.averageSampleMs = stats.averageMs.toFixed(3)
             layer.dataset.maxSampleMs = stats.maxMs.toFixed(3)
+            layer.dataset.captureMs = captureMs.toFixed(3)
+            layer.dataset.renderMs = renderMs.toFixed(3)
             lastMetrics = now
           }
         }
         pending = false
-        if (!disposed && token !== generation && visible && video.paused && refresh) void paint()
       }
     }
     const schedule = () => {
@@ -231,11 +239,11 @@ export default function useAmbientLight(videoRef, layerRef, source) {
     }
     const sync = () => {
       stop()
-      if (!visible || document.hidden) return
+      if (!visible || document.hidden || video.paused || video.ended) return
       geometry()
       // A single paused/seeked refresh. Playing updates come only from newly
       // presented frames, never from repeated play/playing/ratechange events.
-      if (video.paused || refresh) paint()
+      if (refresh) paint()
       scheduler.reset(); schedule()
     }
     const seeked = () => { generation++; refresh = true; sync() }
@@ -245,7 +253,7 @@ export default function useAmbientLight(videoRef, layerRef, source) {
       strips.forEach(({ node, ctx }) => ctx.clearRect(0, 0, node.width, node.height))
     }
     if (context && !createSurfaces()) fallback(new Error('Edge canvas unavailable'), true)
-    if (!context && !duplicate) fallback()
+    if (!context) fallback()
     const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync() }, { threshold: .1 })
     observer.observe(video)
     const resize = new ResizeObserver(geometry)
@@ -262,7 +270,6 @@ export default function useAmbientLight(videoRef, layerRef, source) {
       document.removeEventListener('fullscreenchange', geometry)
       canvas.remove()
       strips.forEach(strip => strip.node.remove()); strips.length = 0; bases.length = 0
-      if (duplicate) { duplicate.removeAttribute('src'); duplicate.load(); duplicate.remove() }
       delete layer.dataset.mode
     }
   }, [enabled, videoRef, layerRef, source])

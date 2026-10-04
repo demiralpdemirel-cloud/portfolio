@@ -49,22 +49,46 @@
 :root[data-theme="light"] .theme-orb { transform: rotate(135deg); }
 body:has(dialog[open], .showreel-viewer, .fullscreen-viewer) .theme-bubble-shell { visibility: hidden; pointer-events: none; }
 ::view-transition { pointer-events: none; }
-::view-transition-group(root) { animation-duration: .9s; }
+@property --theme-progress { syntax: '<number>'; inherits: true; initial-value: 0; }
+::view-transition-group(root) { animation-duration: var(--theme-duration, 700ms); }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 ::view-transition-old(root) { z-index: 1; }
-::view-transition-new(root) { z-index: 2; animation: theme-diagonal .9s cubic-bezier(.65,0,.25,1) both; }
-:root[data-theme-motion="reduced"] ::view-transition-new(root) { animation: theme-reduced .18s ease both; }
-:root[data-theme-motion="reduced"] ::view-transition-group(root) { animation-duration: .18s; }
-@keyframes theme-diagonal {
-  from { clip-path: polygon(0 0, 0 0, 0 0); }
-  to { clip-path: polygon(0 0, calc(100vw + 100vh + 4px) 0, 0 calc(100vw + 100vh + 4px)); }
+::view-transition-new(root) { z-index: 2; }
+:root[data-theme-motion="wipe"]::view-transition-new(root) { clip-path: polygon(0 0, calc(var(--theme-travel) * var(--theme-progress)) 0, 0 calc(var(--theme-travel) * var(--theme-progress))); }
+:root[data-theme-showcase="band"]::view-transition-new(root) { clip-path: polygon(calc(var(--theme-travel) * var(--theme-progress)) 0, 0 calc(var(--theme-travel) * var(--theme-progress)), 0 calc(var(--theme-travel) * var(--theme-progress) - var(--theme-band-offset)), calc(var(--theme-travel) * var(--theme-progress) - var(--theme-band-offset)) 0); }
+/* Only the narrow named ribbon is a glass surface, not the whole viewport.
+   Refraction is suggested with layered alpha reflections, without backdrop blur. */
+.theme-energy { position: fixed; inset: 0; overflow: clip; pointer-events: none; z-index: 120; }
+.theme-energy__ribbon { position: absolute; left: 0; top: 0; border-radius: 999px; border: 1px solid #faffffe0;
+  background: linear-gradient(180deg, #ffffffc9 0%, #d6f6ff45 17%, #ffffff08 43%, #c1defb32 65%, #ffffffb0 100%);
+  box-shadow: inset 0 1px 1px #fff, inset 0 -2px 3px #a3cce955, 0 0 3px #fff, 0 0 10px #b9e8ff9c, 0 0 24px #b0d6ed4d; }
+.theme-energy__ribbon::after { content: ''; position: absolute; inset: 2px 0 4px; border-radius: inherit;
+  background: linear-gradient(90deg, transparent 8%, #fff7 22%, #fff1 33%, transparent 44%, #fff8 61%, transparent 78%); }
+:root[data-theme="light"] .theme-energy__ribbon { border-color: #d8f1ffff; box-shadow: inset 0 1px 1px #fff, inset 0 -2px 3px #627b9699, 0 0 3px #fff, 0 0 10px #b9e8ff9c, 0 1px 5px #52718c80, 0 0 24px #b0d6ed4d; }
+.theme-energy__spark { position: absolute; left: 0; top: 0; display: block; border-radius: 50%; background: #f7fbff; box-shadow: 0 0 3px #fff, 0 0 7px #b9e8ff99; }
+.theme-energy__spark:nth-of-type(9n) { background: #d3eaff; }
+:root[data-theme="light"] .theme-energy__spark { box-shadow: 0 0 2px #476a9480, 0 0 6px #b9e8ff99; }
+.theme-energy__spark.is-streak { border-radius: 999px; }
+::view-transition-group(theme-ribbon), ::view-transition-group(theme-ribbon-return) { left: 0; top: 0; z-index: 3; transform-origin: center; transform: translate(calc(-50% + var(--theme-travel) * var(--theme-progress) / 2), calc(-50% + var(--theme-travel) * var(--theme-progress) / 2)) rotate(-45deg); animation: theme-edge-fade var(--theme-duration, 700ms) linear both; }
+::view-transition-group(theme-ribbon-return) { transform: translate(calc(-50% + (var(--theme-travel) * var(--theme-progress) - var(--theme-band-offset)) / 2), calc(-50% + (var(--theme-travel) * var(--theme-progress) - var(--theme-band-offset)) / 2)) rotate(-45deg); }
+::view-transition-old(theme-ribbon), ::view-transition-new(theme-ribbon), ::view-transition-old(theme-ribbon-return), ::view-transition-new(theme-ribbon-return) { animation: none; mix-blend-mode: normal; }
+@keyframes theme-edge-fade { 0%, 100% { opacity: 0; } 5%, 95% { opacity: 1; } }
+@keyframes theme-spark {
+  from { transform: translate(calc(var(--spark-x) - 50%), calc(var(--spark-y) - 50%)) rotate(-45deg) scale(.65); opacity: 0; }
+  12% { opacity: .95; }
+  to { transform: translate(calc(var(--spark-x) + var(--spark-dx) - 50%), calc(var(--spark-y) + var(--spark-dy) - 50%)) rotate(-45deg) scale(.25); opacity: 0; }
 }
+:root[data-theme-motion="reduced"]::view-transition-new(root) { animation: theme-reduced .18s ease both; }
+:root[data-theme-motion="reduced"]::view-transition-group(root) { animation-duration: .18s; }
 @keyframes theme-reduced { from { opacity: 0; } to { opacity: 1; } }
 @keyframes theme-arrive { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes theme-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 @media (max-width: 900px) {
   .primary-nav { background: var(--nav-surface); }
   .theme-bubble-shell { top: 78px; }
+}
+@media (max-width: 600px) {
+  .theme-energy__ribbon { box-shadow: inset 0 1px 1px #fff, inset 0 -1px 2px #b8d7e766, 0 0 3px #fff, 0 0 8px #b9e8ff99, 0 0 16px #b0d6ed40; }
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-bubble, .theme-bubble-shell, .theme-orb { animation: none; transition: none; }

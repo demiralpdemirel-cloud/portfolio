@@ -34,6 +34,19 @@ test('pixel and CORS strip surfaces share static elliptical masks, without zone-
 })
 
 const width = 64, height = 36, mapping = createAmbientZoneMap(width, height)
+test('ambient worker downsamples before readback and OFF/paused cancel processing', () => {
+  const worker = readFileSync(new URL('../src/utils/ambientFrame.worker.js', import.meta.url),'utf8')
+  const sampler = readFileSync(new URL('../src/utils/ambientNativeFrame.js', import.meta.url),'utf8')
+  const hook = readFileSync(new URL('../src/hooks/useAmbientLight.js', import.meta.url),'utf8')
+  assert.match(worker,/new OffscreenCanvas\(width, height\)/)
+  assert.match(worker,/frame.close\(\)/)
+  assert.doesNotMatch(sampler,/frame.copyTo|allocationSize/)
+  assert.match(sampler,/worker.terminate\(\)/)
+  assert.match(hook,/if \(!enabled\) return/)
+  assert.match(hook,/video.cancelVideoFrameCallback/)
+  assert.match(hook,/document.hidden \|\| video.paused \|\| video.ended/)
+  assert.match(hook,/error.name === 'SecurityError'\) \{ fallback/)
+})
 function image(color) {
   const data = new Uint8ClampedArray(width * height * 4)
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) data.set([...color(x, y), 255], (y * width + x) * 4)

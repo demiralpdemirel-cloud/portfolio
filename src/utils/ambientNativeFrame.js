@@ -18,33 +18,30 @@ export function convertAmbientYuv(bytes, positions, layout, format, matrix, full
 }
 
 export function createNativeAmbientSampler(width, height) {
-  if (typeof VideoFrame === 'undefined') return null
-  let bytes = null, positions = null, dimensions = ''
-  const output = new Uint8ClampedArray(width * height * 4)
+  if (typeof VideoFrame === 'undefined' || typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') return null
+  let worker
+  try { worker = new Worker(new URL('./ambientFrame.worker.js', import.meta.url), { type: 'module' }) }
+  catch { return null }
+  let pending = null, disposed = false
+  const fail = error => { pending?.reject(error); pending = null }
+  worker.onerror = () => fail(new Error('Ambient worker unavailable'))
+  worker.onmessage = ({ data }) => {
+    if (!pending) return
+    if (data.error) { const error = new Error(data.error.message); error.name = data.error.name; fail(error); return }
+    pending.resolve(data.pixels); pending = null
+  }
   return {
-    async sample(video) {
-      // VideoFrame enforces origin security: tainted media cannot enter this
-      // pixel-readable path. It reuses the decoder's native planes, not a new
-      // decoder. Copy bytes once; analyse only the small downsampled buffer.
+    sample(video) {
+      if (disposed || pending) return Promise.reject(new Error('Ambient sampler unavailable'))
+      // Origin security is checked once on the existing decoded frame. Tainted
+      // sources switch permanently to the shared visual strip path in the hook.
       const frame = new VideoFrame(video, { timestamp: Math.round(video.currentTime * 1e6) })
-      try {
-        if (!['I420', 'I420A', 'NV12'].includes(frame.format) || frame.rotation || frame.flip) return null
-        const w = frame.visibleRect.width, h = frame.visibleRect.height
-        const key = `${w}/${h}/${frame.format}`
-        if (dimensions !== key) {
-          dimensions = key; bytes = new Uint8Array(frame.allocationSize())
-          positions = new Uint32Array(width * height * 2)
-          for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-            const index = (y * width + x) * 2
-            positions[index] = Math.min(w - 1, Math.floor((x + .5) * w / width))
-            positions[index + 1] = Math.min(h - 1, Math.floor((y + .5) * h / height))
-          }
-        }
-        const layout = await frame.copyTo(bytes)
-        convertAmbientYuv(bytes, positions, layout, frame.format, frame.colorSpace.matrix, frame.colorSpace.fullRange, output)
-        return output
-      } finally { frame.close() }
+      return new Promise((resolve, reject) => {
+        pending = { resolve, reject }
+        try { worker.postMessage({ frame, width, height }, [frame]) }
+        catch (error) { frame.close(); fail(error) }
+      })
     },
-    dispose() { bytes = null; positions = null; dimensions = '' },
+    dispose() { disposed = true; worker.terminate(); fail(new Error('Ambient sampler stopped')) },
   }
 }
