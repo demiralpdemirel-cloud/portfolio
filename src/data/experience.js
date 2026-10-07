@@ -3,6 +3,8 @@ import { CURRENT_COMPANY } from './professionalProfile'
 import { productions } from './productions'
 
 export const experience = [
+  { title: 'ONBEŞLİLER', period: '2026', summary: '3D ARTIST / COMPOSITING ARTIST', role: ['3D ARTIST', 'COMPOSITING ARTIST'], highlights: [] },
+  { title: 'ASELSAN', period: '2025', summary: '3D ARTIST / COMPOSITING ARTIST', role: ['3D ARTIST', 'COMPOSITING ARTIST'], highlights: [] },
   { title: 'EŞREF RÜYA', company: CURRENT_COMPANY, period: '2024', summary: bilingual('Compositing and action-scene VFX work including cleanup, shot integration and environment expansion.'), highlights: ['COMPOSITING', 'ACTION FX', 'CLEANUP'] },
   { title: 'KARDEŞ TAKIMI 1–3', company: CURRENT_COMPANY, period: '2024–2025', summary: bilingual('Built CG environments and assets, tracked live-action plates and finished integrated production shots.'), highlights: ['3D ENVIRONMENTS', 'CAMERA TRACKING', 'SHOT FINISHING'] },
   { title: 'BİR SEVDADIR', company: CURRENT_COMPANY, period: '2024', summary: bilingual('Delivered cleanup, green-screen, CG crowd and environment integration work for production shots.'), highlights: ['CLEANUP', 'GREEN SCREEN', 'CG CROWD'] },

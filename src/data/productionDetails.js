@@ -8,6 +8,32 @@ const imdb = (id, rating = null) => ({ imdbTitleId: id, imdbUrl: `https://www.im
 const image = (name, width, height, source, sourceUrl, assetUrl) => ({ image: `/media/productions/${name}.webp`, imageWidth: width, imageHeight: height, imageSource: source, imageSourceUrl: sourceUrl, imageAssetUrl: assetUrl })
 
 export const productionDetails = {
+  'ONBEŞLİLER': {
+    type: 'DIGITAL SERIES', genre: 'DRAMA / ACTION / HISTORY', broadcastYears: '2026',
+    platform: 'tabii', productionCompany: 'MİRAY YAPIM', seasons: 1, episodes: 16,
+    productionDescription: bilingual('A historical drama set during the First World War, following a story that stretches from Tokat to the Gallipoli front. Onbeşliler portrays the journey of young people drawn into the defense of their homeland, exploring friendship, sacrifice, loss and the social atmosphere of the period.'),
+    image: '/media/productions/onbesliler.jpg', imageWidth: 1439, imageHeight: 1080,
+    imageSource: bilingual('TRT 1 — official Onbeşliler key art'),
+    imageSourceUrl: 'https://www.trt1.com.tr/diziler/onbesliler',
+    imageAssetUrl: 'https://cdn-i.pr.trt.com.tr/trt1/headline-mobil-image-onbesliler-21728285-0-0-1439-1080.jpeg',
+    officialLinks: [
+      { label: 'OFFICIAL PROJECT PAGE ↗', url: 'https://www.trt1.com.tr/diziler/onbesliler' },
+      { label: 'OFFICIAL TABII PAGE ↗', url: 'https://www.tabii.com/tr/detail/626502' },
+    ],
+    hideUnknownFields: true, hidePersonalWork: true, hideWorkPeriod: true,
+    creditSource: 'USER VERIFIED',
+  },
+  'ASELSAN': {
+    detailTitle: 'ASELSAN — 50 YILLIK TAM BAĞIMSIZLIK YÜRÜYÜŞÜ',
+    type: 'COMMERCIAL / ADVERTISEMENT', broadcastYears: '2025', brand: 'ASELSAN',
+    productionDescription: bilingual("A corporate commercial film created for ASELSAN's 50th anniversary. The film traces ASELSAN's technological journey from the communication challenges and embargoes that followed the Cyprus Peace Operation to the development of Türkiye's modern national defense technologies."),
+    image: '/media/productions/aselsan/poster.jpg', imageWidth: 1920, imageHeight: 1080,
+    imageSource: bilingual('Frame from user-provided ASELSAN video'),
+    video: { src: 'https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/aselsan.mp4', poster: '/media/productions/aselsan/poster.jpg', duration: 58.8 },
+    officialLinks: [{ label: 'WATCH OFFICIAL FILM ↗', url: 'https://www.youtube.com/watch?v=lnNqWgMphtk' }],
+    hideUnknownFields: true, hidePersonalWork: true, hideWorkPeriod: true,
+    creditSource: 'USER VERIFIED',
+  },
   'AŞK VE TAHT': {
     ...imdb('tt45351792'), researchedAt: '2026-10-04',
     type: 'TV SERIES', genre: 'HISTORICAL / ACTION / DRAMA',
@@ -77,5 +103,5 @@ export const productionDetails = {
 
 // Additional existing rows stay interactive without inventing missing metadata.
 export function getProductionDetail(item) {
-  return { type: null, firstReleaseYear: null, releaseStart: null, releaseEnd: null, seasons: null, imdbRating: null, imdbUrl: null, image: null, ...productionDetails[item.title], ...item, role: item.highlights || [], disciplines: item.highlights || [], description: item.summary }
+  return { type: null, firstReleaseYear: null, releaseStart: null, releaseEnd: null, seasons: null, imdbRating: null, imdbUrl: null, image: null, ...productionDetails[item.title], ...item, role: item.role || item.highlights || [], disciplines: item.highlights || [], description: item.summary }
 }

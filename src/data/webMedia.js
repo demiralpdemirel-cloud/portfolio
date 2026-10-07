@@ -17,6 +17,8 @@ export function webVideoSource(source) {
   if (!source) return source
   // Only known release assets are replaced; unrelated filenames remain untouched.
   if (source.startsWith('https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/')) {
+    // Local mirror is ignored and excluded from Pages; publishing the release is a separate task.
+    if (source.endsWith('/aselsan.mp4') && import.meta.env.DEV) return 'media/productions/aselsan/aselsan.mp4'
     return videoProxies[source.split('/').pop()] || source
   }
   return source

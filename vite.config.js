@@ -4,6 +4,7 @@ import { rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 const releaseOnlyVideos = [
+  'media/productions/aselsan/aselsan.mp4',
   'media/projects/evga-rtx-3090/evga-rtx-3090.mp4',
   'media/projects/keyboard-study/keyboard-study.mp4',
   'media/projects/mario-arcade/mario-arcade.mp4',

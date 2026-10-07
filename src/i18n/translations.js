@@ -2,6 +2,21 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'PERSONAL PROJECT': 'KİŞİSEL PROJE', 'SCENE STATISTICS': 'SAHNE İSTATİSTİKLERİ',
+    'A personal 3D environment study focused on building a believable street-side cafe scene and the relationship between interior and exterior space. The project combines architectural modeling, storefront glazing, furniture, lighting, environmental details and urban context into a single cinematic composition.': 'Sokak cephesine açılan gerçekçi bir kafe ortamı oluşturmayı merkezine alan kişisel bir 3D environment çalışması. Projede mimari modelleme, geniş vitrin yüzeyleri, iç mekân mobilyaları, aydınlatma, çevresel detaylar ve şehir dokusu tek bir sinematik kompozisyon içerisinde bir araya getirildi.',
+    'Personal 3D environment and architectural visualization study.': 'Kişisel 3D environment ve mimari görselleştirme çalışması.',
+    'Final 3D render of a street-side cafe environment with a glazed storefront, red seating and surrounding urban architecture.': 'Geniş vitrin yüzeyleri, kırmızı oturma alanları ve çevredeki şehir mimarisiyle sokak cephesindeki kafe ortamının final 3D renderı.',
+    'Solid render showing the geometry and layout of the cafe environment.': 'Kafe ortamının geometrisini ve yerleşimini gösteren solid render.',
+    'Mist render pass showing scene depth and atmospheric separation.': 'Sahne derinliğini ve atmosferik ayrımı gösteren mist render pass.',
+    'COMMERCIAL / ADVERTISEMENT': 'REKLAM FİLMİ', 'BRAND': 'MARKA',
+    'WATCH OFFICIAL FILM ↗': 'RESMİ FİLMİ İZLE ↗',
+    'Frame from user-provided ASELSAN video': 'Kullanıcının sağladığı ASELSAN videosundan kare',
+    "A corporate commercial film created for ASELSAN's 50th anniversary. The film traces ASELSAN's technological journey from the communication challenges and embargoes that followed the Cyprus Peace Operation to the development of Türkiye's modern national defense technologies.": "ASELSAN'ın 50. yılı için hazırlanan kurumsal reklam filmi. Yapım, Kıbrıs Barış Harekâtı sonrasında yaşanan haberleşme sorunları ve ambargoların ardından başlayan yerli ve milli teknoloji yolculuğunu, ASELSAN'ın kuruluşundan günümüz savunma teknolojilerine uzanan tarihsel bir anlatımla aktarıyor.",
+    'DIGITAL SERIES': 'DİJİTAL DİZİ', 'DRAMA / ACTION / HISTORY': 'DRAMA / AKSİYON / TARİH',
+    'EPISODES': 'BÖLÜM', 'PLATFORM': 'PLATFORM',
+    'OFFICIAL PROJECT PAGE ↗': 'RESMİ PROJE SAYFASI ↗', 'OFFICIAL TABII PAGE ↗': 'RESMİ TABII SAYFASI ↗',
+    'TRT 1 — official Onbeşliler key art': 'TRT 1 — resmî Onbeşliler tanıtım görseli',
+    'A historical drama set during the First World War, following a story that stretches from Tokat to the Gallipoli front. Onbeşliler portrays the journey of young people drawn into the defense of their homeland, exploring friendship, sacrifice, loss and the social atmosphere of the period.': "Birinci Dünya Savaşı döneminde Tokat'tan Çanakkale Cephesi'ne uzanan bir hikâyeyi merkezine alan tarihi drama. Onbeşliler, savaşın gölgesindeki gençlerin vatan savunmasına uzanan yolculuğunu; dostluk, fedakârlık, kayıp ve dönemin toplumsal yapısı üzerinden anlatıyor.",
     'atv — official Kuruluş Osman season-two key art': 'atv — resmî Kuruluş Osman ikinci sezon afişi',
     'DIRECTORS': 'YÖNETMENLER', 'WRITER': 'SENARİST',
     'HISTORICAL / ACTION / DRAMA': 'TARİHİ / AKSİYON / DRAMA', '2026 — PRESENT': '2026 — GÜNÜMÜZ',

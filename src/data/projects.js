@@ -1,5 +1,8 @@
 import { bilingual } from '../i18n/translations'
 export const projectMediaDimensions = {
+  'media/projects/cafe-environment/final.webp': [1920, 1080],
+  'media/projects/cafe-environment/clay.webp': [1920, 1080],
+  'media/projects/cafe-environment/mist.webp': [1920, 1080],
   'media/projects/interior-study/living-room.webp': [1800, 1800],
   'media/projects/interior-study/dark-living-room.webp': [1800, 1800],
   'media/projects/interior-study/bathroom.webp': [1800, 1800],
@@ -46,5 +49,22 @@ export const projects = [
     categories: ['VFX & COMPOSITING', 'PERSONAL PROJECTS'], primaryCategory: 'VFX / COMPOSITING', categoryIds: ['vfx', 'personal'],
     role: ['VFX Artist', 'Compositor'], software: [], description: bilingual('A personal live-action VFX piece showing a destructive impact on a city building.'), credits: [], presentation: 'video', featured: false, personal: true,
     cover: 'media/projects/star-wars-vfx/poster.webp', media: [], video: { src: 'https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/star-wars-vfx.mp4', poster: 'media/projects/star-wars-vfx/poster.webp' }, breakdownVideo: null, sequence: null, beforeAfter: null, breakdownStages: [], externalLink: null, placeholder: false,
+  },
+  {
+    id: 'cafe-environment', number: '006', title: 'CAFE ENVIRONMENT', year: null, date: null,
+    categories: ['ENVIRONMENT & ARCHVIZ', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'ENVIRONMENT & ARCHVIZ', categoryIds: ['archviz', 'cgi', 'personal'],
+    type: 'PERSONAL PROJECT', role: [], software: [],
+    description: bilingual('A personal 3D environment study focused on building a believable street-side cafe scene and the relationship between interior and exterior space. The project combines architectural modeling, storefront glazing, furniture, lighting, environmental details and urban context into a single cinematic composition.'),
+    shortDescription: bilingual('Personal 3D environment and architectural visualization study.'),
+    credits: [], presentation: 'environment', featured: false, personal: true,
+    cover: 'media/projects/cafe-environment/poster.webp', media: [], video: null, breakdownVideo: null, sequence: null, beforeAfter: null,
+    breakdownPresentation: 'switcher',
+    breakdownStages: [
+      { label: 'FINAL', media: 'media/projects/cafe-environment/final.webp', fullResolution: 'media/projects/cafe-environment/final-full.webp', alt: bilingual('Final 3D render of a street-side cafe environment with a glazed storefront, red seating and surrounding urban architecture.') },
+      { label: 'SOLID', media: 'media/projects/cafe-environment/clay.webp', fullResolution: 'media/projects/cafe-environment/clay-full.webp', alt: bilingual('Solid render showing the geometry and layout of the cafe environment.') },
+      { label: 'MIST', media: 'media/projects/cafe-environment/mist.webp', fullResolution: 'media/projects/cafe-environment/mist-full.webp', alt: bilingual('Mist render pass showing scene depth and atmospheric separation.') },
+    ],
+    sceneStats: { objects: 981, vertices: 1539667, edges: 3049726, faces: 1505809, triangles: 2921827 },
+    externalLink: null, placeholder: false,
   },
 ]
