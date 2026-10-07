@@ -18,11 +18,11 @@ export default function useReveal(rootRef, revision) {
             const targets = targetsFor(group)
             const masks = [...group.querySelectorAll('[data-reveal-mask]')]
             const lines = group.querySelectorAll('[data-reveal-line]')
-            gsap.set(masks, { overflow: 'hidden' })
+            if (masks.length) gsap.set(masks, { overflow: 'hidden' })
             const timeline = gsap.timeline({ onComplete: () => {
               group.dataset.motionComplete = 'true'
-              gsap.set(targets, { clearProps: 'opacity,visibility,transform' })
-              gsap.set(masks, { clearProps: 'overflow' })
+              if (targets.length) gsap.set(targets, { clearProps: 'opacity,visibility,transform' })
+              if (masks.length) gsap.set(masks, { clearProps: 'overflow' })
             } })
             targets.forEach((target, index) => {
               const masked = target.parentElement.hasAttribute('data-reveal-mask')
@@ -43,7 +43,9 @@ export default function useReveal(rootRef, revision) {
           if (group.dataset.motionComplete === 'true') return
           // A reload above a group leaves its already-passed copy visible.
           if (group.getBoundingClientRect().bottom <= 0) return
-          gsap.set(targetsFor(group), { autoAlpha: 0 })
+          const targets = targetsFor(group)
+          if (!targets.length) return
+          gsap.set(targets, { autoAlpha: 0 })
           observer.observe(group)
         })
         return () => {

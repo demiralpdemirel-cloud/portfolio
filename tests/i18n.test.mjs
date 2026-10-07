@@ -46,7 +46,9 @@ test('Modal breakdown loads requested passes only and reuses the full-resolution
   assert.match(modal, /stage.fullResolution \|\| stage.media/)
   assert.match(modal, /!switcher && images.length > 1/)
   assert.match(modal, /!switcher && project.breakdownStages/)
-  assert.match(modal, /value.toLocaleString\('en-US'\)/)
+  const stats = readFileSync(new URL('../src/components/project/SceneStatistics.jsx', import.meta.url), 'utf8')
+  assert.match(modal, /<SceneStatistics stats=\{project.sceneStats\}/)
+  assert.match(stats, /value.toLocaleString\('en-US'\)/)
 })
 
 test('Onbeşliler uses exact user roles, optional metadata and official sources only', () => {

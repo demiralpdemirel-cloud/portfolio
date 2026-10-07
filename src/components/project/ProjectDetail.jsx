@@ -8,6 +8,7 @@ import VideoPlayer from '../showreel/VideoPlayer'
 import ProjectMeta from './ProjectMeta'
 import BreakdownSwitcher from '../media/BreakdownSwitcher'
 import { projectMediaDimensions } from '../../data/projects'
+import SceneStatistics from './SceneStatistics'
 
 function DetailImage({ src, title, onOpen }) {
   const { t } = useLanguage()
@@ -64,7 +65,7 @@ export default function ProjectDetail({ project, onClose, onNext, returnFocus })
           {switcher ? <BreakdownSwitcher stages={project.breakdownStages} title={project.title} onOpen={setImageIndex} /> : project.video && project.presentation !== 'environment' ? <VideoPlayer src={project.video.src} poster={project.video.poster} label={project.breakdownVideo ? 'Main film' : project.title} /> : images[0] && <DetailImage src={images[0]} title={`${project.title} — view 1`} onOpen={() => setImageIndex(0)} />}
         </div><div className="project-modal__info"><h2 id="project-modal-title">{project.title}</h2><p className="section-index">{t(project.primaryCategory || project.categories?.join(' / '))}</p><p className="project-modal__description">{t(project.description)}</p><ProjectMeta project={project} />{project.credits?.length > 0 && <p>{t('CREDITS')} / {project.credits.join(' / ')}</p>}</div></div>
         {project.type && <p className="section-index">{t(project.type)}</p>}
-        {project.sceneStats && <section className="project-modal__stats" aria-label={t('SCENE STATISTICS')}><h3 className="section-index">{t('SCENE STATISTICS')}</h3><dl>{Object.entries(project.sceneStats).map(([label, value]) => <div key={label}><dt>{label.toUpperCase()}</dt><dd>{value.toLocaleString('en-US')}</dd></div>)}</dl></section>}
+        <SceneStatistics stats={project.sceneStats} />
         {!switcher && images.length > 1 && <section className="project-modal__gallery" aria-label={t(`${project.title} gallery`)}>{images.slice(1).map((src, index) => <DetailImage key={src} src={src} title={`${project.title} — view ${index + 2}`} onOpen={() => setImageIndex(index + 1)} />)}</section>}
         {project.presentation === 'environment' && project.video && <section className="project-modal__video"><p className="section-index">{t("PROJECT FILM")}</p><VideoPlayer src={project.video.src} poster={project.video.poster} label={`${project.title} film`} /></section>}
         {project.breakdownVideo && <section className="project-modal__video project-modal__video--secondary" aria-label={t("Secondary project media")}><p className="section-index">{t("BREAKDOWN")}</p><VideoPlayer src={project.breakdownVideo.src} poster={project.breakdownVideo.poster} label={t("Breakdown")} /></section>}

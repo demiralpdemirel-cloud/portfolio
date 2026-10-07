@@ -1,5 +1,5 @@
 import { useLanguage } from '../../i18n/LanguageContext'
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import MediaPlaceholder from '../media/MediaPlaceholder'
@@ -9,14 +9,19 @@ import LazyVideo from '../media/LazyVideo'
 import ProjectMeta from './ProjectMeta'
 import AtmosphericBackground from '../media/AtmosphericBackground'
 import EnvironmentGallery from './EnvironmentGallery'
+import BreakdownSwitcher from '../media/BreakdownSwitcher'
+import FullscreenImageViewer from './FullscreenImageViewer'
+import SceneStatistics from './SceneStatistics'
 
-export default function ProjectChapter({ project, isActive = false, index = 0, total = 1, staticPresentation = false }) {
+export default function ProjectChapter({ project, isActive = false, index = 0, total = 1, staticPresentation = false, onOpenDetails }) {
   const { t } = useLanguage()
   const root = useRef(null)
   const breakdownRef = useRef(null)
   const beforeAfterRef = useRef(null)
   const galleryRef = useRef(null)
   const stageControls = useRef(null)
+  const [viewer, setViewer] = useState(null)
+  const switcher = project.breakdownPresentation === 'switcher' && project.breakdownStages?.length > 0
   const setMediaRatio = ratio => {
     if (Number.isFinite(ratio) && ratio > 0) root.current?.style.setProperty('--project-media-ratio', String(ratio))
   }
@@ -45,13 +50,13 @@ export default function ProjectChapter({ project, isActive = false, index = 0, t
             observer.disconnect()
             textContext.add(() => {
               gsap.set(mask, { overflow: 'hidden' })
-              gsap.timeline({ onComplete: () => {
+              const reveal = gsap.timeline({ onComplete: () => {
                 gsap.set([...items, title], { clearProps: 'opacity,transform' })
                 gsap.set(mask, { clearProps: 'overflow' })
               } })
                 .to(items, { opacity: 1, y: 0, duration: .65, stagger: .08, ease: 'power3.out' }, .08)
                 .to(title, { opacity: 1, yPercent: 0, duration: .75, ease: 'power3.out' }, .16)
-                .fromTo(meta, { '--meta-rule-scale': 0 }, { '--meta-rule-scale': 1, duration: .6, ease: 'power2.out' }, .35)
+              if (meta) reveal.fromTo(meta, { '--meta-rule-scale': 0 }, { '--meta-rule-scale': 1, duration: .6, ease: 'power2.out' }, .35)
             })
           }, { threshold: 0, rootMargin: '0px 0px -12% 0px' })
           observer.observe(element)
@@ -97,12 +102,13 @@ export default function ProjectChapter({ project, isActive = false, index = 0, t
     return () => context.revert()
   }, [project, staticPresentation])
 
-  return <article ref={root} className={`project project-chapter project--${project.presentation}${isActive ? ' is-active' : ''}${staticPresentation ? ' project-chapter--static' : ''}`} id={staticPresentation ? undefined : project.id} aria-labelledby={`${project.id}-title`}>
+  return <article ref={root} className={`project project-chapter project--${project.presentation}${switcher ? ' project-chapter--switcher' : ''}${project.breakdownVideo ? ' project-chapter--secondary-video' : ''}${isActive ? ' is-active' : ''}${staticPresentation ? ' project-chapter--static' : ''}`} id={staticPresentation ? undefined : project.id} aria-labelledby={`${project.id}-title`}>
     <div className="project-chapter__sticky" data-project-viewport>
       <AtmosphericBackground src={project.cover} className="project__atmosphere" opacity={.16} blur={32} brightness={.36} />
       <div className="project-chapter__layout">
         <div className="project-chapter__media">
-          {project.presentation === 'vfx-breakdown' && project.beforeAfter ? <BeforeAfter ref={beforeAfterRef} data={project.beforeAfter} placeholder={project.placeholder} />
+          {switcher ? <BreakdownSwitcher lazy stages={project.breakdownStages} title={project.title} onOpen={active => setViewer({ index: active, origin: root.current.querySelector('.modal-breakdown__frame').getBoundingClientRect() })} />
+            : project.presentation === 'vfx-breakdown' && project.beforeAfter ? <BeforeAfter ref={beforeAfterRef} data={project.beforeAfter} placeholder={project.placeholder} />
             : project.presentation === '3d-breakdown' ? <ThreeDBreakdown ref={breakdownRef} controlsRef={stageControls} stages={project.breakdownStages || []} placeholder={project.placeholder} />
             : project.presentation === 'environment' ? <EnvironmentGallery ref={galleryRef} media={project.media} title={project.title} />
             : project.video ? <div className="project-chapter__videos"><LazyVideo video={project.video} title={project.title} detail={staticPresentation} muted onAspectRatio={setMediaRatio} placeholder={project.placeholder} />{project.breakdownVideo && <div className="project-chapter__breakdown-video"><p>{t("BREAKDOWN VIDEO")}</p><LazyVideo video={project.breakdownVideo} title={`${project.title} breakdown`} detail={staticPresentation} muted placeholder={project.placeholder} /></div>}</div>
@@ -114,9 +120,12 @@ export default function ProjectChapter({ project, isActive = false, index = 0, t
           <p className="project-chapter__category" data-project-reveal>{t(project.primaryCategory || project.categories?.[0])}</p>
           <p className="project__description" data-project-reveal>{t(project.description)}</p>
           <ProjectMeta project={project} reveal />
+          <SceneStatistics stats={project.sceneStats} className="project-chapter__stats" />
+          {onOpenDetails && <button type="button" className="project-chapter__details" aria-haspopup="dialog" onClick={onOpenDetails}>{t('VIEW PROJECT')} ↗</button>}
           {project.presentation === '3d-breakdown' && <ol ref={stageControls} className="project-chapter__stages" aria-label={t("3D breakdown stage")} data-project-reveal>{project.breakdownStages?.map((stage, stageIndex) => <li key={stage.label} className={stageIndex === 0 ? 'is-active' : ''}>{t(stage.label)}</li>)}</ol>}
         </div>
       </div>
     </div>
+    {viewer && <FullscreenImageViewer media={project.breakdownStages.map(stage => stage.fullResolution || stage.media)} title={project.title} index={viewer.index} origin={viewer.origin} onNavigate={next => setViewer(value => ({ ...value, index: next }))} onClose={() => setViewer(null)} />}
   </article>
 }

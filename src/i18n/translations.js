@@ -2,6 +2,8 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'PERSONAL WORK': 'KİŞİSEL ÇALIŞMALAR', 'SHOWREEL & BREAKDOWNS': 'SHOWREEL & BREAKDOWNLAR',
+    'VIEW PROJECT': 'PROJEYİ İNCELE',
     'PERSONAL PROJECT': 'KİŞİSEL PROJE', 'SCENE STATISTICS': 'SAHNE İSTATİSTİKLERİ',
     'A personal 3D environment study focused on building a believable street-side cafe scene and the relationship between interior and exterior space. The project combines architectural modeling, storefront glazing, furniture, lighting, environmental details and urban context into a single cinematic composition.': 'Sokak cephesine açılan gerçekçi bir kafe ortamı oluşturmayı merkezine alan kişisel bir 3D environment çalışması. Projede mimari modelleme, geniş vitrin yüzeyleri, iç mekân mobilyaları, aydınlatma, çevresel detaylar ve şehir dokusu tek bir sinematik kompozisyon içerisinde bir araya getirildi.',
     'Personal 3D environment and architectural visualization study.': 'Kişisel 3D environment ve mimari görselleştirme çalışması.',

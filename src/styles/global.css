@@ -660,6 +660,33 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 .project-chapter--static { height: auto; }
 .project-chapter--static .project-chapter__sticky { position: relative; height: auto; min-height: 100svh; }
 
+/* Reordered home sections reuse the existing editorial chapter system. */
+.project-chapter, .showreel { overflow-x: clip; }
+.work__header { justify-content: space-between; align-items: baseline; gap: 24px; }
+.work__header h2 { margin: 0; color: var(--paper); font: 500 clamp(1.6rem, 3vw, 3.6rem)/1.1 Archivo, sans-serif; letter-spacing: -.04em; }
+.work__header > span { flex-shrink: 0; }
+.showreel__header h2 { line-height: 1; max-width: 15ch; text-wrap: balance; }
+.education { padding: clamp(64px, 9svh, 130px) var(--page-gutter); }
+.education .experience__education { margin: 0; padding-top: 32px; }
+.education .section-index { margin: 0 0 20px; font-size: 11px; font-weight: 400; }
+.project-chapter--switcher .project-chapter__media { display: flex; align-items: center; }
+.project-chapter--switcher .modal-breakdown { width: 100%; }
+.project-chapter--switcher .modal-breakdown__frame { max-height: calc(76svh - 56px); background: transparent; }
+.project-chapter__stats { margin-top: 24px; }
+.project-chapter__stats dl { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 0; }
+.project-chapter__stats dl > div { padding-top: 8px; }
+.project-chapter__stats dd { font-size: clamp(12px, .9vw, 16px); margin-top: 4px; }
+.project-chapter__details { margin-top: 24px; min-height: 44px; padding: 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--paper); font: 11px/1.5 Space Mono, monospace; cursor: pointer; }
+.project-chapter__details:hover { border-bottom-color: currentColor; }
+@media (min-width: 901px) and (max-height: 900px) {
+  .project-chapter--switcher .project-title { font-size: clamp(2.5rem, 3.3vw, 4rem); }
+  .project-chapter--switcher .project-chapter__counter { margin-bottom: 16px; }
+  .project-chapter--switcher .project-chapter__category { margin-bottom: 14px; }
+  .project-chapter--switcher .project__description { font-size: 16px; margin-bottom: 16px; }
+  .project-chapter--switcher .project-chapter__stats { margin-top: 12px; }
+  .project-chapter--switcher .project-chapter__details { margin-top: 12px; }
+}
+
 @media (min-width: 901px) and (max-height: 800px) {
   .project-chapter__counter { margin-bottom: 22px; }
   .project-chapter__category { margin-bottom: 18px; }
@@ -668,16 +695,28 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 }
 @media (max-width: 900px) {
   .project-chapter { height: auto; min-height: 0; }
+  .project-chapter, #work, #showreel, #education, #capabilities, #contact { scroll-margin-top: 110px; }
   .project-chapter__sticky { position: relative; height: auto; overflow: visible; }
   .project-chapter__layout { width: calc(100% - 36px); display: grid; grid-template-columns: 1fr; gap: 0; padding: 48px 0 56px; }
   .project-chapter__info { display: contents; }
-  .project-chapter__counter { grid-row: 1; margin-bottom: 24px; }
-  .project-chapter .project-title { grid-row: 2; font-size: clamp(2.8rem, 9vw, 4.8rem); margin-bottom: 16px; }
-  .project-chapter__category { grid-row: 3; margin-bottom: 24px; }
-  .project-chapter__media { grid-row: 4; height: auto; aspect-ratio: var(--project-media-ratio, 1.7778); max-height: 58svh; margin-bottom: 28px; }
+  .project-chapter__counter { grid-row: 2; margin-bottom: 24px; }
+  .project-chapter .project-title { grid-row: 3; font-size: clamp(2.8rem, 9vw, 4.8rem); margin-bottom: 16px; }
+  .project-chapter__category { grid-row: 4; margin-bottom: 24px; }
+  .project-chapter__media { grid-row: 1; height: auto; aspect-ratio: var(--project-media-ratio, 1.7778); max-height: 58svh; margin-bottom: 28px; }
   .project-chapter .project__description { grid-row: 5; max-width: 38ch; font-size: 16px; margin-bottom: 24px; }
   .project-chapter .project-meta { grid-row: 6; gap: 20px; }
   .project-chapter__stages { grid-row: 7; }
+  .project-chapter__stats { grid-row: 7; margin: 0 0 20px; }
+  .project-chapter__details { grid-row: 8; justify-self: start; }
+  .project-chapter--switcher .project-chapter__media, .project-chapter--switcher .modal-breakdown { display: contents; }
+  .project-chapter--switcher .modal-breakdown__frame { grid-row: 1; max-height: none; margin-bottom: 28px; }
+  .project-chapter--switcher .modal-breakdown__controls { grid-row: 7; margin: 0 0 24px; }
+  .project-chapter--switcher .project-chapter__stats { grid-row: 8; }
+  .project-chapter--switcher .project-chapter__details { grid-row: 9; }
+  .project-chapter--secondary-video .project-chapter__media, .project-chapter--secondary-video .project-chapter__videos { display: contents; }
+  .project-chapter--secondary-video .project-chapter__videos > .lazy-video { grid-row: 1; height: min(58svh, 620px); margin-bottom: 28px; }
+  .project-chapter__breakdown-video { grid-row: 7; width: 100%; height: auto; margin-top: 48px; }
+  .project-chapter__breakdown-video .lazy-video { height: auto; aspect-ratio: 16 / 9; }
   .project-chapter__media .environment-frame { grid-template-rows: minmax(0, 1fr) 64px; }
 }
 

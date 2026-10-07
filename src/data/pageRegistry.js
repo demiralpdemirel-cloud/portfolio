@@ -1,13 +1,16 @@
 const pages = [
   { id: 'home', type: 'section', label: 'HOME / HERO' },
   { id: 'about', type: 'section', label: 'ABOUT', navLabel: 'ABOUT' },
-  { id: 'project-001', type: 'project', label: 'EVGA RTX 3090', navLabel: 'WORK' },
+  { id: 'showreel', type: 'section', label: 'SHOWREEL & BREAKDOWNS', navLabel: 'SHOWREEL' },
+  { id: 'work', type: 'section', label: 'PERSONAL WORK', navLabel: 'PERSONAL WORK' },
+  { id: 'project-001', type: 'project', label: 'EVGA RTX 3090' },
   { id: 'project-002', type: 'project', label: 'KEYBOARD' },
+  { id: 'cafe-environment', type: 'project', label: 'CAFE ENVIRONMENT' },
   { id: 'project-003', type: 'project', label: 'INTERIOR' },
-  { id: 'showreel', type: 'section', label: 'VFX SHOWREEL', navLabel: 'SHOWREEL' },
-  { id: 'experience', type: 'section', label: 'EXPERIENCE', navLabel: 'EXPERIENCE' },
-  { id: 'capabilities', type: 'section', label: 'CAPABILITIES' },
-  { id: 'archive', type: 'section', label: 'PROJECT ARCHIVE' },
+  { id: 'project-004', type: 'project', label: 'MARIO / ARCADE' },
+  { id: 'project-005', type: 'project', label: 'STAR WARS / IMPACT' },
+  { id: 'education', type: 'section', label: 'EDUCATION', navLabel: 'EDUCATION' },
+  { id: 'capabilities', type: 'section', label: 'CAPABILITIES', navLabel: 'CAPABILITIES' },
   { id: 'contact', type: 'section', label: 'CONTACT', navLabel: 'CONTACT' },
 ]
 

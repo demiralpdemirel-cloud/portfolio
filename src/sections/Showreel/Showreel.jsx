@@ -5,27 +5,30 @@ import BreakdownViewer from '../../components/showreel/BreakdownViewer'
 import VideoPlayer from '../../components/showreel/VideoPlayer'
 import { showreel } from '../../data/showreel'
 import { assetPath } from '../../utils/assetPath'
+import useReveal from '../../hooks/useReveal'
 
 export default function Showreel() {
   const { t } = useLanguage()
   const [selected, setSelected] = useState(null)
   const [preview, setPreview] = useState(null)
   const triggerRef = useRef(null)
+  const root = useRef(null)
+  useReveal(root)
 
   const openBreakdown = (event, index) => {
     triggerRef.current = event.currentTarget
     setSelected(index)
   }
 
-  return <section id="showreel" className="showreel" aria-labelledby="showreel-title">
+  return <section ref={root} id="showreel" className="showreel" aria-labelledby="showreel-title">
     <AtmosphericBackground src={showreel.poster} className="showreel__atmosphere" opacity={.13} blur={38} brightness={.25} />
     <div className="showreel__content">
       <header className="showreel__header" data-reveal-group>
-        <div><p className="section-index" data-reveal>{t("VFX / COMPOSITING / CGI")}</p><h2 id="showreel-title" className="motion-mask" data-reveal-mask><span data-reveal>{t("VFX SHOWREEL")}</span></h2></div>
+        <div><p className="section-index" data-reveal>{t("VFX / COMPOSITING / CGI")}</p><h2 id="showreel-title" className="motion-mask" data-reveal-mask><span data-reveal>{t("SHOWREEL & BREAKDOWNS")}</span></h2></div>
         <p className="showreel__year">2020 — 2026<br />{t("SELECTED WORK")}</p>
       </header>
 
-      <VideoPlayer src={showreel.video} poster={showreel.poster} durationHint={showreel.duration} label={t("Showreel")} />
+      <VideoPlayer lazy src={showreel.video} poster={showreel.poster} durationHint={showreel.duration} label={t("Showreel")} />
 
       <section className="showreel__breakdowns" aria-labelledby="breakdowns-title">
         <header><h3 id="breakdowns-title">{t("SELECTED BREAKDOWNS")}</h3><span>{String(showreel.breakdowns.length).padStart(2, '0')} / {t('REAL PROCESS FILMS')}</span></header>

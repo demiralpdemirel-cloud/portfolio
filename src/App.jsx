@@ -6,9 +6,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Hero from './sections/Hero/Hero'
 import About from './sections/About/About'
 import Work from './sections/Work/Work'
-import Experience from './components/experience/Experience'
+import Showreel from './sections/Showreel/Showreel'
+import Education from './sections/Education/Education'
 import Capabilities from './sections/Capabilities/Capabilities'
-import PortfolioArchive from './sections/Archive/PortfolioArchive'
 import Contact from './sections/Contact/Contact'
 import ScrollToTop from './components/ScrollToTop'
 import ThemeController from './components/ThemeController'
@@ -87,7 +87,7 @@ export default function App() {
     <ThemeController />
     <a className="skip-link" href="#work">{t("Skip to selected work")}</a>
     <div className="global-progress" aria-hidden="true"><span className="global-progress__line" /></div>
-    <main><Hero /><About /><Work /><Experience /><Capabilities /><PortfolioArchive /><Contact /></main>
+    <main><Hero /><About /><Showreel /><Work /><Education /><Capabilities /><Contact /></main>
     <ScrollToTop />
   </div>
 }

@@ -1,4 +1,4 @@
-import { bilingual } from '../i18n/translations'
+import { bilingual } from '../i18n/translations.js'
 export const projectMediaDimensions = {
   'media/projects/cafe-environment/final.webp': [1920, 1080],
   'media/projects/cafe-environment/clay.webp': [1920, 1080],
@@ -68,3 +68,7 @@ export const projects = [
     externalLink: null, placeholder: false,
   },
 ]
+
+// Home presentation order is independent of persistent project IDs and numbering.
+export const personalWorkOrder = ['project-001', 'project-002', 'cafe-environment', 'project-003', 'project-004', 'project-005']
+export const personalProjects = personalWorkOrder.map(id => projects.find(project => project.id === id))
