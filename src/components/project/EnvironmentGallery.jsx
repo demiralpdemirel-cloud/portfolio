@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import { assetPath } from '../../utils/assetPath'
 import FullscreenImageViewer from './FullscreenImageViewer'
 
-const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], title }, ref) {
+const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], fullResolutionMedia = media, title }, ref) {
   const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(0)
   const [visibleIndex, setVisibleIndex] = useState(0)
@@ -110,7 +110,7 @@ const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], 
   )
 
   return (
-    <div className="environment-frame" role="group" aria-label={t(`${title} image gallery`)}>
+    <div className={`environment-frame${media.length > 4 ? ' environment-frame--extended' : ''}`} role="group" aria-label={t(`${title} image gallery`)}>
       <button
         ref={heroRef}
         className="environment-frame__hero"
@@ -121,7 +121,7 @@ const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], 
         {imageLayer(visibleIndex, `environment-frame__image--current${isTransitioning ? ' is-leaving' : ''}`)}
         {incomingIndex !== null && imageLayer(incomingIndex, `environment-frame__image--incoming${isTransitioning ? ' is-entering' : ''}`)}
       </button>
-      <div className="environment-frame__rail" role="group" aria-label={t("Choose an interior view")}>
+      <div className="environment-frame__rail" role="group" aria-label={t("Choose a project view")}>
         {media.map((src, index) => (
           <button
             className={`environment-frame__thumb${activeIndex === index ? ' is-active' : ''}`}
@@ -139,7 +139,7 @@ const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], 
       <span className="environment-frame__sr-status" aria-live="polite" aria-atomic="true">
         {t(`${title} — view ${String(activeIndex + 1).padStart(2, '0')}`)}
       </span>
-      {isViewerOpen && <FullscreenImageViewer media={media} title={title} index={activeIndex} origin={viewerOrigin} onNavigate={selectImage} onClose={closeViewer} />}
+      {isViewerOpen && <FullscreenImageViewer media={fullResolutionMedia} title={title} index={activeIndex} origin={viewerOrigin} onNavigate={selectImage} onClose={closeViewer} />}
     </div>
   )
 })

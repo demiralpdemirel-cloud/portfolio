@@ -647,6 +647,19 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 .project-chapter__media .environment-frame__hero { background: transparent; border: 0; }
 .project-chapter__media .environment-frame__image { background: transparent; }
 .project-chapter__media .environment-frame__rail { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: 1fr; }
+.project-chapter__media .environment-frame--extended .environment-frame__rail { display: flex; overflow-x: auto; }
+.environment-frame--extended .environment-frame__thumb { flex: 0 0 clamp(84px, 8vw, 140px); min-width: 0; }
+.project-modal__supplement { margin-block: clamp(32px, 5vw, 72px); }
+.project-modal__supplement > h3 { margin-bottom: 18px; }
+.project-modal__references { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.project-modal__references a { min-width: 0; }
+.project-modal__references img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
+.project-modal__references span { display: block; margin-top: 12px; font-size: .8rem; }
+.project-modal__facts { max-width: 70ch; }
+.project-modal__facts > div { display: grid; grid-template-columns: minmax(100px, 1fr) minmax(0, 3fr); gap: 24px; margin-bottom: 16px; }
+.project-modal__facts dt { font-size: .75rem; opacity: .65; }
+.project-modal__facts dd { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .project-modal__references { grid-template-columns: 1fr; } .project-modal__facts > div { grid-template-columns: 1fr; gap: 6px; } }
 .project-chapter__media .before-after { position: absolute; inset: 0; }
 .project-chapter__media .breakdown-stage { position: relative; width: 100%; height: 100%; }
 .project-chapter__media .breakdown-stage__media { inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; aspect-ratio: auto; transform: none; background: transparent; border: 0; }

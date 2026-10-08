@@ -110,13 +110,13 @@ export default function ProjectChapter({ project, isActive = false, index = 0, t
           {switcher ? <BreakdownSwitcher lazy stages={project.breakdownStages} title={project.title} onOpen={active => setViewer({ index: active, origin: root.current.querySelector('.modal-breakdown__frame').getBoundingClientRect() })} />
             : project.presentation === 'vfx-breakdown' && project.beforeAfter ? <BeforeAfter ref={beforeAfterRef} data={project.beforeAfter} placeholder={project.placeholder} />
             : project.presentation === '3d-breakdown' ? <ThreeDBreakdown ref={breakdownRef} controlsRef={stageControls} stages={project.breakdownStages || []} placeholder={project.placeholder} />
-            : project.presentation === 'environment' ? <EnvironmentGallery ref={galleryRef} media={project.media} title={project.title} />
+            : project.presentation === 'environment' ? <EnvironmentGallery ref={galleryRef} media={project.media} fullResolutionMedia={project.fullResolutionMedia} title={t(project.title)} />
             : project.video ? <div className="project-chapter__videos"><LazyVideo video={project.video} title={project.title} detail={staticPresentation} muted onAspectRatio={setMediaRatio} placeholder={project.placeholder} />{project.breakdownVideo && <div className="project-chapter__breakdown-video"><p>{t("BREAKDOWN VIDEO")}</p><LazyVideo video={project.breakdownVideo} title={`${project.title} breakdown`} detail={staticPresentation} muted placeholder={project.placeholder} /></div>}</div>
             : <MediaPlaceholder label={project.title} path={project.media?.[0] || project.cover} placeholder={project.placeholder} />}
         </div>
         <div className="project-chapter__info">
           <p className="project-chapter__counter" data-project-reveal>{t('PROJECT')} / {String(index + 1).padStart(3, '0')} <span>/ {String(total).padStart(3, '0')}</span></p>
-          <h2 className="project-title motion-mask" id={`${project.id}-title`}><span>{project.title}</span></h2>
+          <h2 className="project-title motion-mask" id={`${project.id}-title`}><span>{t(project.title)}</span></h2>
           <p className="project-chapter__category" data-project-reveal>{t(project.primaryCategory || project.categories?.[0])}</p>
           <p className="project__description" data-project-reveal>{t(project.description)}</p>
           <ProjectMeta project={project} reveal />

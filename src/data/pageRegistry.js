@@ -9,6 +9,7 @@ const pages = [
   { id: 'project-003', type: 'project', label: 'INTERIOR' },
   { id: 'project-004', type: 'project', label: 'MARIO / ARCADE' },
   { id: 'project-005', type: 'project', label: 'STAR WARS / IMPACT' },
+  { id: 'beylikduzu-kultur-merkezi', type: 'project', label: 'BEYLİKDÜZÜ CULTURAL CENTER' },
   { id: 'education', type: 'section', label: 'EDUCATION', navLabel: 'EDUCATION' },
   { id: 'capabilities', type: 'section', label: 'CAPABILITIES', navLabel: 'CAPABILITIES' },
   { id: 'contact', type: 'section', label: 'CONTACT', navLabel: 'CONTACT' },

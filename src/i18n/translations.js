@@ -2,6 +2,14 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'BEYLİKDÜZÜ CULTURAL CENTER': 'BEYLİKDÜZÜ KÜLTÜR MERKEZİ',
+    'A personal architectural visualization study based on Beylikdüzü Cultural Center. The work explores the exterior architecture, facade language and site layout through multiple views of the cafe, entrance axes and relationships between building volumes.': 'Beylikdüzü Kültür Merkezi temel alınarak hazırlanan kişisel bir mimari görselleştirme çalışması. Çalışma; kafe alanı, giriş aksları ve bina kütleleri arasındaki ilişkileri farklı açılardan ele alarak dış mimariyi, cephe dilini ve çevresel yerleşimi inceliyor.',
+    'FINAL RENDERS': 'FİNAL RENDERLAR', 'OVERVIEW / MASSING': 'GENEL GÖRÜNÜM / KÜTLE', 'TECHNICAL / SITE VIEWS': 'TEKNİK / ÇEVRE GÖRÜNÜMLERİ',
+    'REAL-WORLD REFERENCES': 'GERÇEK YAPI REFERANSLARI', 'STRUCTURE INFO': 'YAPI BİLGİLERİ', 'PROJECT FACTS': 'PROJE BİLGİLERİ',
+    'BUILDING': 'YAPI', 'INSTITUTION': 'KURUM', 'FUNCTION': 'İŞLEV', 'FOCUS': 'ODAK',
+    '3D ARCHITECTURAL VISUALIZATION': '3D MİMARİ GÖRSELLEŞTİRME', 'EXTERIOR / SITE / ARCHITECTURAL ENVIRONMENT': 'DIŞ MEKÂN / ÇEVRE / MİMARİ ORTAM',
+    'Culture and arts center with performance spaces, exhibition halls, libraries and cafes.': 'Gösteri alanları, sergi salonları, kütüphaneleri ve kafeleri bulunan kültür ve sanat merkezi.',
+    'Municipal building reference': 'Belediyenin yapı referansı', 'Municipal cultural center reference': 'Belediyenin kültür merkezi referansı', 'Choose a project view': 'Proje görünümü seç',
     'PERSONAL WORK': 'KİŞİSEL ÇALIŞMALAR', 'SHOWREEL & BREAKDOWNS': 'SHOWREEL & BREAKDOWNLAR',
     'VIEW PROJECT': 'PROJEYİ İNCELE',
     'PERSONAL PROJECT': 'KİŞİSEL PROJE', 'SCENE STATISTICS': 'SAHNE İSTATİSTİKLERİ',

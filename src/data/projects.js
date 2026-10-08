@@ -1,5 +1,6 @@
 import { bilingual } from '../i18n/translations.js'
 export const projectMediaDimensions = {
+  ...Object.fromEntries(Array.from({ length: 9 }, (_, index) => [`media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-${String(index + 1).padStart(2, '0')}.webp`, [1920, 1080]])),
   'media/projects/cafe-environment/final.webp': [1920, 1080],
   'media/projects/cafe-environment/clay.webp': [1920, 1080],
   'media/projects/cafe-environment/mist.webp': [1920, 1080],
@@ -20,6 +21,28 @@ export const projectCategories = [
 ]
 
 export const projects = [
+  {
+    id: 'beylikduzu-kultur-merkezi', number: '007', title: 'BEYLİKDÜZÜ CULTURAL CENTER', year: null, date: null,
+    categories: ['ENVIRONMENT & ARCHVIZ', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'ARCHVIZ', categoryIds: ['archviz', 'cgi', 'personal'],
+    type: 'PERSONAL PROJECT', role: ['3D Artist', 'Environment Artist'], software: [], credits: [],
+    description: bilingual('A personal architectural visualization study based on Beylikdüzü Cultural Center. The work explores the exterior architecture, facade language and site layout through multiple views of the cafe, entrance axes and relationships between building volumes.'),
+    presentation: 'environment', personal: true, featured: false, placeholder: false,
+    cover: 'media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-01.webp',
+    media: Array.from({ length: 9 }, (_, index) => `media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-${String(index + 1).padStart(2, '0')}.webp`),
+    fullResolutionMedia: Array.from({ length: 9 }, (_, index) => `media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-${String(index + 1).padStart(2, '0')}-full.webp`),
+    mediaGroups: [{ label: 'FINAL RENDERS', indices: [1, 2, 3, 4] }, { label: 'OVERVIEW / MASSING', indices: [5] }, { label: 'TECHNICAL / SITE VIEWS', indices: [6, 7, 8] }],
+    references: [
+      { image: 'https://www.beylikduzu.istanbul/Content/facility/gallery/img-2b6614a6.jpg', label: 'Municipal building reference' },
+    ].map(reference => ({ ...reference, source: 'https://www.beylikduzu.istanbul/tesis/ataturk-kultur-sanat-merkezi', sourceLabel: 'Beylikdüzü Belediyesi' })),
+    structureInfo: [
+      { label: 'BUILDING', value: 'Beylikdüzü Atatürk Kültür ve Sanat Merkezi' },
+      { label: 'LOCATION', value: 'Cumhuriyet Mahallesi, Atatürk Bulvarı No:28, Beylikdüzü / İstanbul' },
+      { label: 'INSTITUTION', value: 'Beylikdüzü Belediyesi' },
+      { label: 'FUNCTION', value: bilingual('Culture and arts center with performance spaces, exhibition halls, libraries and cafes.') },
+    ],
+    projectFacts: [{ label: 'TYPE', value: 'PERSONAL PROJECT' }, { label: 'DISCIPLINE', value: '3D ARCHITECTURAL VISUALIZATION' }, { label: 'FOCUS', value: 'EXTERIOR / SITE / ARCHITECTURAL ENVIRONMENT' }],
+    video: null, breakdownVideo: null, sequence: null, beforeAfter: null, breakdownStages: [], externalLink: null,
+  },
   {
     id: 'project-001', number: '001', title: 'EVGA RTX 3090', year: null, date: null,
     categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: '3D / PRODUCT', categoryIds: ['modeling', 'cgi', 'personal'],
@@ -70,5 +93,5 @@ export const projects = [
 ]
 
 // Home presentation order is independent of persistent project IDs and numbering.
-export const personalWorkOrder = ['project-001', 'project-002', 'cafe-environment', 'project-003', 'project-004', 'project-005']
+export const personalWorkOrder = ['project-001', 'project-002', 'cafe-environment', 'project-003', 'project-004', 'project-005', 'beylikduzu-kultur-merkezi']
 export const personalProjects = personalWorkOrder.map(id => projects.find(project => project.id === id))
