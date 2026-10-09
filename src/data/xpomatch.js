@@ -11,6 +11,6 @@ export const xpomatch = {
     tr: 'Fuar endüstrisi için geliştirilen dijital pazaryeri XpoMatch için hazırlanan 3D tanıtım filmi. Projede platformun internet sitesi ve dijital ürün deneyimi; 3D ürün görselleştirme, arayüz odaklı motion graphics ve sinematik tanıtım kurgusu ile bir marka filmine dönüştürüldü.\n\nÇalışmada Blender, After Effects, Premiere Pro ve Photoshop kullanıldı.',
   },
   presentation: 'video', cover: 'media/projects/xpomatch/poster.webp', media: [],
-  video: { src: 'media/projects/xpomatch/xpomatch.mp4', poster: 'media/projects/xpomatch/poster.webp' },
+  video: { src: 'media/projects/xpomatch/xpomatch-v02.mp4', poster: 'media/projects/xpomatch/poster.webp' },
   externalLink: 'https://xpomatch.net', externalLinkLabel: 'VISIT XPOMATCH ↗',
 }
