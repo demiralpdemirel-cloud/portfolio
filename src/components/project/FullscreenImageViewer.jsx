@@ -26,7 +26,7 @@ function getFitBounds(width, height) {
   }
 }
 
-export default function FullscreenImageViewer({ media, title, index, origin, onNavigate, onClose }) {
+export default function FullscreenImageViewer({ media, alts, title, index, origin, onNavigate, onClose }) {
   const { t } = useLanguage()
   const closeButton = useRef(null)
   const dialog = useRef(null)
@@ -162,7 +162,7 @@ export default function FullscreenImageViewer({ media, title, index, origin, onN
           key={src}
           className="fullscreen-viewer__image"
           src={src}
-          alt={t(`${title} — view ${String(index + 1).padStart(2, '0')}`)}
+          alt={t(alts?.[index] || `${title} — view ${String(index + 1).padStart(2, '0')}`)}
           draggable="false"
           style={{ left: bounds.left, top: bounds.top, width: bounds.width, height: bounds.height }}
         />

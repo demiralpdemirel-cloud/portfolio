@@ -10,12 +10,12 @@ import BreakdownSwitcher from '../media/BreakdownSwitcher'
 import { projectMediaDimensions } from '../../data/projects'
 import SceneStatistics from './SceneStatistics'
 
-function DetailImage({ src, title, onOpen }) {
+function DetailImage({ src, title, alt = title, onOpen }) {
   const { t } = useLanguage()
   const [failed, setFailed] = useState(false)
   const [width, height] = projectMediaDimensions[src] || [1600, 900]
   return <button className="project-modal__image" style={{ aspectRatio: `${width} / ${height}` }} type="button" onClick={onOpen} aria-label={t(`Open ${title} fullscreen`)} disabled={failed}>
-    {failed ? <span role="alert">{t('IMAGE UNAVAILABLE')} — {title}</span> : <img src={assetPath(src)} width={width} height={height} alt={title} loading="lazy" decoding="async" onError={() => setFailed(true)} />}
+    {failed ? <span role="alert">{t('IMAGE UNAVAILABLE')} — {title}</span> : <img src={assetPath(src)} width={width} height={height} alt={t(alt)} loading="lazy" decoding="async" onError={() => setFailed(true)} />}
   </button>
 }
 
@@ -61,12 +61,13 @@ export default function ProjectDetail({ project, onClose, onNext, returnFocus })
       <header className="project-modal__header"><p>{t('PROJECT')} / {project.number}</p><div className="modal-header-actions"><LanguageSwitcher inline /><button className="project-modal__close" type="button" onClick={close} autoFocus>{t("CLOSE ×")}</button></div></header>
       <div className="project-modal__content" key={project.id}>
         <div className="project-modal__intro"><div className="project-modal__hero">
+          {project.mediaViews && <p className="section-index">{project.mediaViews[0].label}</p>}
           {project.video && project.breakdownVideo && <p className="section-index">{t("MAIN FILM")}</p>}
-          {switcher ? <BreakdownSwitcher stages={project.breakdownStages} title={project.title} onOpen={setImageIndex} /> : project.video && project.presentation !== 'environment' ? <VideoPlayer src={project.video.src} poster={project.video.poster} label={project.breakdownVideo ? 'Main film' : project.title} /> : images[0] && <DetailImage src={images[0]} title={`${project.title} — view 1`} onOpen={() => setImageIndex(0)} />}
+          {switcher ? <BreakdownSwitcher stages={project.breakdownStages} title={project.title} onOpen={setImageIndex} /> : project.video && project.presentation !== 'environment' ? <VideoPlayer src={project.video.src} poster={project.video.poster} label={project.breakdownVideo ? 'Main film' : project.title} /> : images[0] && <DetailImage src={images[0]} alt={project.mediaViews?.[0]?.alt} title={`${project.title} — view 1`} onOpen={() => setImageIndex(0)} />}
         </div><div className="project-modal__info"><h2 id="project-modal-title">{t(project.title)}</h2><p className="section-index">{t(project.primaryCategory || project.categories?.join(' / '))}</p><p className="project-modal__description">{t(project.description)}</p><ProjectMeta project={project} />{project.credits?.length > 0 && <p>{t('CREDITS')} / {project.credits.join(' / ')}</p>}</div></div>
         {project.type && <p className="section-index">{t(project.type)}</p>}
         <SceneStatistics stats={project.sceneStats} />
-        {!switcher && project.mediaGroups ? project.mediaGroups.map(group => <section key={group.label} className="project-modal__supplement"><h3 className="section-index">{t(group.label)}</h3><div className="project-modal__gallery">{group.indices.map(index => <DetailImage key={images[index]} src={images[index]} title={`${t(project.title)} — ${t(group.label)} ${index + 1}`} onOpen={() => setImageIndex(index)} />)}</div></section>) : !switcher && images.length > 1 && <section className="project-modal__gallery" aria-label={t(`${project.title} gallery`)}>{images.slice(1).map((src, index) => <DetailImage key={src} src={src} title={`${project.title} — view ${index + 2}`} onOpen={() => setImageIndex(index + 1)} />)}</section>}
+        {!switcher && project.mediaGroups ? project.mediaGroups.map(group => <section key={group.label} className="project-modal__supplement"><h3 className="section-index">{t(group.label)}</h3><div className="project-modal__gallery">{group.indices.map(index => <DetailImage key={images[index]} src={images[index]} alt={project.mediaViews?.[index]?.alt} title={`${t(project.title)} — ${t(group.label)} ${index + 1}`} onOpen={() => setImageIndex(index)} />)}</div></section>) : !switcher && images.length > 1 && <section className="project-modal__gallery" aria-label={t(`${project.title} gallery`)}>{images.slice(1).map((src, index) => <DetailImage key={src} src={src} title={`${project.title} — view ${index + 2}`} onOpen={() => setImageIndex(index + 1)} />)}</section>}
         {project.references?.length > 0 && <section className="project-modal__supplement"><h3 className="section-index">{t('REAL-WORLD REFERENCES')}</h3><div className="project-modal__references">{project.references.map(reference => <a key={reference.image} href={reference.source} target="_blank" rel="noopener noreferrer"><img src={reference.image} alt={t(reference.label)} loading="lazy" decoding="async" /><span>{reference.sourceLabel} ↗</span></a>)}</div></section>}
         {[['STRUCTURE INFO', project.structureInfo], ['PROJECT FACTS', project.projectFacts]].map(([heading, facts]) => facts?.length > 0 && <section key={heading} className="project-modal__supplement"><h3 className="section-index">{t(heading)}</h3><dl className="project-modal__facts">{facts.map(fact => <div key={fact.label}><dt>{t(fact.label)}</dt><dd>{t(fact.value)}</dd></div>)}</dl>{heading === 'STRUCTURE INFO' && <a href={project.references[0].source} target="_blank" rel="noopener noreferrer">{project.references[0].sourceLabel} ↗</a>}</section>)}
         {project.presentation === 'environment' && project.video && <section className="project-modal__video"><p className="section-index">{t("PROJECT FILM")}</p><VideoPlayer src={project.video.src} poster={project.video.poster} label={`${project.title} film`} /></section>}
@@ -76,6 +77,6 @@ export default function ProjectDetail({ project, onClose, onNext, returnFocus })
         <button type="button" className="project-modal__next" onClick={onNext} disabled={isClosing}>{t("NEXT PROJECT →")}</button>
       </div>
     </div>
-    {imageIndex !== null && <ImageLightbox images={lightboxImages} alts={switcher ? project.breakdownStages.map(stage => stage.alt) : undefined} initialIndex={imageIndex} title={project.title} onClose={() => setImageIndex(null)} />}
+    {imageIndex !== null && <ImageLightbox images={lightboxImages} alts={switcher ? project.breakdownStages.map(stage => stage.alt) : project.mediaViews?.map(view => view.alt)} initialIndex={imageIndex} title={project.title} onClose={() => setImageIndex(null)} />}
   </dialog>, document.body)
 }

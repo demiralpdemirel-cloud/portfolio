@@ -1,5 +1,6 @@
 import { bilingual } from '../i18n/translations.js'
 export const projectMediaDimensions = {
+  ...Object.fromEntries(Array.from({ length: 5 }, (_, index) => [`media/projects/sofa-modeling/sofa-${index + 1}.webp`, [2560, 1440]])),
   ...Object.fromEntries(Array.from({ length: 9 }, (_, index) => [`media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-${String(index + 1).padStart(2, '0')}.webp`, [1920, 1080]])),
   'media/projects/cafe-environment/final.webp': [1920, 1080],
   'media/projects/cafe-environment/clay.webp': [1920, 1080],
@@ -21,6 +22,26 @@ export const projectCategories = [
 ]
 
 export const projects = [
+  {
+    id: 'sofa-modeling', number: '008', title: 'SOFA MODELING', year: null, date: null,
+    categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'MODELING / PRODUCT', categoryIds: ['modeling', 'cgi', 'personal'],
+    type: 'PERSONAL PROJECT', role: [], software: [], credits: [],
+    description: bilingual('A personal furniture modeling study focused on the form, proportions and surface details of a sectional sofa. The project is presented through multiple camera angles and close-up views to show the overall silhouette, construction and modeling details.'),
+    shortDescription: bilingual('Personal sectional sofa modeling study.'),
+    presentation: 'environment', personal: true, featured: false, placeholder: false,
+    cover: 'media/projects/sofa-modeling/sofa-1.webp',
+    media: Array.from({ length: 5 }, (_, index) => `media/projects/sofa-modeling/sofa-${index + 1}.webp`),
+    fullResolutionMedia: Array.from({ length: 5 }, (_, index) => `media/projects/sofa-modeling/sofa-${index + 1}-full.webp`),
+    mediaViews: [
+      { label: 'FRONT PERSPECTIVE', alt: 'Black sectional sofa shown from a low front perspective on a wooden floor.' },
+      { label: 'TOP PERSPECTIVE', alt: 'Black sectional sofa viewed from a high overhead angle on a wooden floor.' },
+      { label: 'DETAIL CLOSE-UP', alt: 'Close-up of the black sofa cushions showing surface texture, seams and rounded forms.' },
+      { label: 'THREE-QUARTER VIEW', alt: 'Black sectional sofa shown from an elevated three-quarter perspective.' },
+      { label: 'WIREFRAME', alt: 'Gray sectional sofa with visible mesh lines showing the model topology.' },
+    ],
+    mediaGroups: [{ label: 'TOP PERSPECTIVE', indices: [1] }, { label: 'DETAIL CLOSE-UP', indices: [2] }, { label: 'THREE-QUARTER VIEW', indices: [3] }, { label: 'WIREFRAME', indices: [4] }],
+    video: null, breakdownVideo: null, sequence: null, beforeAfter: null, breakdownStages: [], externalLink: null,
+  },
   {
     id: 'beylikduzu-kultur-merkezi', number: '007', title: 'BEYLİKDÜZÜ CULTURAL CENTER', year: null, date: null,
     categories: ['ENVIRONMENT & ARCHVIZ', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'ARCHVIZ', categoryIds: ['archviz', 'cgi', 'personal'],
@@ -93,5 +114,5 @@ export const projects = [
 ]
 
 // Home presentation order is independent of persistent project IDs and numbering.
-export const personalWorkOrder = ['project-001', 'project-002', 'cafe-environment', 'project-003', 'project-004', 'project-005', 'beylikduzu-kultur-merkezi']
+export const personalWorkOrder = ['project-001', 'project-002', 'sofa-modeling', 'cafe-environment', 'project-003', 'project-004', 'project-005', 'beylikduzu-kultur-merkezi']
 export const personalProjects = personalWorkOrder.map(id => projects.find(project => project.id === id))

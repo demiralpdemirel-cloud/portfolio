@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import { assetPath } from '../../utils/assetPath'
 import FullscreenImageViewer from './FullscreenImageViewer'
 
-const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], fullResolutionMedia = media, title }, ref) {
+const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], fullResolutionMedia = media, views, title }, ref) {
   const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(0)
   const [visibleIndex, setVisibleIndex] = useState(0)
@@ -103,14 +103,15 @@ const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], 
     <img
       className={`environment-frame__image ${className}`}
       src={assetPath(media[index])}
-      alt=""
+      alt={t(views?.[index]?.alt || '')}
+      loading="lazy"
       decoding="async"
       draggable="false"
     />
   )
 
   return (
-    <div className={`environment-frame${media.length > 4 ? ' environment-frame--extended' : ''}`} role="group" aria-label={t(`${title} image gallery`)}>
+    <div className={`environment-frame${views ? ' environment-frame--editorial' : media.length > 4 ? ' environment-frame--extended' : ''}`} role="group" aria-label={t(`${title} image gallery`)}>
       <button
         ref={heroRef}
         className="environment-frame__hero"
@@ -127,19 +128,18 @@ const EnvironmentGallery = forwardRef(function EnvironmentGallery({ media = [], 
             className={`environment-frame__thumb${activeIndex === index ? ' is-active' : ''}`}
             key={src}
             type="button"
-            aria-label={t(`Show ${title} view ${String(index + 1).padStart(2, '0')}`)}
+            aria-label={views ? `${String(index + 1).padStart(2, '0')} ${views[index].label}` : t(`Show ${title} view ${String(index + 1).padStart(2, '0')}`)}
             aria-pressed={activeIndex === index}
             onClick={() => selectImage(index)}
           >
-            <img src={assetPath(src)} alt="" loading="lazy" decoding="async" draggable="false" />
-            <span>{t('VIEW')} / {String(index + 1).padStart(2, '0')}</span>
+            {views ? <span>{String(index + 1).padStart(2, '0')} / {views[index].label}</span> : <><img src={assetPath(src)} alt="" loading="lazy" decoding="async" draggable="false" /><span>{t('VIEW')} / {String(index + 1).padStart(2, '0')}</span></>}
           </button>
         ))}
       </div>
       <span className="environment-frame__sr-status" aria-live="polite" aria-atomic="true">
         {t(`${title} — view ${String(activeIndex + 1).padStart(2, '0')}`)}
       </span>
-      {isViewerOpen && <FullscreenImageViewer media={fullResolutionMedia} title={title} index={activeIndex} origin={viewerOrigin} onNavigate={selectImage} onClose={closeViewer} />}
+      {isViewerOpen && <FullscreenImageViewer media={fullResolutionMedia} alts={views?.map(view => view.alt)} title={title} index={activeIndex} origin={viewerOrigin} onNavigate={selectImage} onClose={closeViewer} />}
     </div>
   )
 })

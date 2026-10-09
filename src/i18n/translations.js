@@ -2,6 +2,14 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'SOFA MODELING': 'KOLTUK MODELLEME',
+    'A personal furniture modeling study focused on the form, proportions and surface details of a sectional sofa. The project is presented through multiple camera angles and close-up views to show the overall silhouette, construction and modeling details.': 'Modüler bir koltuğun form, oran ve yüzey detaylarına odaklanan kişisel bir mobilya modelleme çalışması. Proje; genel silueti, yapısal formu ve modelleme detaylarını göstermek için farklı kamera açıları ve yakın plan görseller üzerinden sunuluyor.',
+    'Personal sectional sofa modeling study.': 'Kişisel modüler koltuk modelleme çalışması.',
+    'Black sectional sofa shown from a low front perspective on a wooden floor.': 'Ahşap zemin üzerindeki siyah modüler koltuğun alçak ön perspektif görünümü.',
+    'Black sectional sofa viewed from a high overhead angle on a wooden floor.': 'Ahşap zemin üzerindeki siyah modüler koltuğun yüksek üst açıdan görünümü.',
+    'Close-up of the black sofa cushions showing surface texture, seams and rounded forms.': 'Siyah koltuk minderlerinin yüzey dokusunu, dikişlerini ve yuvarlatılmış formlarını gösteren yakın plan.',
+    'Black sectional sofa shown from an elevated three-quarter perspective.': 'Siyah modüler koltuğun yüksek üç çeyrek perspektiften görünümü.',
+    'Gray sectional sofa with visible mesh lines showing the model topology.': 'Model topolojisini görünür mesh çizgileriyle gösteren gri modüler koltuk.',
     'BEYLİKDÜZÜ CULTURAL CENTER': 'BEYLİKDÜZÜ KÜLTÜR MERKEZİ',
     'A personal architectural visualization study based on Beylikdüzü Cultural Center. The work explores the exterior architecture, facade language and site layout through multiple views of the cafe, entrance axes and relationships between building volumes.': 'Beylikdüzü Kültür Merkezi temel alınarak hazırlanan kişisel bir mimari görselleştirme çalışması. Çalışma; kafe alanı, giriş aksları ve bina kütleleri arasındaki ilişkileri farklı açılardan ele alarak dış mimariyi, cephe dilini ve çevresel yerleşimi inceliyor.',
     'FINAL RENDERS': 'FİNAL RENDERLAR', 'OVERVIEW / MASSING': 'GENEL GÖRÜNÜM / KÜTLE', 'TECHNICAL / SITE VIEWS': 'TEKNİK / ÇEVRE GÖRÜNÜMLERİ',

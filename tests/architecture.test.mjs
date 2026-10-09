@@ -6,8 +6,8 @@ import { pageRegistry } from '../src/data/pageRegistry.js'
 import { education } from '../src/data/education.js'
 
 test('personal chapters have exact home order, unique IDs, and retain original records', () => {
-  assert.deepEqual(personalProjects.map(project => project.title), ['EVGA RTX 3090', 'KEYBOARD', 'CAFE ENVIRONMENT', 'INTERIOR', 'MARIO / ARCADE', 'STAR WARS / IMPACT', 'BEYLİKDÜZÜ CULTURAL CENTER'])
-  assert.equal(new Set(personalWorkOrder).size, 7)
+  assert.deepEqual(personalProjects.map(project => project.title), ['EVGA RTX 3090', 'KEYBOARD', 'SOFA MODELING', 'CAFE ENVIRONMENT', 'INTERIOR', 'MARIO / ARCADE', 'STAR WARS / IMPACT', 'BEYLİKDÜZÜ CULTURAL CENTER'])
+  assert.equal(new Set(personalWorkOrder).size, 8)
   assert.ok(personalProjects.every(project => project.personal && projects.includes(project)))
   assert.deepEqual(pageRegistry.filter(page => page.type === 'project').map(page => page.id), personalWorkOrder)
 })
@@ -18,7 +18,7 @@ test('home sections and navigation follow the new architecture without archive/e
   assert.deepEqual(pageRegistry.filter(page => page.navLabel).map(page => page.id), ['about', 'showreel', 'work', 'education', 'capabilities', 'contact'])
 })
 test('Cafe stages/stats, Interior gallery/video and Mario secondary film survive', () => {
-  const cafe = personalProjects[2]
+  const cafe = personalProjects.find(project => project.id === 'cafe-environment')
   assert.deepEqual(cafe.breakdownStages.map(stage => stage.label), ['FINAL', 'SOLID', 'MIST'])
   assert.deepEqual(Object.values(cafe.sceneStats), [981, 1539667, 3049726, 1505809, 2921827])
   assert.equal(projects.find(project => project.id === 'project-003').media.length, 4)

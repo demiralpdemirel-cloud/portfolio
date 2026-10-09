@@ -5,6 +5,7 @@ const pages = [
   { id: 'work', type: 'section', label: 'PERSONAL WORK', navLabel: 'PERSONAL WORK' },
   { id: 'project-001', type: 'project', label: 'EVGA RTX 3090' },
   { id: 'project-002', type: 'project', label: 'KEYBOARD' },
+  { id: 'sofa-modeling', type: 'project', label: 'SOFA MODELING' },
   { id: 'cafe-environment', type: 'project', label: 'CAFE ENVIRONMENT' },
   { id: 'project-003', type: 'project', label: 'INTERIOR' },
   { id: 'project-004', type: 'project', label: 'MARIO / ARCADE' },
