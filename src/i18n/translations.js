@@ -2,6 +2,10 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'BRAND & PRODUCT FILMS': 'MARKA & ÜRÜN FİLMLERİ', 'BRAND FILMS': 'MARKA FİLMLERİ',
+    'PERSONAL PRODUCT FILM': 'KİŞİSEL ÜRÜN FİLMİ', 'COMMERCIAL FILM': 'REKLAM FİLMİ',
+    '3D SAAS LAUNCH FILM': '3D SAAS TANITIM FİLMİ', 'CLIENT / COMMERCIAL WORK': 'MÜŞTERİ / REKLAM ÇALIŞMASI',
+    'VISIT XPOMATCH ↗': "XPOMATCH'İ ZİYARET ET ↗", 'SOFTWARE': 'YAZILIM', 'WEBSITE': 'WEB SİTESİ',
     'SOFA MODELING': 'KOLTUK MODELLEME',
     'A personal furniture modeling study focused on the form, proportions and surface details of a sectional sofa. The project is presented through multiple camera angles and close-up views to show the overall silhouette, construction and modeling details.': 'Modüler bir koltuğun form, oran ve yüzey detaylarına odaklanan kişisel bir mobilya modelleme çalışması. Proje; genel silueti, yapısal formu ve modelleme detaylarını göstermek için farklı kamera açıları ve yakın plan görseller üzerinden sunuluyor.',
     'Personal sectional sofa modeling study.': 'Kişisel modüler koltuk modelleme çalışması.',

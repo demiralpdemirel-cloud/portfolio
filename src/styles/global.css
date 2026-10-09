@@ -367,7 +367,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 .project-modal__intro { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: center; gap: clamp(28px, 5vw, 80px); }
 .project-modal__hero { min-width: 0; }
 .project-modal__info h2 { font-size: clamp(2.2rem, 4.4vw, 5rem); font-weight: 500; line-height: 1; letter-spacing: -.055em; margin: 0 0 24px; overflow-wrap: anywhere; }
-.project-modal__description { max-width: 42ch; font-size: clamp(1.05rem, 1.25vw, 1.35rem); line-height: 1.6; }
+.project-modal__description { max-width: 42ch; font-size: clamp(1.05rem, 1.25vw, 1.35rem); line-height: 1.6; white-space: pre-line; }
+.project-meta a { text-underline-offset: .3em; }
+#xpomatch .project__description { white-space: pre-line; }
 .project-modal .project-meta { position: relative; inset: auto; margin-top: 28px; opacity: 1; visibility: visible; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 20px; border-top: 1px solid var(--line); }
 .project-modal .project-meta div { min-width: 0; max-width: none; }
 .project-modal .project-meta dt { color: #999992; font: 12px/1.5 Space Mono, monospace; }
@@ -718,7 +720,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--paper); outline
 }
 @media (max-width: 900px) {
   .project-chapter { height: auto; min-height: 0; }
-  .project-chapter, #work, #showreel, #education, #capabilities, #contact { scroll-margin-top: 110px; }
+  .project-chapter, #work, #brand-films, #showreel, #education, #capabilities, #contact { scroll-margin-top: 110px; }
   .project-chapter__sticky { position: relative; height: auto; overflow: visible; }
   .project-chapter__layout { width: calc(100% - 36px); display: grid; grid-template-columns: 1fr; gap: 0; padding: 48px 0 56px; }
   .project-chapter__info { display: contents; }

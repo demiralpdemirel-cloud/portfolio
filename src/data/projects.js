@@ -1,4 +1,5 @@
 import { bilingual } from '../i18n/translations.js'
+import { xpomatch } from './xpomatch.js'
 export const projectMediaDimensions = {
   ...Object.fromEntries(Array.from({ length: 5 }, (_, index) => [`media/projects/sofa-modeling/sofa-${index + 1}.webp`, [2560, 1440]])),
   ...Object.fromEntries(Array.from({ length: 9 }, (_, index) => [`media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-${String(index + 1).padStart(2, '0')}.webp`, [1920, 1080]])),
@@ -22,6 +23,7 @@ export const projectCategories = [
 ]
 
 export const projects = [
+  xpomatch,
   {
     id: 'sofa-modeling', number: '008', title: 'SOFA MODELING', year: null, date: null,
     categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'MODELING / PRODUCT', categoryIds: ['modeling', 'cgi', 'personal'],
@@ -66,13 +68,13 @@ export const projects = [
   },
   {
     id: 'project-001', number: '001', title: 'EVGA RTX 3090', year: null, date: null,
-    categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: '3D / PRODUCT', categoryIds: ['modeling', 'cgi', 'personal'],
+    categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'PERSONAL PRODUCT FILM', type: 'PERSONAL PROJECT', categoryIds: ['modeling', 'cgi', 'personal'],
     role: ['3D Artist'], software: ['Blender'], description: bilingual('The second project in my personal hardware series. I recreated the EVGA RTX 3090 from my own PC setup in 3D and developed a cinematic product animation around the model.'), credits: [], presentation: 'video', featured: true, personal: true,
     cover: 'media/projects/evga-rtx-3090/poster.webp', media: [], video: { src: 'https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/evga-rtx-3090.mp4', poster: 'media/projects/evga-rtx-3090/poster.webp' }, breakdownVideo: null, sequence: null, beforeAfter: null, breakdownStages: [], externalLink: null, placeholder: false,
   },
   {
     id: 'project-002', number: '002', title: 'KEYBOARD', year: null, date: null,
-    categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: '3D / PRODUCT', categoryIds: ['modeling', 'cgi', 'personal'],
+    categories: ['MODELING / PRODUCT', '3D / CGI', 'PERSONAL PROJECTS'], primaryCategory: 'PERSONAL PRODUCT FILM', type: 'PERSONAL PROJECT', categoryIds: ['modeling', 'cgi', 'personal'],
     role: ['3D Artist'], software: ['Blender'], description: bilingual('The first project in my personal product animation series. I recreated my own AJAZZ AK992 keyboard in 3D and produced a clean product animation based on the real hardware I use.'), credits: [], presentation: 'video', featured: true, personal: true,
     cover: 'media/projects/keyboard-study/poster.webp', media: [], video: { src: 'https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/keyboard.mp4', poster: 'media/projects/keyboard-study/poster.webp' }, breakdownVideo: null, sequence: null, beforeAfter: null, breakdownStages: [], externalLink: null, placeholder: false,
   },
@@ -114,5 +116,5 @@ export const projects = [
 ]
 
 // Home presentation order is independent of persistent project IDs and numbering.
-export const personalWorkOrder = ['project-001', 'project-002', 'sofa-modeling', 'cafe-environment', 'project-003', 'project-004', 'project-005', 'beylikduzu-kultur-merkezi']
+export const personalWorkOrder = ['sofa-modeling', 'cafe-environment', 'project-003', 'project-004', 'project-005', 'beylikduzu-kultur-merkezi']
 export const personalProjects = personalWorkOrder.map(id => projects.find(project => project.id === id))
