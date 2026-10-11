@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../../i18n/LanguageContext'
 import { assetPath } from '../../utils/assetPath'
 import { webVideoSource } from '../../data/webMedia'
-import { claimPlayback, observeVideo } from '../../utils/videoPlayback'
+import { claimPlayback, observeVideo, observeVideoMetadata, prepareVideoSource } from '../../utils/videoPlayback'
 import { clamp } from '../../utils/playerMath'
 import useAmbientLight from '../../hooks/useAmbientLight'
 import PlayerControls, { PlayerIcon } from '../media/PlayerControls'
@@ -30,13 +30,16 @@ export default function VideoPlayer({ src, poster, label, durationHint = 0, auto
     setTime(0); setBuffered(0); setDuration(durationHint); setFailed(false); setEnded(false); updateSpeed(1)
     video.volume = sessionVolume
     video.playbackRate = 1
-    if (lazy) { video.removeAttribute('src'); video.load() }
+    video.preload = 'none'
+    video.removeAttribute('src'); video.load()
+    const source = assetPath(webVideoSource(src))
+    const unregisterMetadata = observeVideoMetadata(video, source)
     const activate = () => {
-      if (!video.getAttribute('src')) video.src = assetPath(webVideoSource(src))
+      prepareVideoSource(video, source)
       video.play()?.catch(() => { if (!disposed.current) { setPlaying(false); setLoading(false) } })
     }
     const unregister = observeVideo(video, { autoPlay, priority: lazy ? 0 : 2, activate })
-    return () => { disposed.current = true; unregister(); clearTimeout(hideTimer.current) }
+    return () => { disposed.current = true; unregisterMetadata(); unregister(); clearTimeout(hideTimer.current); video.removeAttribute('src'); video.load() }
   }, [src, autoPlay, lazy, durationHint, videoRef])
   useEffect(() => {
     const change = () => {
@@ -50,7 +53,7 @@ export default function VideoPlayer({ src, poster, label, durationHint = 0, auto
   const togglePlay = async () => {
     const video = videoRef.current
     if (video.paused) {
-      if (!video.getAttribute('src')) video.src = assetPath(webVideoSource(src))
+      prepareVideoSource(video, assetPath(webVideoSource(src)))
       claimPlayback(video, true); setLoading(true)
       try { await video.play() } catch { if (!disposed.current) setLoading(false) }
     } else video.pause()
@@ -101,7 +104,7 @@ export default function VideoPlayer({ src, poster, label, durationHint = 0, auto
       </span>)}
     </div>
     <div className="player-viewport">
-      <video ref={videoRef} className="showreel-player__video" src={lazy ? undefined : assetPath(webVideoSource(src))} poster={assetPath(poster)} preload="none" playsInline loop={loop} muted={muted} aria-label={t(label)}
+      <video ref={videoRef} className="showreel-player__video" poster={assetPath(poster)} preload="none" playsInline loop={loop} muted={muted} aria-label={t(label)}
         onClick={() => { shell.current?.focus({ preventScroll: true }); togglePlay() }}
         onLoadedMetadata={event => { const video = event.currentTarget; setDuration(Number.isFinite(video.duration) ? video.duration : durationHint); if (video.videoHeight) onAspectRatio?.(video.videoWidth / video.videoHeight) }}
         onTimeUpdate={event => setTime(event.currentTarget.currentTime)}

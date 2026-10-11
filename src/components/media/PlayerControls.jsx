@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useLanguage } from '../../i18n/LanguageContext'
-import { clamp, playbackRates, timeLabel } from '../../utils/playerMath'
+import { clamp, playbackRates, timeLabel, durationLabel } from '../../utils/playerMath'
 
 export function PlayerIcon({ name }) {
   const paths = {
@@ -23,12 +23,12 @@ export default function PlayerControls({ playing, ended, time, duration, buffere
       setHoverTime(clamp((event.clientX - rect.left) / rect.width, 0, 1) * duration)
     }} onPointerLeave={() => setHoverTime(null)}>
       <div className="player-timeline__track"><i /><b /></div>
-      <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(time, duration || 0)} disabled={!duration} onChange={event => seek(Number(event.target.value))} aria-label={t('Seek video')} aria-valuetext={`${timeLabel(time)} / ${timeLabel(duration)}`} />
+      <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(time, duration || 0)} disabled={!duration} onChange={event => seek(Number(event.target.value))} aria-label={t('Seek video')} aria-valuetext={`${timeLabel(time)} / ${durationLabel(duration)}`} />
       {hoverTime !== null && duration > 0 && <span className="player-timeline__tooltip" style={{ left: `${clamp(hoverTime / duration * 100, 5, 95)}%` }}>{timeLabel(hoverTime)}</span>}
     </div>
     <div className="player-toolbar">
       <button type="button" onClick={togglePlay} aria-label={t(ended ? 'Replay video' : playing ? 'Pause video' : 'Play video')} title={t('Play / pause (Space)')}><PlayerIcon name={ended ? 'replay' : playing ? 'pause' : 'play'} /></button>
-      <span className="showreel-player__time">{timeLabel(time)} / {timeLabel(duration)}</span>
+      <span className="showreel-player__time">{timeLabel(time)} / {durationLabel(duration)}</span>
       <div className="player-volume"><button type="button" onClick={toggleMute} aria-label={t(muted || !volume ? 'Unmute video' : 'Mute video')} title={t('Mute / unmute (M)')}><PlayerIcon name={muted || !volume ? 'muted' : 'volume'} /></button><input type="range" min="0" max="1" step=".01" value={muted ? 0 : volume} onChange={event => setVolume(Number(event.target.value))} aria-label={t('Volume')} aria-valuetext={`${Math.round((muted ? 0 : volume) * 100)}%`} /></div>
       <div className="player-speed" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenu(false) }}>
         <button ref={speedButton} type="button" onClick={() => setMenu(value => !value)} aria-label={t('Playback speed')} aria-expanded={menu} title={t('Playback speed')}>{speed}×</button>

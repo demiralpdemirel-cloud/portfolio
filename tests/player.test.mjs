@@ -1,9 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { playbackRates, clamp, timeLabel, edgeColors } from '../src/utils/playerMath.js'
+import { playbackRates, clamp, timeLabel, durationLabel, edgeColors } from '../src/utils/playerMath.js'
 test('time, seek boundaries and speed choices', () => {
   assert.equal(timeLabel(68.9), '1:08')
   assert.equal(timeLabel(Infinity), '0:00')
+  for (const unknown of [0, NaN, Infinity, -1]) assert.equal(durationLabel(unknown), '--:--')
+  assert.equal(durationLabel(80), '1:20')
   assert.equal(clamp(-5, 0, 30), 0)
   assert.equal(clamp(40, 0, 30), 30)
   assert.deepEqual(playbackRates, [.5, .75, 1, 1.25, 1.5, 1.75, 2])

@@ -1,4 +1,5 @@
 export const playbackRates = [.5, .75, 1, 1.25, 1.5, 1.75, 2]
+export const durationLabel = duration => Number.isFinite(duration) && duration > 0 ? timeLabel(duration) : '--:--'
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 export function timeLabel(time) {
   const seconds = Math.max(0, Math.floor(Number.isFinite(time) ? time : 0))

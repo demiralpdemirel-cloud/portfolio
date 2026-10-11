@@ -4,6 +4,38 @@ let observer
 let owner = null
 let playbackScope = null
 let fullscreenExitedAt = 0
+const metadataVideos = new Map()
+let metadataObserver
+
+// Prepare nearby media without changing real-viewport playback arbitration.
+export function prepareVideoSource(video, source) {
+  if (video.getAttribute('src') === source) return
+  video.preload = 'metadata'
+  video.setAttribute('src', source)
+  video.load()
+}
+
+export function observeVideoMetadata(video, source) {
+  const prepare = () => prepareVideoSource(video, source)
+  if (!('IntersectionObserver' in window)) { prepare(); return () => {} }
+  if (!metadataObserver) metadataObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue
+      const prepare = metadataVideos.get(entry.target)
+      if (!prepare) continue
+      prepare()
+      metadataObserver.unobserve(entry.target)
+      metadataVideos.delete(entry.target)
+    }
+  }, { rootMargin: '1000px 0px', threshold: 0 })
+  metadataVideos.set(video, prepare)
+  metadataObserver.observe(video)
+  return () => {
+    metadataObserver?.unobserve(video)
+    metadataVideos.delete(video)
+    if (!metadataVideos.size) { metadataObserver?.disconnect(); metadataObserver = null }
+  }
+}
 const onFullscreenChange = () => { if (!document.fullscreenElement) fullscreenExitedAt = Date.now() }
 export const fullscreenJustExited = () => Boolean(document.fullscreenElement) || Date.now() - fullscreenExitedAt < 350
 
