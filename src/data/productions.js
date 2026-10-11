@@ -1,5 +1,5 @@
-import { bilingual } from '../i18n/translations'
-import { CURRENT_COMPANY } from './professionalProfile'
+import { bilingual } from '../i18n/translations.js'
+import { CURRENT_COMPANY } from './professionalProfile.js'
 
 // Production credits are kept distinct from VFX-studio and personal-role credits.
 // Unknown or unverified fields remain null and are intentionally not rendered.

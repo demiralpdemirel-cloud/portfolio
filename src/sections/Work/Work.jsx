@@ -1,27 +1,42 @@
+import { useLayoutEffect, useRef, useState } from 'react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '../../i18n/LanguageContext'
-import { useRef, useState } from 'react'
-import { personalProjects } from '../../data/projects'
-import { brandFilms } from '../../data/brandFilms'
-import useReveal from '../../hooks/useReveal'
-import ProjectChapter from '../../components/project/ProjectChapter'
-import AtmosphericBackground from '../../components/media/AtmosphericBackground'
+import { catalog, catalogFilters, filterCatalog } from '../../data/catalog'
+import { assetPath } from '../../utils/assetPath'
 import ProjectDetail from '../../components/project/ProjectDetail'
-
-function WorkCollection({ id, title, projects }) {
-  const { t } = useLanguage()
-  const root = useRef(null)
-  useReveal(root)
-  const [selected, setSelected] = useState(null)
-  const returnFocus = useRef(null)
-  const openDetails = (event, index) => { returnFocus.current = event.currentTarget; setSelected(index) }
-  return <section ref={root} className="work" id={id} aria-labelledby={`${id}-title`}>
-    <AtmosphericBackground src="media/backgrounds/selected-work.webp" className="work__atmosphere" opacity={.12} blur={30} brightness={.32} />
-    <header className="work__header" data-reveal-group><h2 id={`${id}-title`} data-reveal>{t(title)}</h2><span data-reveal>{String(projects.length).padStart(2,'0')} {t('PROJECTS')}</span></header>
-    {projects.map((project, index)=><ProjectChapter key={project.id} project={project} index={index} total={projects.length} onOpenDetails={event => openDetails(event, index)}/>)}
-    {selected !== null && <ProjectDetail key={projects[selected].id} project={projects[selected]} onClose={() => setSelected(null)} onNext={() => setSelected((selected + 1) % projects.length)} returnFocus={returnFocus} />}
-  </section>
-}
+import ProductionDetailModal from '../../components/experience/ProductionDetailModal'
+import './catalog.css'
 
 export default function Work() {
-  return <><WorkCollection id="brand-films" title="BRAND & PRODUCT FILMS" projects={brandFilms} /><WorkCollection id="work" title="PERSONAL WORK" projects={personalProjects} /></>
+  const { t } = useLanguage()
+  const [category, setCategory] = useState('all')
+  const [selected, setSelected] = useState(null)
+  const returnFocus = useRef(null)
+  const entries = filterCatalog(category)
+  const selectedEntry = catalog.find(entry => entry.id === selected)
+  useLayoutEffect(() => { ScrollTrigger.refresh() }, [category])
+  const open = (event, entry) => { returnFocus.current = event.currentTarget; setSelected(entry.id) }
+  const nextProject = () => {
+    const projects = entries.filter(entry => entry.kind === 'project')
+    setSelected(projects[(projects.findIndex(entry => entry.id === selected) + 1) % projects.length].id)
+  }
+  return <section className="work catalog" id="work" aria-labelledby="catalog-title">
+    <header className="catalog__header">
+      <div><p className="section-index">{t('WORKS')}</p><h2 id="catalog-title">{t('SELECTED WORKS')}</h2></div>
+      <span className="catalog__count" aria-live="polite">{String(entries.length).padStart(2,'0')} / {String(catalog.length).padStart(2,'0')} {t('WORKS')}</span>
+    </header>
+    <div className="catalog__filters" role="group" aria-label={t('Filter works')}>
+      {catalogFilters.map(filter => <button key={filter.id} type="button" aria-pressed={category === filter.id} onClick={() => setCategory(filter.id)}>{t(filter.label)}</button>)}
+    </div>
+    <div className="catalog__grid">
+      {entries.map(entry => <button key={entry.id} id={entry.id} type="button" className="catalog-card" aria-haspopup="dialog" aria-label={t('VIEW PROJECT')+' — '+t(entry.title)} onClick={event => open(event,entry)}>
+        <div className="catalog-card__poster">
+          {entry.thumbnail ? <img src={assetPath(entry.thumbnail)} srcSet={assetPath(entry.thumbnail)+' 480w, '+assetPath(entry.thumbnailLarge)+' 960w'} sizes="(min-width:1800px) 19vw, (min-width:1300px) 24vw, (min-width:950px) 32vw, (min-width:600px) 48vw, 96vw" width="480" height="640" style={{objectFit:entry.fit,objectPosition:entry.objectPosition}} alt={t(entry.title)+' '+t('POSTER')} loading="lazy" decoding="async"/> : <span className="catalog-card__type-art">{t(entry.title)}</span>}
+        </div>
+        <div className="catalog-card__meta"><p className="catalog-card__index">{entry.number}{entry.year && <> / {t(entry.year)}</>}</p><h3>{t(entry.title)}</h3><p className="catalog-card__discipline">{t(entry.discipline)}</p><span className="catalog-card__arrow" aria-hidden="true">↗</span></div>
+      </button>)}
+    </div>
+    {selectedEntry?.kind === 'project' && <ProjectDetail project={selectedEntry.detail} onClose={() => setSelected(null)} onNext={nextProject} returnFocus={returnFocus}/>}
+    {selectedEntry?.kind === 'production' && <ProductionDetailModal key={selectedEntry.id} production={selectedEntry.detail} onClose={() => setSelected(null)} returnFocus={returnFocus}/>}
+  </section>
 }

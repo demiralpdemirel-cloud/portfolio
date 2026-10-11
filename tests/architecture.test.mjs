@@ -9,13 +9,13 @@ test('personal chapters have exact home order, unique IDs, and retain original r
   assert.deepEqual(personalProjects.map(project => project.title), ['SOFA MODELING', 'CAFE ENVIRONMENT', 'INTERIOR', 'MARIO / ARCADE', 'STAR WARS / IMPACT', 'BEYLİKDÜZÜ CULTURAL CENTER'])
   assert.equal(new Set(personalWorkOrder).size, 6)
   assert.ok(personalProjects.every(project => project.personal && projects.includes(project)))
-  assert.deepEqual(pageRegistry.filter(page => page.type === 'project').map(page => page.id), ['project-001', 'project-002', 'xpomatch', 'aselsan-film', ...personalWorkOrder])
+  assert.equal(pageRegistry.filter(page => page.type === 'project').length, 0)
 })
 test('home sections and navigation follow the new architecture without archive/experience', () => {
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')
   assert.match(app, /<main><Hero \/><About \/><Showreel \/><Work \/><Education \/><Capabilities \/><Contact \/><\/main>/)
   assert.doesNotMatch(app, /<Experience|<PortfolioArchive/)
-  assert.deepEqual(pageRegistry.filter(page => page.navLabel).map(page => page.id), ['about', 'showreel', 'brand-films', 'work', 'education', 'capabilities', 'contact'])
+  assert.deepEqual(pageRegistry.filter(page => page.navLabel).map(page => page.id), ['about', 'showreel', 'work', 'education', 'capabilities', 'contact'])
 })
 test('Cafe stages/stats, Interior gallery/video and Mario secondary film survive', () => {
   const cafe = personalProjects.find(project => project.id === 'cafe-environment')

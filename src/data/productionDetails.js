@@ -1,5 +1,5 @@
-import { bilingual } from '../i18n/translations'
-import { productions } from './productions'
+import { bilingual } from '../i18n/translations.js'
+import { productions } from './productions.js'
 // Public metadata researched 2026-10-02. Ratings are indexed IMDb snapshots,
 // not a live API; missing/blocked values remain null. Work credits come ONLY
 // from experience.js and the user's existing credit audit, never public cast data.

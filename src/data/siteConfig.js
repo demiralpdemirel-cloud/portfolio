@@ -1,4 +1,4 @@
-import { bilingual } from '../i18n/translations'
+import { bilingual } from '../i18n/translations.js'
 export const siteConfig = {
   name: 'Demiralp Demirel',
   title: '3D / VFX / Compositing Artist',

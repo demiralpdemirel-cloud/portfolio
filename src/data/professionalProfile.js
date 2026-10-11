@@ -1,5 +1,5 @@
-import { bilingual } from '../i18n/translations'
-import { siteConfig } from './siteConfig'
+import { bilingual } from '../i18n/translations.js'
+import { siteConfig } from './siteConfig.js'
 
 export const CURRENT_COMPANY = 'GeniusPark VFX'
 

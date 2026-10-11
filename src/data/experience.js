@@ -1,6 +1,6 @@
-import { bilingual } from '../i18n/translations'
-import { CURRENT_COMPANY } from './professionalProfile'
-import { productions } from './productions'
+import { bilingual } from '../i18n/translations.js'
+import { CURRENT_COMPANY } from './professionalProfile.js'
+import { productions } from './productions.js'
 
 export const experience = [
   { title: 'ONBEŞLİLER', period: '2026', summary: '3D ARTIST / COMPOSITING ARTIST', role: ['3D ARTIST', 'COMPOSITING ARTIST'], highlights: [] },

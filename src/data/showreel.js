@@ -1,4 +1,4 @@
-import { productions } from './productions'
+import { productions } from './productions.js'
 
 export const showreel = {
   video: 'https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/showreel-v7.mp4',

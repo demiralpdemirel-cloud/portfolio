@@ -2,6 +2,10 @@
 // single Turkish counterpart; IDs, titles, software names and asset URLs stay intact.
 export const translations = {
   tr: {
+    'WORKS':'ÇALIŞMALAR', 'SELECTED WORKS':'SEÇİLMİŞ ÇALIŞMALAR', 'ALL WORKS':'TÜM ÇALIŞMALAR',
+    'BRAND & PRODUCT':'MARKA & ÜRÜN', 'ENVIRONMENTS':'ORTAMLAR', 'PRODUCTION':'PRODÜKSİYON',
+    'Filter works':'Çalışmaları filtrele', 'PRODUCTION BREAKDOWN':'PRODÜKSİYON BREAKDOWN',
+    'VFX & COMPOSITING':'VFX & KOMPOZİT', 'POSTER':'AFİŞ',
     'BRAND & PRODUCT FILMS': 'MARKA & ÜRÜN FİLMLERİ', 'BRAND FILMS': 'MARKA FİLMLERİ',
     'PERSONAL PRODUCT FILM': 'KİŞİSEL ÜRÜN FİLMİ', 'COMMERCIAL FILM': 'REKLAM FİLMİ',
     '3D SAAS LAUNCH FILM': '3D SAAS TANITIM FİLMİ', 'CLIENT / COMMERCIAL WORK': 'MÜŞTERİ / REKLAM ÇALIŞMASI',
