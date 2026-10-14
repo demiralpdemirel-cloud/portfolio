@@ -1,0 +1,87 @@
+/* Frontal archive. Physical planes overlap; the camera never fans or tilts. */
+#work.works-scene { min-height: auto; padding: 7rem 4vw 6rem; background: #080e15; color: #edf5fa; }
+.jewel-archive { max-width: 1600px; margin: auto; }
+.jewel-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 2.5rem; }
+.jewel-heading h2 { font-size: clamp(2.4rem,5vw,5.4rem); letter-spacing: -.05em; line-height: 1; margin: .7rem 0 0; }
+.jewel-instruction { color: #91afc0; font-size: .8rem; }
+.jewel-filters { display: flex; gap: .6rem 1.5rem; flex-wrap: wrap; border-bottom: 1px solid #293d48; padding-bottom: 1.2rem; }
+.jewel-filters button { background: none; border: 0; color: #91a6b2; font-size: .65rem; letter-spacing: .07em; padding: .6rem 0; cursor: pointer; }
+.jewel-filters button[aria-pressed=true] { color: #c4f6ff; box-shadow: 0 1px #82deef; }
+.jewel-controls { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; color: #a5becd; font: 12px monospace; }
+.jewel-controls div { display: flex; gap: .7rem; }
+.jewel-controls button { width: 48px; height: 44px; border: 1px solid #456576; background: #12202a; color: #e0f8ff; font-size: 1.4rem; cursor: pointer; transition: transform 180ms ease; }
+.jewel-controls button:hover:not(:disabled) { transform: translateY(-2px); }
+.jewel-controls button:disabled { opacity: .3; cursor: default; }
+.jewel-viewport { overflow: hidden; padding: 68px 12px 16px; }
+.jewel-track { --case-step: 126px; --case-width: 300px; position: relative; height: 318px; transform-style: preserve-3d; transition: transform 650ms cubic-bezier(.25,.65,.25,1); }
+/* Hit lanes never move on hover. Overlapping plastic is decorative, not a hit target. */
+.jewel-case { position: absolute; inset: 0 auto auto 0; width: var(--case-step); border: 0; padding: 0; background: none; color: inherit; text-align: left; cursor: pointer; user-select: none; z-index: calc(2 + var(--order)); transform: translate3d(calc(var(--slot) * var(--step)),0,0); transition: transform 650ms cubic-bezier(.25,.65,.25,1), opacity 300ms ease; }
+.jewel-case.is-last { width: var(--case-width); }
+.jewel-case[data-included=false] { opacity: 0; pointer-events: none; }
+.jewel-face { display: block; position: relative; width: var(--case-width,300px); height: 280px; pointer-events: none; transform-style: preserve-3d; transform-origin: 18px 50%; transition: transform 420ms cubic-bezier(.25,.65,.25,1); }
+.case-back,.case-tray,.case-insert,.case-lid,.case-spine { position: absolute; display: block; }
+.case-back { inset: 0; border: 2px solid #597a8a; border-radius: 4px; background: linear-gradient(125deg,#a4d6ed32,#1b3348cf 38%,#08121fea); box-shadow: 5px 7px 0 #263e4c, 7px 9px 0 #0c1a25, 8px 13px 18px #0008; transform: translateZ(-14px); }
+.case-side { position: absolute; width: 14px; top: 2px; bottom: 1px; right: -7px; background: repeating-linear-gradient(90deg,#294756 0 2px,#a2d7e766 2px 3px); border: 1px solid #92d3e2; transform: rotateY(90deg); }
+.case-bottom { position: absolute; height: 14px; bottom: -7px; left: 3px; right: 0; background: #345261; border: 1px solid #86b5c9; transform: rotateX(90deg); }
+.case-tray { inset: 6px 7px 7px 22px; border: 1px solid #6b8c9c; border-radius: 3px; background: repeating-radial-gradient(circle at 50% 50%,#10212a 0 4px,#253d48 5px,#10212a 6px 25px); transform: translateZ(-8px); }
+.case-hub { position: absolute; left: 43%; top: 43%; width: 14%; aspect-ratio: 1; border: 3px double #809dac; border-radius: 50%; background: #101c25; }
+.case-insert { inset: 10px 11px 11px 26px; background: #0a131c; transform: translateZ(1px); overflow: hidden; border: 1px solid #09212e; }
+.case-insert img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.case-insert__label { position: absolute; inset: auto 0 0; padding: 26px 13px 14px; background: linear-gradient(transparent,#020912ed); }
+.case-insert__label small { display: block; font: 8px monospace; color: #c1e4f2; letter-spacing: .12em; margin-bottom: 8px; }
+.case-insert__label strong { font-size: 14px; letter-spacing: -.02em; line-height: 1.2; display: block; }
+.case-lid { inset: 0; border: 2px solid #94c5d4b3; border-radius: 4px; background: linear-gradient(120deg,#c6f1ff14,transparent 35%,#b9dded08); box-shadow: inset 0 0 0 2px #06151f, inset 0 0 0 3px #caefff38; transform: translateZ(12px); transform-origin: 16px 50%; transform-style: preserve-3d; }
+.case-gloss { position: absolute; inset: 3px; background: linear-gradient(115deg,transparent 5%,#e0faff21 6%,transparent 7%,transparent 62%,#c4f6ff13 63%,transparent 80%); border-top: 1px solid #d8f7ff85; border-right: 1px solid #8fcadd65; }
+.case-latches { position: absolute; inset: 15px 5px 15px auto; width: 5px; border-top: 14px solid #c2dfe78a; border-bottom: 14px solid #c2dfe78a; }
+.case-spine { inset: 3px auto 3px 3px; width: 17px; background: repeating-linear-gradient(90deg,#18303e 0 2px,#4d748757 2px 3px); border-right: 1px solid #c4efff8c; transform: translateZ(14px); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0; }
+.case-spine b { font: 9px monospace; color: #b6edff; }
+.case-spine strong { writing-mode: vertical-rl; font: 9px monospace; letter-spacing: .06em; white-space: nowrap; max-height: 220px; overflow: hidden; }
+.case-spine i { width: 8px; height: 15px; border: 1px solid #9bcddd; border-radius: 2px; }
+.case-outline { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; transform: translateZ(15px); }
+.case-outline path { fill: none; stroke: #76d8f2; stroke-width: 1; opacity: .5; vector-effect: non-scaling-stroke; }
+@media(hover:hover) and (pointer:fine) { .jewel-case:hover .jewel-face { transform: translateX(-6px) rotateY(-2deg) rotateZ(-.35deg); } }
+.jewel-case:focus-visible .jewel-face { transform: translateX(-6px) rotateY(-2deg) rotateZ(-.35deg); }
+.jewel-case:is(:hover,:focus-visible,.is-active) .case-outline path { opacity: 1; stroke: #b9f2ff; }
+.jewel-case:is(:hover,:focus-visible) .case-lid { box-shadow: inset 0 0 0 2px #0b2635, inset 0 0 0 3px #c8f0ff80, 0 0 22px #6bd9ff24; }
+.case-outline path { transition: stroke 300ms ease, opacity 300ms ease; }
+.case-lid { transition: box-shadow 350ms ease; }
+.jewel-caption { display: block; width: 110px; height: 30px; padding-top: 17px; font: 9px monospace; color: #8ba8b9; pointer-events: none; }
+.jewel-caption strong { display: none; }
+.jewel-ledge { height: 12px; border-top: 1px solid #9be2f28c; background: linear-gradient(#3b6576,#102733 40%,#09131b); box-shadow: 0 16px 30px #0007; }
+.jewel-detail { display: grid; grid-template-columns: 1fr 1.4fr; gap: 3rem; margin-top: 2.5rem; min-height: 245px; align-content: center; }
+.jewel-detail-index { color: #88bfd6; font: 10px monospace; letter-spacing: .12em; }
+.jewel-detail h3 { font-size: clamp(1.5rem,2.6vw,2.8rem); margin: .7rem 0 1.2rem; line-height: 1.1; overflow-wrap: anywhere; }
+.jewel-open { background: none; border: 0; border-bottom: 1px solid #608fa5; padding: .8rem 0; color: #ddf6ff; font-size: .7rem; cursor: pointer; }
+.jewel-open span { margin-left: 2rem; }
+.jewel-detail dl { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 1.4rem; margin: 0; }
+.jewel-detail dt { font: 9px monospace; color: #89aabb; margin-bottom: .6rem; }
+.jewel-detail dd { margin: 0; font-size: .65rem; line-height: 1.7; }
+.jewel-detail-copy > p { color: #9eb7c6; font-size: .9rem; line-height: 1.8; max-width: 65ch; }
+.jewel-archive button:focus-visible { outline: 2px solid #afeaff; outline-offset: 6px; }
+/* Formation runs once on section entry, never on filter or hover. */
+.jewel-archive:not([data-formed=true]) .case-material,.jewel-archive:not([data-formed=true]) .case-art { opacity: 0; }
+.jewel-archive[data-formed=true] .case-outline path { animation: case-trace .65s ease-out both; animation-delay: calc(var(--order) * 35ms); }
+.jewel-archive[data-formed=true] .case-material { animation: case-materialize .5s ease-out both; animation-delay: calc(250ms + var(--order) * 35ms); }
+.jewel-archive[data-formed=true] .case-art { animation: case-materialize .55s ease-out both; animation-delay: calc(480ms + var(--order) * 35ms); }
+@keyframes case-trace { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+@keyframes case-materialize { from { opacity: 0; } to { opacity: 1; } }
+.case-reveal { position: fixed; inset: 0; margin: 0; padding: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; border: 0; background: transparent; overflow: hidden; perspective: 1500px; }
+.case-reveal::backdrop { background: transparent; }
+.case-reveal__veil { position: absolute; inset: 0; background: #030b13f5; }
+.case-reveal__physical { position: absolute; pointer-events: none; transform-style: preserve-3d; will-change: transform; }
+.case-reveal__physical .jewel-face { transition: none; }
+.case-reveal__physical .case-outline { opacity: 0; }
+.case-reveal__presentation { position: absolute; inset: 5vh 5vw; pointer-events: none; will-change: transform; }
+.case-reveal__presentation .case-presentation-art { inset: 0; transform: none; border: 1px solid #7bb3cb; }
+.case-presentation-art img { object-fit: contain; }
+.case-presentation-art .case-insert__label { padding: 5vh 4vw 3vh; }
+.case-presentation-art .case-insert__label strong { font-size: clamp(22px,4vw,60px); }
+.case-reveal__cancel { position: absolute; top: 16px; right: 24px; padding: 10px; background: #0c1923; color: #c4edff; border: 1px solid #4a7387; cursor: pointer; }
+html:has(.case-reveal[open]) .scroll-world.has-dialog { transform: none; }
+html:has(.case-reveal[open]) .project-modal[open] { animation: case-content-in 220ms ease both; }
+html:has(.case-reveal[open]) .project-modal.is-closing { animation: case-content-out 180ms ease both; }
+@keyframes case-content-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes case-content-out { to { opacity: 0; } }
+@media(max-width: 800px) { .jewel-detail { grid-template-columns: 1fr; gap: 1.5rem; }.jewel-instruction { display: none; }.jewel-track { --case-step: 110px; } }
+@media(max-width: 500px) { #work.works-scene { padding-top: 4rem; }.jewel-face { height: 232px; }.jewel-track { --case-step: 94px; --case-width: 248px; height: 270px; }.jewel-viewport { padding-top: 50px; }.jewel-detail dl { grid-template-columns: 1fr 1fr; }.jewel-filters { gap: .3rem 1rem; }.jewel-heading h2 { font-size: 2.4rem; }.case-spine strong { max-height: 174px; }.jewel-caption { width: 90px; }.case-insert__label strong { font-size: 12px; } }
+@media(prefers-reduced-motion: reduce) { .jewel-track,.jewel-case,.jewel-face { transition: none; }.jewel-archive .case-outline path,.jewel-archive .case-material,.jewel-archive .case-art { animation: none !important; opacity: 1 !important; }.jewel-case:hover .jewel-face,.jewel-case:focus-visible .jewel-face { transform: none; } }

@@ -15,11 +15,13 @@ const videoNames = ['evga-rtx-3090', 'keyboard', 'mario-arcade', 'star-wars-vfx'
 const videoProxies = Object.fromEntries(videoNames.map(name => [`${name}.mp4`, `media/web/${name}-web.mp4`]))
 export function webVideoSource(source) {
   if (!source) return source
+  if(source === 'media/projects/xpomatch/xpomatch-v02-faststart.mp4') return source
   // Only known release assets are replaced; unrelated filenames remain untouched.
   if (source.startsWith('https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/')) {
     // Local mirror is ignored and excluded from Pages; publishing the release is a separate task.
-    if (source.endsWith('/aselsan.mp4') && import.meta.env.DEV) return 'media/productions/aselsan/aselsan.mp4'
-    return videoProxies[source.split('/').pop()] || source
+    const proxy=videoProxies[source.split('/').pop()]
+    return proxy ? `https://demiralpdemirel-cloud.github.io/portfolio/${proxy}` : source
   }
+  if (!/^(https?:|data:|blob:)/.test(source) && /\.mp4(?:\?|$)/.test(source)) return `https://demiralpdemirel-cloud.github.io/portfolio/${source.replace(/^\//,'')}`
   return source
 }

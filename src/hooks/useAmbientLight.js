@@ -4,7 +4,7 @@ import { createAmbientZoneMap, sampleAmbientZones, smoothAmbientZones, interpola
 import { createAmbientScheduler } from '../utils/ambientScheduler'
 import { createNativeAmbientSampler } from '../utils/ambientNativeFrame'
 
-const preferenceKey = 'portfolio-video-ambient'
+const preferenceKey = 'portfolio-scroll-video-ambient'
 function initialPreference() {
   try {
     const saved = localStorage.getItem(preferenceKey)

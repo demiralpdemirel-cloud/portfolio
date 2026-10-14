@@ -1,93 +1,419 @@
+import { useRef, useState } from 'react'
 import { useLanguage } from './i18n/LanguageContext'
 import LanguageSwitcher from './i18n/LanguageSwitcher'
-import { useLayoutEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import Hero from './sections/Hero/Hero'
-import About from './sections/About/About'
-import Work from './sections/Work/Work'
-import Showreel from './sections/Showreel/Showreel'
-import Education from './sections/Education/Education'
-import Capabilities from './sections/Capabilities/Capabilities'
-import Contact from './sections/Contact/Contact'
-import ScrollToTop from './components/ScrollToTop'
 import ThemeController from './components/ThemeController'
+import ScrollToTop from './components/ScrollToTop'
+import VideoPlayer from './components/showreel/VideoPlayer'
+import BreakdownViewer from './components/showreel/BreakdownViewer'
+import ProjectDetail from './components/project/ProjectDetail'
+import ProductionDetailModal from './components/experience/ProductionDetailModal'
+import ToolStudy from './components/ToolStudy.jsx'
+import PerformanceProbe from './components/PerformanceProbe.jsx'
+import CreativeWorlds from './components/CreativeWorlds.jsx'
+import JewelCaseCatalog from './components/JewelCaseCatalog.jsx'
+import CaseReveal from './components/CaseReveal.jsx'
+import { worldFor, worlds } from './data/worlds.js'
+import useScrollWorld from './motion/useScrollWorld.js'
+import { catalog, filterPersonalCatalog } from './data/catalog.js'
+import { siteConfig } from './data/siteConfig.js'
+import { professionalProfile } from './data/professionalProfile.js'
+import { showreel } from './data/showreel.js'
+import { education } from './data/education.js'
+import { capabilities } from './data/capabilities'
+import { tools } from './data/tools.js'
+import { assetPath } from './utils/assetPath.js'
 
-gsap.registerPlugin(ScrollTrigger)
-// Resize refreshes are coordinated once here rather than once per chapter.
-ScrollTrigger.config({ autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load' })
-
-export default function App() {
+function SceneHeader({ number, title, subtitle }) {
   const { t } = useLanguage()
-  const root = useRef(null)
-  useLayoutEffect(() => {
-    let disposed = false
-    let restoreFrame
-    let viewportWidth = window.innerWidth
-    let viewportHeight = window.innerHeight
-    const onResize = () => {
-      if (viewportWidth === window.innerWidth && viewportHeight === window.innerHeight) return
-      viewportWidth = window.innerWidth
-      viewportHeight = window.innerHeight
-      ScrollTrigger.refresh()
+  return (
+    <header className="scene-heading">
+      <p className="scene-number">
+        {number} / {t(subtitle)}
+      </p>
+      <h2>{t(title)}</h2>
+    </header>
+  )
+}
+export default function App() {
+  const { t } = useLanguage(),
+    root = useRef(null),
+    returnFocus = useRef(null),
+    reelFocus = useRef(null)
+  const [category, setCategory] = useState('all'),
+    [selected, setSelected] = useState(null),
+    [breakdown, setBreakdown] = useState(null),
+    [menu, setMenu] = useState(false)
+  useScrollWorld(root, category)
+  const hoverRects = useRef(new WeakMap())
+  const caseReveal = useRef(null)
+  const entries = filterPersonalCatalog(category),
+    active = catalog.find((entry) => entry.id === selected)
+  const projectEntries = (active ? worlds.find(world=>world.id===worldFor(active)).entries : entries).filter((entry) => entry.kind === 'project')
+  const open = (event, entry) => {
+    returnFocus.current = event.currentTarget
+    const box = event.currentTarget.getBoundingClientRect()
+    document.documentElement.style.setProperty(
+      '--detail-origin',
+      `${((box.left + box.width / 2) / innerWidth) * 100}% ${((box.top + box.height / 2) / innerHeight) * 100}%`,
+    )
+    setSelected(entry.id)
+  }
+  const tilt = (event) => {
+    if (
+      !matchMedia('(hover:hover)').matches ||
+      matchMedia('(prefers-reduced-motion:reduce)').matches
+    )
+      return
+    let box = hoverRects.current.get(event.currentTarget)
+    if (!box) {
+      box = event.currentTarget.getBoundingClientRect()
+      hoverRects.current.set(event.currentTarget, box)
     }
-    const context = gsap.context(() => {
-      const match = gsap.matchMedia()
-      match.add({ all: '(min-width: 0px)', desktop: '(min-width: 901px)', reduced: '(prefers-reduced-motion: reduce)' }, ({ conditions }) => {
-        if (conditions.reduced) return
-        gsap.to('.global-progress__line', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .15 } })
-        if (!conditions.desktop) return
-        gsap.timeline({ scrollTrigger: { trigger: root.current.querySelector('.hero'), start: 'top top', end: 'bottom top', scrub: .8, invalidateOnRefresh: true } })
-          .fromTo('.hero__portrait', { scale: 1, xPercent: 0 }, { scale: 1.1, xPercent: 5, duration: 1, ease: 'none' }, 0)
-          .fromTo('.hero__name--first', { xPercent: 0 }, { xPercent: -12, duration: 1, ease: 'none' }, 0)
-          .fromTo('.hero__name--last', { xPercent: 0 }, { xPercent: 14, duration: 1, ease: 'none' }, 0)
-      })
-    }, root)
-    const scrollKey = () => `portfolio-scroll:${window.location.pathname}${window.location.hash}`
-    const saveScrollPosition = () => sessionStorage.setItem(scrollKey(), String(window.scrollY))
-    const restorePosition = () => {
-      if (disposed) return
-      const navigationType = performance.getEntriesByType('navigation')[0]?.type
-      const saved = sessionStorage.getItem(scrollKey())
-      const target = document.getElementById(window.location.hash.slice(1))
-      if (navigationType === 'reload' && saved !== null) window.scrollTo(0, Number(saved))
-      else if (target && navigationType !== 'reload') target.scrollIntoView({ block: 'start' })
-      ScrollTrigger.refresh()
-    }
-    // Font loading may change wrapping. Refresh once after metrics settle, not on each media event.
-    document.fonts.ready.then(() => { if (!disposed) restoreFrame = requestAnimationFrame(restorePosition) })
-    const onPageShow = event => { if (event.persisted) restoreFrame = requestAnimationFrame(() => ScrollTrigger.refresh()) }
-    const onHashLinkClick = event => {
-      const link = event.target.closest('a[href^="#"]')
-      if (!link || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-      const target = document.getElementById(link.getAttribute('href').slice(1))
-      if (!target) return
-      event.preventDefault()
-      window.history.pushState(null, '', link.getAttribute('href'))
-      target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' })
-    }
-    window.addEventListener('beforeunload', saveScrollPosition)
-    window.addEventListener('pagehide', saveScrollPosition)
-    window.addEventListener('pageshow', onPageShow)
-    window.addEventListener('resize', onResize, { passive: true })
-    document.addEventListener('click', onHashLinkClick)
-    return () => {
-      disposed = true
-      cancelAnimationFrame(restoreFrame)
-      window.removeEventListener('beforeunload', saveScrollPosition)
-      window.removeEventListener('pagehide', saveScrollPosition)
-      window.removeEventListener('pageshow', onPageShow)
-      window.removeEventListener('resize', onResize)
-      document.removeEventListener('click', onHashLinkClick)
-      context.revert()
-    }
-  }, [])
-  return <div ref={root}>
-    <LanguageSwitcher />
-    <ThemeController />
-    <a className="skip-link" href="#work">{t("Skip to selected work")}</a>
-    <div className="global-progress" aria-hidden="true"><span className="global-progress__line" /></div>
-    <main><Hero /><About /><Showreel /><Work /><Education /><Capabilities /><Contact /></main>
-    <ScrollToTop />
-  </div>
+    event.currentTarget.style.setProperty(
+      '--tilt-x',
+      `${(-(event.clientY - box.top - box.height / 2) / box.height) * 5}deg`,
+    )
+    event.currentTarget.style.setProperty(
+      '--tilt-y',
+      `${((event.clientX - box.left - box.width / 2) / box.width) * 5}deg`,
+    )
+  }
+  const reset = (event) => {
+    hoverRects.current.delete(event.currentTarget)
+    event.currentTarget.style.removeProperty('--tilt-x')
+    event.currentTarget.style.removeProperty('--tilt-y')
+  }
+  return (
+    <>
+      <LanguageSwitcher />
+      <ThemeController />
+      <a className="skip-link" href="#work">
+        {t('Skip to selected work')}
+      </a>
+      <nav className="scroll-nav" aria-label={t('Primary navigation')}>
+        <a className="scroll-logo" href="#home">
+          D
+          <span>
+            DEMİRALP
+            <br />
+            DEMİREL
+          </span>
+        </a>
+        <button
+          className="menu-toggle"
+          type="button"
+          onClick={() => setMenu(!menu)}
+          aria-expanded={menu}
+        >
+          {t('MENU')}
+        </button>
+        <div className={menu ? 'is-open' : ''}>
+          {[
+            ['work', 'WORKS'],
+            ['showreel', 'SHOWREEL'],
+            ['about', 'ABOUT'],
+            ['capabilities', 'CAPABILITIES'],
+            ['contact', 'CONTACT'],
+          ].map(([id, label]) => (
+            <a key={id} href={'#' + id} onClick={() => setMenu(false)}>
+              {t(label)}
+            </a>
+          ))}
+        </div>
+      </nav>
+      <main
+        ref={root}
+        className={`scroll-world${active || breakdown !== null ? ' has-dialog' : ''}`}
+      >
+        <section id="home" className="hero scroll-hero camera-scene" data-scene>
+          <div className="hero-depth" aria-hidden="true">
+            <div className="perspective-floor" />
+            <span className="horizon-orbit" />
+          </div>
+          <div className="hero-identity">
+            <p className="scene-number">01 / {t('SCROLL AS CAMERA')}</p>
+            <h1 className="scroll-title">
+              <span>DEMİRALP</span>
+              <span>DEMİREL</span>
+            </h1>
+            <p className="hero-discipline">{t(siteConfig.title)}</p>
+            <a className="editorial-link" href="#work">
+              {t('EXPLORE WORKS')} ↗
+            </a>
+          </div>
+          <figure className="hero-portrait">
+            <img src={assetPath(siteConfig.profileImage)} alt={siteConfig.name} fetchPriority="high" decoding="async" width="1000" height="1832" />
+            <figcaption>{t('THE ARTIST / DEMİRALP DEMİREL')}</figcaption>
+          </figure>
+          <div className="hero-fragments" aria-label={t('Featured artwork')}>
+            {[
+              catalog[0],
+              catalog[2],
+              catalog.find((entry) => entry.id === 'cafe-environment'),
+            ].map((entry, index) => (
+              <a
+                href={'#' + entry.id}
+                key={entry.id}
+                className={`hero-fragment hero-fragment--${['one', 'two', 'three'][index]}`}
+              >
+                <img
+                  src={assetPath(entry.thumbnailLarge)}
+                  alt={t(entry.title)}
+                  decoding="async"
+                />
+                <span>
+                  {entry.number} / {t(entry.title)} ↗
+                </span>
+              </a>
+            ))}
+          </div>
+          <div className="hero-bottom">
+            <span>{t('DEPTH / MOTION / REAL WORK')}</span>
+            <a href="#about">{t('SCROLL TO ENTER')} ↓</a>
+          </div>
+          <span className="light-rail" />
+        </section>
+        <section id="about" className="camera-scene about-scene" data-scene>
+          <SceneHeader number="02" title="ABOUT THE ARTIST" subtitle="ABOUT" />
+          <div className="about-composition">
+            <figure className="portrait-depth">
+              <img
+                src={assetPath(siteConfig.profileImage)}
+                alt={siteConfig.name}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>{siteConfig.name}</figcaption>
+            </figure>
+            <div className="about-editorial">
+              <p>
+                {String(t(siteConfig.about))
+                  .split(' ')
+                  .map((word, index) => (
+                    <span className="about-word" key={index}>
+                      {word}{' '}
+                    </span>
+                  ))}
+              </p>
+              <a className="editorial-link" href="#profile">
+                {t('PROFILE / STATUS')} ↗
+              </a>
+            </div>
+          </div>
+          <span className="light-rail" />
+        </section>
+        <section id="profile" className="camera-scene profile-scene" data-scene>
+          <SceneHeader
+            number="02 / B"
+            title="PROFILE / STATUS"
+            subtitle="PROFESSIONAL PROFILE"
+          />
+          <div className="profile-track">
+            <article className="profile-panel">
+              <span>{t('CURRENT STUDIO')}</span>
+              <a
+                href={professionalProfile.currentCompany.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <strong>{professionalProfile.currentCompany.name}</strong> ↗
+              </a>
+              <p>{t(professionalProfile.currentCompany.period)}</p>
+            </article>
+            {professionalProfile.professionalLinks.map((link) => (
+              <article className="profile-panel" key={link.id}>
+                <span>{t(link.subtitle)}</span>
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  <strong>{link.name}</strong> ↗
+                </a>
+              </article>
+            ))}
+            <article className="profile-panel">
+              <span>Instagram</span>
+              <a
+                href={professionalProfile.instagram.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <strong>{professionalProfile.instagram.handle}</strong> ↗
+              </a>
+            </article>
+            {professionalProfile.softwareHours.map((item) => (
+              <article className="profile-panel" key={item.id}>
+                <span>
+                  {item.name} / {item.source}
+                </span>
+                <strong>{item.hours.toLocaleString('en-US')}</strong>
+                <p>{t(item.qualifier)}</p>
+              </article>
+            ))}
+          </div>
+          <span className="light-rail" />
+        </section>
+        <section id="work" className="camera-scene works-scene" data-scene>
+          <JewelCaseCatalog entries={entries} category={category} onCategoryChange={setCategory} onOpen={(event, entry) => {
+            const trigger = event.currentTarget
+            caseReveal.current.open(trigger, () => open({ currentTarget: trigger }, entry))
+          }}/>
+        </section>
+        <section id="showreel" className="camera-scene cinema-scene" data-scene>
+          <SceneHeader
+            number="03"
+            title="IN MOTION."
+            subtitle="SHOWREEL & BREAKDOWNS"
+          />
+          <div className="cinema-shell">
+            <VideoPlayer
+              src={showreel.video}
+              poster={showreel.poster}
+              durationHint={showreel.duration}
+              label="Showreel"
+              lazy
+            />
+          </div>
+          <div className="breakdown-index">
+            {showreel.breakdowns.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={(event) => {
+                  reelFocus.current = event.currentTarget
+                  setBreakdown(index)
+                }}
+              >
+                <span>
+                  {item.number} / {t(item.kind)}
+                </span>
+                <strong>{t(item.title)}</strong>
+                <p>
+                  {t(
+                    item.production.myRole?.join(' / ') ||
+                      'PRODUCTION BREAKDOWN',
+                  )}
+                </p>
+                <b>↗</b>
+              </button>
+            ))}
+          </div>
+          <span className="light-rail" />
+        </section>
+        <CreativeWorlds onOpen={open} tilt={tilt} reset={reset}/>
+        <section
+          id="capabilities"
+          className="camera-scene capabilities-scene"
+          data-scene
+        >
+          <SceneHeader
+            number="10"
+            title="THE MAKING OF."
+            subtitle="CAPABILITIES"
+          />
+          <div className="discipline-grid">
+            {capabilities.map((item) => (
+              <article key={item.id} className="discipline-panel">
+                <span>{item.id}</span>
+                <h3>{t(item.title)}</h3>
+                <p>{t(item.description)}</p>
+              </article>
+            ))}
+          </div>
+          <h3 className="tools-label">{t('TOOLS / SOFTWARE')}</h3>
+          <div className="tool-grid">
+            {tools.map((tool) => (
+              <ToolStudy key={tool.name} tool={tool} />
+            ))}
+          </div>
+          <span className="light-rail" />
+        </section>
+        <section id="education" className="camera-scene education-scene" data-scene>
+          <SceneHeader number="11" title="EDUCATION" subtitle="EDUCATION" />
+          <div className="education-composition"><span className="education-line"/><div className="education-copy"><p>{t(education.institutionPeriod)}</p><h3>{t(education.program)}</h3></div></div>
+          <span className="light-rail"/>
+        </section>
+        <section id="contact" className="camera-scene contact-scene" data-scene>
+          <div className="contact-depth" aria-hidden="true">
+            <img
+              src={assetPath('media/web/backgrounds--contact-1280.webp')}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <p className="scene-number">12 / {t('CONTACT')}</p>
+          <h2>
+            {['LET’S CREATE', 'SOMETHING.'].map((word) => (
+              <span className="contact-word" key={word}>
+                {t(word)}
+              </span>
+            ))}
+          </h2>
+          <div className="contact-actions">
+            <p>{siteConfig.name}</p>
+            <a href={'mailto:' + siteConfig.email}>{siteConfig.email} ↗</a>
+            <a href={'tel:' + siteConfig.phone}>0532 572 76 87 ↗</a>
+          </div>
+          <div className="contact-social">
+            {professionalProfile.professionalLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {link.name} ↗
+              </a>
+            ))}
+            <a
+              href={siteConfig.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Instagram ↗
+            </a>
+          </div>
+          <span className="light-rail" />
+        </section>
+      </main>
+      <footer className="scroll-footer">
+        <span>DEMİRALP DEMİREL / PORTFOLIO SCROLL</span>
+        <a href="#home">{t('BACK TO TOP')} ↑</a>
+      </footer>
+      <CaseReveal ref={caseReveal}/>
+      {active?.kind === 'project' && (
+        <ProjectDetail
+          project={active.detail}
+          onClose={() => caseReveal.current.close(() => setSelected(null))}
+          returnFocus={returnFocus}
+          onNext={() =>
+            setSelected(
+              projectEntries[
+                (projectEntries.findIndex((entry) => entry.id === selected) +
+                  1) %
+                  projectEntries.length
+              ].id,
+            )
+          }
+        />
+      )}
+      {active?.kind === 'production' && (
+        <ProductionDetailModal
+          key={active.id}
+          production={active.detail}
+          onClose={() => caseReveal.current.close(() => setSelected(null))}
+          returnFocus={returnFocus}
+        />
+      )}
+      {breakdown !== null && (
+        <BreakdownViewer
+          items={showreel.breakdowns}
+          index={breakdown}
+          onNavigate={setBreakdown}
+          onClose={() => setBreakdown(null)}
+          returnFocusRef={reelFocus}
+        />
+      )}
+      <ScrollToTop />
+      <PerformanceProbe />
+    </>
+  )
 }

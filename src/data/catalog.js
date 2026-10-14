@@ -57,3 +57,7 @@ export const catalog = [...personalEntries,...productionEntries,...additionalPro
   thumbnailLarge:entry.image ? `media/catalog/${entry.id}-960.webp` : null,
 }))
 export const filterCatalog = category => category === 'all' ? catalog : catalog.filter(entry => entry.categories.includes(category))
+// Only this showcase is physical media. Professional worlds keep their existing layout.
+export const personalCatalog = catalog.filter(entry => entry.kind === 'project')
+export const personalFilters = catalogFilters.filter(filter => filter.id !== 'production')
+export const filterPersonalCatalog = category => personalCatalog.filter(entry => category === 'all' || entry.categories.includes(category))

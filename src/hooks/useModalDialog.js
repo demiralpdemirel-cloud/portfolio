@@ -33,14 +33,18 @@ export default function useModalDialog(onClose, returnFocus) {
     const trigger = returnFocus?.current || document.activeElement
     const x = window.scrollX
     const y = window.scrollY
+    element.dataset.restoreY = String(y)
     const body = document.body
     const html = document.documentElement
-    const previous = { overflow: body.style.overflow, paddingRight: body.style.paddingRight, htmlOverflow: html.style.overflow, scrollBehavior: html.style.scrollBehavior }
+    const previous = { overflow: body.style.overflow, paddingRight: body.style.paddingRight, htmlOverflow: html.style.overflow, scrollBehavior: html.style.scrollBehavior, overflowAnchor: html.style.overflowAnchor }
     const gutter = window.innerWidth - html.clientWidth
     body.style.paddingRight = `${parseFloat(getComputedStyle(body).paddingRight) + gutter}px`
     body.style.overflow = 'hidden'
     html.style.overflow = 'hidden'
+    html.style.scrollBehavior = 'auto'
+    html.style.overflowAnchor = 'none'
     element.showModal()
+    window.scrollTo(x, y)
     const resumePlayback = scopePlayback(element)
     return () => {
       window.clearTimeout(closeTimer.current)
@@ -51,6 +55,7 @@ export default function useModalDialog(onClose, returnFocus) {
       html.style.overflow = previous.htmlOverflow
       html.style.scrollBehavior = 'auto'
       window.scrollTo(x, y)
+      html.style.overflowAnchor = previous.overflowAnchor
       html.style.scrollBehavior = previous.scrollBehavior
       trigger?.focus({ preventScroll: true })
       resumePlayback()

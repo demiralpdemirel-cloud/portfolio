@@ -3,7 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { translate } from './translations'
 
 const LanguageContext = createContext(null)
-const storageKey = 'portfolio-language'
+const storageKey = 'portfolio-scroll-language'
 const initialLanguage = () => {
   try { return localStorage.getItem(storageKey) === 'tr' ? 'tr' : 'en' } catch { return 'en' }
 }

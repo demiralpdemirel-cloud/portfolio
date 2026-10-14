@@ -85,7 +85,9 @@ test('ASELSAN keeps user credit, commercial metadata and release-only source', (
   const modal = readFileSync(new URL('../src/components/experience/ProductionDetailModal.jsx', import.meta.url), 'utf8')
   assert.match(modal, /<VideoPlayer[^>]*lazy/)
   assert.match(modal, /'RELEASE DATE \/ TURKEY': production.releaseStart/)
-  for (const file of ['../.gitignore', '../vite.config.js']) assert.ok(readFileSync(new URL(file, import.meta.url), 'utf8').includes('media/productions/aselsan/aselsan.mp4'))
+  const delivery=readFileSync(new URL('../src/data/webMedia.js',import.meta.url),'utf8')
+  assert.doesNotMatch(delivery,/return 'media\/productions\/aselsan\/aselsan.mp4'/)
+  assert.match(readFileSync(new URL('../vite.config.js',import.meta.url),'utf8'),/base:\s*'\/portfolio\/'/)
 })
 
 test('project names, asset paths, IDs and industry terms are preserved', () => {

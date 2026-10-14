@@ -47,7 +47,6 @@ function mountRibbon(showcase = false, duration = 700) {
 export default function ThemeController() {
   const { t } = useLanguage()
   const [theme, setTheme] = useState('dark')
-  const [heroVisible, setHeroVisible] = useState(true)
   const [busy, setBusy] = useState(false)
   const [introCover, setIntroCover] = useState(true)
   const [introSequence, setIntroSequence] = useState(true)
@@ -56,10 +55,11 @@ export default function ThemeController() {
 
   useLayoutEffect(() => {
     const html = document.documentElement
-    let disposed = false, active = null, heroInView = true, removeRibbon = null, sweep = null
+    let disposed = false, active = null, removeRibbon = null, sweep = null
     let introRunning = true, holdTimer = null, previewActive = false
     let introCompletedAt = 0
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const reducedMedia = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const reduced = { get matches() { return reducedMedia.matches || new URLSearchParams(location.search).has('reduced-motion') } }
     const blocked = () => Boolean(document.fullscreenElement || document.querySelector('dialog[open], .showreel-viewer, .fullscreen-viewer'))
     const apply = next => {
       if (disposed) return
@@ -143,13 +143,6 @@ export default function ThemeController() {
       })
     }
     apply('dark')
-    const hero = document.getElementById('home')
-    // Visibility only: this observer cannot request a transition or change theme.
-    const visibility = new IntersectionObserver(([entry]) => {
-      heroInView = entry.isIntersecting
-      setHeroVisible(heroInView)
-    }, { threshold: 0 })
-    visibility.observe(hero)
     const resize = () => active?.skipTransition()
     const protectOverlay = () => { if (blocked()) active?.skipTransition() }
     const overlays = new MutationObserver(records => {
@@ -161,7 +154,7 @@ export default function ThemeController() {
     document.addEventListener('fullscreenchange', protectOverlay)
     window.addEventListener('resize', resize, { passive: true })
     manual.current = () => {
-      if (introRunning || active || blocked() || !heroInView) return
+      if (introRunning || active || blocked()) return
       request(themeSelection(html.dataset.theme, { type: 'USER_TOGGLE' }))
     }
     // StrictMode-safe initial intro; never scheduled by Hero re-entry.
@@ -192,7 +185,7 @@ export default function ThemeController() {
       removeRibbon?.(); removeRibbon = null
       sweep?.cancel(); sweep = null
       html.style.removeProperty('--theme-spark-play')
-      visibility.disconnect(); overlays.disconnect()
+      overlays.disconnect()
       document.removeEventListener('fullscreenchange', protectOverlay)
       window.removeEventListener('resize', resize)
       delete html.dataset.themeMotion
@@ -202,8 +195,8 @@ export default function ThemeController() {
 
   return <>
     {introCover && <div className="theme-intro-cover" aria-hidden="true" />}
-    <div className={`theme-bubble-shell${heroVisible ? ' is-visible' : ''}`}>
-      <button className="theme-bubble" type="button" disabled={busy || introCover || introSequence} tabIndex={heroVisible ? 0 : -1}
+    <div className="theme-bubble-shell is-visible">
+      <button className="theme-bubble" type="button" disabled={busy || introCover || introSequence} tabIndex={0}
         aria-label={t(theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')}
         aria-pressed={theme === 'light'} onClick={() => manual.current?.()}>
         <span className="theme-orb" aria-hidden="true"><i /></span><span>{t('THEME')}</span>

@@ -1,0 +1,386 @@
+{
+  "sourceHead": "db0b7c3f76be50e25017ad7ed178c3b01b6dfb3e",
+  "hashes": [
+    {
+      "file": "projects.js",
+      "identicalToOriginal": true,
+      "sha256": "db6716a08f6a6062b1509504712a653839ecb38805cb578a59b5d70e73f2480c"
+    },
+    {
+      "file": "experience.js",
+      "identicalToOriginal": true,
+      "sha256": "754a35a6fcd91c7c4a52b88ab4ba7fedac269499d9176cc632dd9f93309c3196"
+    },
+    {
+      "file": "productionDetails.js",
+      "identicalToOriginal": true,
+      "sha256": "df545477ec26ba0299fb2fcdbece944f05c274f0fe36044a43bd8e9d8e3597f2"
+    },
+    {
+      "file": "catalog.js",
+      "identicalToOriginal": true,
+      "sha256": "8b53b9d43a933f29a488e5f484c6bc946352b8e61a1a681cab2f56d3297a46f7"
+    },
+    {
+      "file": "education.js",
+      "identicalToOriginal": true,
+      "sha256": "6170b8d8331e5c450f315c05c8e53f28c2262839d86452ad293d8d143365b4a6"
+    },
+    {
+      "file": "siteConfig.js",
+      "identicalToOriginal": true,
+      "sha256": "1fd3348bb3523c400156c473739cfac52247cd2cafde32069eb0a3a1adb7965b"
+    },
+    {
+      "file": "professionalProfile.js",
+      "identicalToOriginal": true,
+      "sha256": "5e33b00baa33b7f637471026fc8b22e58afe59867633d43a64feb66eac6cf637"
+    },
+    {
+      "file": "tools.js",
+      "identicalToOriginal": true,
+      "sha256": "d060bd60b7959e6be1ebc790235fe134174947d41c3c02d133961a8ed969d572"
+    },
+    {
+      "file": "showreel.js",
+      "identicalToOriginal": true,
+      "sha256": "a01cd2d80966f6b4a9a06af619bf44c2987c452720f78ec3a1375ccc4d5fadbe"
+    },
+    {
+      "file": "capabilities.js",
+      "identicalToOriginal": true,
+      "sha256": "687e448b123bb314fbcaaf6f08357099fa1ceabd71152b82e2743b09a66f014c"
+    },
+    {
+      "file": "productions.js",
+      "identicalToOriginal": true,
+      "sha256": "2b77ec06c99eb80d4e1867855d26f20487ba09d2a9617ec4d21c0a47445aaf81"
+    },
+    {
+      "file": "xpomatch.js",
+      "identicalToOriginal": true,
+      "sha256": "bffe07a69c0d0c1b29120025c583826cd57139ba552485e7f19bad12cfb615a3"
+    }
+  ],
+  "works": [
+    {
+      "id": "project-001",
+      "kind": "project",
+      "title": "EVGA RTX 3090",
+      "role": [
+        "3D Artist"
+      ],
+      "media": []
+    },
+    {
+      "id": "project-002",
+      "kind": "project",
+      "title": "KEYBOARD",
+      "role": [
+        "3D Artist"
+      ],
+      "media": []
+    },
+    {
+      "id": "xpomatch",
+      "kind": "project",
+      "title": "XPOMATCH",
+      "role": [
+        "3D",
+        "MOTION DESIGN",
+        "COMPOSITING",
+        "EDITING"
+      ],
+      "media": []
+    },
+    {
+      "id": "cafe-environment",
+      "kind": "project",
+      "title": "CAFE ENVIRONMENT",
+      "role": [],
+      "media": [],
+      "sceneStats": {
+        "objects": 981,
+        "vertices": 1539667,
+        "edges": 3049726,
+        "faces": 1505809,
+        "triangles": 2921827
+      }
+    },
+    {
+      "id": "project-003",
+      "kind": "project",
+      "title": "INTERIOR",
+      "role": [
+        "3D Artist",
+        "Environment Artist"
+      ],
+      "media": [
+        "media/projects/interior-study/living-room.webp",
+        "media/projects/interior-study/dark-living-room.webp",
+        "media/projects/interior-study/bathroom.webp",
+        "media/projects/interior-study/kitchen.webp"
+      ]
+    },
+    {
+      "id": "sofa-modeling",
+      "kind": "project",
+      "title": "SOFA MODELING",
+      "role": [],
+      "media": [
+        "media/projects/sofa-modeling/sofa-1.webp",
+        "media/projects/sofa-modeling/sofa-2.webp",
+        "media/projects/sofa-modeling/sofa-3.webp",
+        "media/projects/sofa-modeling/sofa-4.webp",
+        "media/projects/sofa-modeling/sofa-5.webp"
+      ]
+    },
+    {
+      "id": "project-004",
+      "kind": "project",
+      "title": "MARIO / ARCADE",
+      "role": [
+        "3D Artist",
+        "Motion Artist"
+      ],
+      "media": []
+    },
+    {
+      "id": "project-005",
+      "kind": "project",
+      "title": "STAR WARS / IMPACT",
+      "role": [
+        "VFX Artist",
+        "Compositor"
+      ],
+      "media": []
+    },
+    {
+      "id": "beylikduzu-kultur-merkezi",
+      "kind": "project",
+      "title": "BEYLİKDÜZÜ CULTURAL CENTER",
+      "role": [
+        "3D Artist",
+        "Environment Artist"
+      ],
+      "media": [
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-01.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-02.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-03.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-04.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-05.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-06.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-07.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-08.webp",
+        "media/projects/beylikduzu-kultur-merkezi/beylikduzu-kultur-merkezi-09.webp"
+      ]
+    },
+    {
+      "id": "production-01",
+      "kind": "production",
+      "title": "ONBEŞLİLER",
+      "role": [
+        "3D ARTIST",
+        "COMPOSITING ARTIST"
+      ]
+    },
+    {
+      "id": "production-02",
+      "kind": "production",
+      "title": "ASELSAN",
+      "role": [
+        "3D ARTIST",
+        "COMPOSITING ARTIST"
+      ]
+    },
+    {
+      "id": "production-03",
+      "kind": "production",
+      "title": "EŞREF RÜYA",
+      "role": [
+        "COMPOSITING",
+        "ACTION FX",
+        "CLEANUP"
+      ]
+    },
+    {
+      "id": "production-04",
+      "kind": "production",
+      "title": "KARDEŞ TAKIMI 1–3",
+      "role": [
+        "3D ENVIRONMENTS",
+        "CAMERA TRACKING",
+        "SHOT FINISHING"
+      ]
+    },
+    {
+      "id": "production-05",
+      "kind": "production",
+      "title": "BİR SEVDADIR",
+      "role": [
+        "CLEANUP",
+        "GREEN SCREEN",
+        "CG CROWD"
+      ]
+    },
+    {
+      "id": "production-06",
+      "kind": "production",
+      "title": "ZAFERİN RENGİ",
+      "role": [
+        "3D CAMERA TRACKING",
+        "CG CROWD",
+        "CG ENVIRONMENTS"
+      ]
+    },
+    {
+      "id": "production-07",
+      "kind": "production",
+      "title": "TEŞKİLAT",
+      "role": [
+        "COMPOSITING",
+        "VEHICLE INTEGRATION",
+        "EXPLOSION FX"
+      ]
+    },
+    {
+      "id": "production-08",
+      "kind": "production",
+      "title": "KURULUŞ OSMAN",
+      "role": [
+        "CG ARMIES / CROWD",
+        "3D ENVIRONMENTS",
+        "CG ENVIRONMENT ASSETS"
+      ]
+    },
+    {
+      "id": "production-09",
+      "kind": "production",
+      "title": "KURULUŞ ORHAN",
+      "role": []
+    },
+    {
+      "id": "production-10",
+      "kind": "production",
+      "title": "AŞK VE TAHT",
+      "role": [
+        "CG CROWD / ARMY"
+      ]
+    },
+    {
+      "id": "turkcell-shaq",
+      "kind": "production",
+      "title": "TURKCELL / SHAQ DİYE 5G",
+      "role": [
+        "Green Screen Cleanup",
+        "3D Traffic Simulation"
+      ]
+    }
+  ],
+  "ranges": [
+    {
+      "url": "https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/showreel-v7.mp4",
+      "finalUrl": "https://release-assets.githubusercontent.com/github-production-release-asset/1391513481/08c31b3d-6a11-43b2-b767-1573ccddb5d6?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-12T00%3A00%3A41Z&rscd=attachment%3B+filename%3Dshowreel-v7.mp4&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-11T23%3A00%3A01Z&ske=2026-10-12T00%3A00%3A41Z&sks=b&skv=2018-11-09&sig=4Qc8Dygwfw3pUGV1HGVoAvedMRpvC5w%2FzlTt8v7X0ww%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MTc2Mzk0MCwibmJmIjoxNzkxNzYwMzQwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.P2ABNtSGcD7BwrKCV8ogrVrJrHE4QeBE5qVg10Qs3mo&response-content-disposition=attachment%3B%20filename%3Dshowreel-v7.mp4&response-content-type=application%2Foctet-stream",
+      "status": 206,
+      "type": "application/octet-stream",
+      "range": "bytes 0-1023/146978082",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/kurulus-orhan-breakdown-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/kurulus-orhan-breakdown-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/28554807",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/teskilat-breakdown-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/teskilat-breakdown-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/12643083",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/turkcell-shaq-breakdown-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/turkcell-shaq-breakdown-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/6429446",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/zaferin-rengi-breakdown-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/zaferin-rengi-breakdown-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/25042143",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/evga-rtx-3090-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/evga-rtx-3090-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/10104787",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/keyboard-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/keyboard-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/15752858",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "http://localhost:4181/portfolio-scroll/media/projects/xpomatch/xpomatch-v02-faststart.mp4",
+      "finalUrl": "http://localhost:4181/portfolio-scroll/media/projects/xpomatch/xpomatch-v02-faststart.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/14706875",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/projects/interior-study/home-design.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/projects/interior-study/home-design.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/79682488",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/mario-arcade-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/mario-arcade-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/5985398",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/projects/mario-arcade/mario-arcade-breakdown.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/projects/mario-arcade/mario-arcade-breakdown.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/3756666",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/star-wars-vfx-web.mp4",
+      "finalUrl": "https://demiralpdemirel-cloud.github.io/portfolio/media/web/star-wars-vfx-web.mp4",
+      "status": 206,
+      "type": "video/mp4",
+      "range": "bytes 0-1023/7550419",
+      "acceptRanges": "bytes"
+    },
+    {
+      "url": "https://github.com/demiralpdemirel-cloud/portfolio/releases/download/media-v1/aselsan.mp4",
+      "finalUrl": "https://release-assets.githubusercontent.com/github-production-release-asset/1391513481/78ce707c-49d2-40c8-8735-b0ba507b0b93?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-11T23%3A56%3A48Z&rscd=attachment%3B+filename%3Daselsan.mp4&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-11T22%3A55%3A58Z&ske=2026-10-11T23%3A56%3A48Z&sks=b&skv=2018-11-09&sig=zxtncO4FMYH%2FYWqMfyka2u8qZn6ie%2BbmT%2FD6CO5bHJ4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MTc2Mzk0MCwibmJmIjoxNzkxNzYwMzQwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.P2ABNtSGcD7BwrKCV8ogrVrJrHE4QeBE5qVg10Qs3mo&response-content-disposition=attachment%3B%20filename%3Daselsan.mp4&response-content-type=application%2Foctet-stream",
+      "status": 206,
+      "type": "application/octet-stream",
+      "range": "bytes 0-1023/118436750",
+      "acceptRanges": "bytes"
+    }
+  ]
+}
