@@ -1,0 +1,24 @@
+name = "portfolio-steam-playtime"
+main = "src/index.js"
+compatibility_date = "2026-10-14"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://demiralpdemirel-cloud.github.io"
+
+[[ratelimits]]
+name = "CLIENT_LIMITER"
+namespace_id = "36567001"
+[ratelimits.simple]
+limit = 30
+period = 60
+
+[[ratelimits]]
+name = "STEAM_LIMITER"
+namespace_id = "36567002"
+[ratelimits.simple]
+limit = 1
+period = 60
+
+# STEAM_API_KEY is configured with wrangler secret put, never [vars].
+# For local frontend testing use wrangler dev --var ALLOWED_ORIGINS:http://127.0.0.1:4183

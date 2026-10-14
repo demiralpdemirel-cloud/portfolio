@@ -6,14 +6,10 @@ export const tools = [
   { name: 'Adobe After Effects', category: 'VFX', tags: ['VFX', 'Compositing', 'Motion'], priority: 'primary' },
   { name: 'Boris FX Mocha Pro', category: 'VFX', tags: ['Tracking', 'Rotoscoping', 'Compositing'], priority: 'primary' },
   { name: 'Boris FX Silhouette', category: 'VFX', tags: ['Rotoscoping', 'Paint', 'Compositing'], priority: 'primary' },
-  { name: 'Keying Suite', category: 'VFX', tags: ['Keying', 'Compositing'] },
   { name: 'Topaz Video AI', category: 'AI', tags: ['Restoration', 'Upscaling'], priority: 'primary' },
-  { name: 'Upscayl', category: 'AI', tags: ['Image', 'Upscaling'], priority: 'primary' },
   { name: 'Adobe Photoshop', category: 'IMAGE', tags: ['Image', 'Retouching', 'Design'], priority: 'primary' },
   { name: 'Adobe Illustrator', category: 'IMAGE', tags: ['Vector', 'Design'] },
   { name: 'Adobe Premiere Pro', category: 'EDITING', tags: ['Editing', 'Post-production'], priority: 'primary' },
-  { name: 'Adobe Media Encoder', category: 'EDITING', tags: ['Encoding', 'Delivery'] },
-  { name: 'HandBrake', category: 'EDITING', tags: ['Encoding', 'Delivery'] },
 ]
 
 const categoryOrder = ['3D', 'VFX', 'AI', 'IMAGE', 'EDITING']

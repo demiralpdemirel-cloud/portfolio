@@ -16,6 +16,7 @@ test('delivery mapping preserves canonical data and avoids alternative retired h
 })
 test('tool interactions use verified tool names and illustrative workflows, stopped offscreen',()=>{
   const source=readFileSync(new URL('../src/components/ToolStudy.jsx',import.meta.url),'utf8')
-  assert.match(source,/IntersectionObserver/);assert.match(source,/observer\.disconnect/);assert.match(source,/Illustrative workflow/)
+  const motion=readFileSync(new URL('../src/motion/useSoftwareMotion.js',import.meta.url),'utf8')
+  assert.match(motion,/IntersectionObserver/);assert.match(motion,/observer\.disconnect/);assert.match(source,/Illustrative workflow/)
   assert.doesNotMatch(source,/requestAnimationFrame|setInterval/)
 })

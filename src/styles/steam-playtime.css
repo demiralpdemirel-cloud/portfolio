@@ -1,0 +1,9 @@
+.steam-playtime { min-width: 0; }
+.steam-playtime-value { min-height: 2.3rem; font-variant-numeric: tabular-nums; }
+.steam-playtime-value strong { white-space: nowrap; font-size: clamp(1.15rem, 2vw, 2rem); }
+.steam-playtime-value small { font: 10px/1.2 Space Mono, monospace; letter-spacing: 0; }
+.steam-playtime-copy { display: grid; gap: 7px; }
+.steam-playtime-copy .steam-sync-state { color: var(--text); }
+.steam-playtime-copy a { width: fit-content; font: 10px/1.5 Space Mono, monospace; color: var(--muted); text-underline-offset: 4px; }
+.steam-playtime-copy a:hover, .steam-playtime-copy a:focus-visible { color: var(--text); }
+.steam-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

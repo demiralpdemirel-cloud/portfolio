@@ -9,6 +9,7 @@ import ProjectDetail from './components/project/ProjectDetail'
 import ProductionDetailModal from './components/experience/ProductionDetailModal'
 import ToolStudy from './components/ToolStudy.jsx'
 import PerformanceProbe from './components/PerformanceProbe.jsx'
+import SteamPlaytime from './components/SteamPlaytime.jsx'
 import CreativeWorlds from './components/CreativeWorlds.jsx'
 import JewelCaseCatalog from './components/JewelCaseCatalog.jsx'
 import CaseReveal from './components/CaseReveal.jsx'
@@ -238,15 +239,7 @@ export default function App() {
                 <strong>{professionalProfile.instagram.handle}</strong> ↗
               </a>
             </article>
-            {professionalProfile.softwareHours.map((item) => (
-              <article className="profile-panel" key={item.id}>
-                <span>
-                  {item.name} / {item.source}
-                </span>
-                <strong>{item.hours.toLocaleString('en-US')}</strong>
-                <p>{t(item.qualifier)}</p>
-              </article>
-            ))}
+            <SteamPlaytime />
           </div>
           <span className="light-rail" />
         </section>
@@ -318,7 +311,7 @@ export default function App() {
             ))}
           </div>
           <h3 className="tools-label">{t('TOOLS / SOFTWARE')}</h3>
-          <div className="tool-grid">
+          <div className="software-grid">
             {tools.map((tool) => (
               <ToolStudy key={tool.name} tool={tool} />
             ))}

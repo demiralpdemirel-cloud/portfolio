@@ -1,0 +1,2 @@
+# Copy to .dev.vars locally; enter the real key there, never in Git or chat.
+STEAM_API_KEY=

@@ -7,6 +7,10 @@ dist
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.wrangler/
 
 # Large source videos are hosted as GitHub Release assets, not in Git or Pages.
 /public/media/productions/aselsan/aselsan.mp4

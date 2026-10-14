@@ -26,13 +26,4 @@ export const professionalProfile = {
       url: 'https://www.imdb.com/name/nm17748059/',
     },
   ],
-  softwareHours: [
-    {
-      id: 'blender',
-      name: 'Blender',
-      hours: 3914.9,
-      source: 'Steam',
-      qualifier: 'Minimum tracked hours',
-    },
-  ],
 }
