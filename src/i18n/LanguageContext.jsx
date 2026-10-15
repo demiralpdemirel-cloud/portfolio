@@ -25,15 +25,13 @@ export function LanguageProvider({ children }) {
   const changeLanguage = useCallback(next => {
     if (!['en', 'tr'].includes(next) || next === language) return
     // Never remount chapters or rerun reveal timelines; refresh their measurements only.
-    const y = window.scrollY
-    const hash = window.location.hash
     window.clearTimeout(transitionTimer.current)
     setLanguage(next)
     document.documentElement.classList.remove('language-change')
     document.documentElement.classList.add('language-change')
     transitionTimer.current = window.setTimeout(() => {
-      ScrollTrigger.refresh()
-      if (document.body.style.position !== 'fixed' && window.location.hash === hash) window.scrollTo({ top: y, behavior: 'instant' })
+      // Do not replay a stale position if the user scrolls during the copy transition.
+      ScrollTrigger.refresh(true)
       document.documentElement.classList.remove('language-change')
     }, 220)
   }, [language])

@@ -1,9 +1,11 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { createViewportRefreshGate, allowInitialAnchor } from '../utils/viewportRefresh.js'
 gsap.registerPlugin(ScrollTrigger)
 ScrollTrigger.config({
   autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
+  ignoreMobileResize: true,
 })
 
 // One owner for scene timelines, responsive variants and teardown. No scroll-frame React state.
@@ -13,6 +15,18 @@ export default function useScrollWorld(root, revision) {
     let stopped = false,
       resizeTimer,
       frame
+    const initialY = window.scrollY, initialHash = location.hash
+    let interacted = false, pendingRefresh = false
+    const needsViewportRefresh = createViewportRefreshGate(innerWidth, innerHeight)
+    const input = () => { interacted = true }
+    const keyInput = event => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) input() }
+    // Startup anchors are not permission to pull a user back after a slow font load.
+    for (const event of ['wheel', 'touchstart', 'pointerdown']) window.addEventListener(event, input, { passive: true })
+    window.addEventListener('keydown', keyInput)
+    const removeStartupInputs = () => {
+      for (const event of ['wheel', 'touchstart', 'pointerdown']) window.removeEventListener(event, input)
+      window.removeEventListener('keydown', keyInput)
+    }
     const forcedReduced = new URLSearchParams(location.search).has(
       'reduced-motion',
     )
@@ -216,29 +230,41 @@ export default function useScrollWorld(root, revision) {
         },
       )
     }, root)
-    const resize = () => {
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 140)
+    const refresh = () => {
+      if (stopped) return
+      if (document.querySelector('dialog[open], .showreel-viewer, .fullscreen-viewer')) { pendingRefresh = true; return }
+      pendingRefresh = false
+      // Safe refresh waits for scrolling to finish instead of interrupting momentum.
+      ScrollTrigger.refresh(true)
     }
+    const queueRefresh = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(refresh, 140)
+    }
+    const resize = () => { if (needsViewportRefresh(innerWidth, innerHeight)) queueRefresh() }
+    const orientation = () => { needsViewportRefresh(innerWidth, innerHeight, true); queueRefresh() }
+    const modalClosed = event => { if (pendingRefresh && event.target.tagName === 'DIALOG') queueRefresh() }
     const visibility = () => {
       document.documentElement.dataset.hidden = String(document.hidden)
     }
     const settle = () => {
       if (stopped) return
-      ScrollTrigger.refresh()
+      refresh()
       const target = document.getElementById(location.hash.slice(1))
       if (
-        !initialized.current &&
         target &&
-        !document.querySelector('dialog[open]')
+        allowInitialAnchor({ initialized: initialized.current, interacted, initialY, currentY: window.scrollY, initialHash, currentHash: location.hash, modalOpen: !!document.querySelector('dialog[open]') })
       )
         target.scrollIntoView({ block: 'start', behavior: 'instant' })
       initialized.current = true
+      removeStartupInputs()
     }
     document.fonts.ready.then(() => {
       if (!stopped) frame = requestAnimationFrame(settle)
     })
     window.addEventListener('resize', resize, { passive: true })
+    window.addEventListener('orientationchange', orientation, { passive: true })
+    document.addEventListener('close', modalClosed, true)
     document.addEventListener('visibilitychange', visibility)
     visibility()
     return () => {
@@ -246,6 +272,9 @@ export default function useScrollWorld(root, revision) {
       clearTimeout(resizeTimer)
       cancelAnimationFrame(frame)
       window.removeEventListener('resize', resize)
+      window.removeEventListener('orientationchange', orientation)
+      document.removeEventListener('close', modalClosed, true)
+      removeStartupInputs()
       document.removeEventListener('visibilitychange', visibility)
       context.revert()
     }
@@ -253,7 +282,7 @@ export default function useScrollWorld(root, revision) {
   useLayoutEffect(() => {
     // Filtering changes measurements, not the world engines. Refresh once instead of
     // reverting/recreating every scene and every artwork tween on each category click.
-    const frame = requestAnimationFrame(() => ScrollTrigger.refresh())
+    const frame = requestAnimationFrame(() => ScrollTrigger.refresh(true))
     return () => cancelAnimationFrame(frame)
   }, [revision])
 }
