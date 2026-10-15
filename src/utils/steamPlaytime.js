@@ -3,6 +3,7 @@ export const PLAYTIME_TTL = 600000
 export const LAST_GOOD_TTL = 86400000
 
 export function validatePlaytime(value, now = Date.now()) {
+  if (value?.source === PUBLIC_STEAM_SOURCE) return validatePublicPlaytime(value, now)
   const age = now - Date.parse(value?.updatedAt)
   if (value?.appId !== 365670 || value?.source !== 'steam' || !Number.isSafeInteger(value.minutes) || value.minutes < 0 || !Number.isFinite(value.hours) || Math.abs(value.hours - value.minutes / 60) > 0.000001 || !Number.isFinite(age) || age < -60000 || age > LAST_GOOD_TTL || typeof value.cached !== 'boolean' || typeof value.stale !== 'boolean') throw new Error('Invalid Steam response')
   return { appId: 365670, minutes: value.minutes, hours: value.minutes / 60, updatedAt: value.updatedAt, source: 'steam', cached: value.cached, stale: value.stale || age >= PLAYTIME_TTL }
@@ -18,7 +19,7 @@ export function endpointURL(raw) {
   } catch { return null }
 }
 
-export const hoursFormatter = language => new Intl.NumberFormat(language === 'tr' ? 'tr-TR' : 'en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+export const hoursFormatter = (language, roundedPublic = false) => new Intl.NumberFormat(language === 'tr' ? 'tr-TR' : 'en-US', { minimumFractionDigits: roundedPublic ? 0 : 1, maximumFractionDigits: 1 })
 
 export async function requestPlaytime(endpoint, fetcher = fetch) {
   const result = await fetcher(endpoint, { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(10000), headers: { Accept: 'application/json' } })
@@ -33,3 +34,4 @@ export function loadPlaytime(endpoint) {
   if (!pageRequest) pageRequest = requestPlaytime(endpoint)
   return pageRequest
 }
+import { validatePublicPlaytime, PUBLIC_STEAM_SOURCE } from './publicSteam.js'

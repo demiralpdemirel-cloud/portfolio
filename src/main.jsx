@@ -8,6 +8,7 @@ import './styles/theme.css'
 import './styles/scroll.css'
 import './styles/worlds.css'
 import './styles/jewel-catalog.css'
+import './styles/production-lab.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <LanguageProvider>

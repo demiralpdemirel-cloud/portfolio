@@ -13,6 +13,7 @@ import SteamPlaytime from './components/SteamPlaytime.jsx'
 import CreativeWorlds from './components/CreativeWorlds.jsx'
 import JewelCaseCatalog from './components/JewelCaseCatalog.jsx'
 import CaseReveal from './components/CaseReveal.jsx'
+import ProductionFrame from './components/ProductionFrame.jsx'
 import { worldFor, worlds } from './data/worlds.js'
 import useScrollWorld from './motion/useScrollWorld.js'
 import { catalog, filterPersonalCatalog } from './data/catalog.js'
@@ -131,8 +132,9 @@ export default function App() {
             <div className="perspective-floor" />
             <span className="horizon-orbit" />
           </div>
+          <div className="hero-lab-art"><ProductionFrame /><a className="hero-lab-inspect" href="#cafe-environment">{t('INSPECT THE PROCESS')} ↗</a></div>
           <div className="hero-identity">
-            <p className="scene-number">01 / {t('SCROLL AS CAMERA')}</p>
+            <p className="scene-number">01 / CINEMATIC PRODUCTION LAB</p>
             <h1 className="scroll-title">
               <span>DEMİRALP</span>
               <span>DEMİREL</span>
@@ -143,31 +145,10 @@ export default function App() {
             </a>
           </div>
           <figure className="hero-portrait">
-            <img src={assetPath(siteConfig.profileImage)} alt={siteConfig.name} fetchPriority="high" decoding="async" width="1000" height="1832" />
+            <img src={assetPath(siteConfig.profileImage)} alt={siteConfig.name} loading="lazy" decoding="async" width="1000" height="1832" />
             <figcaption>{t('THE ARTIST / DEMİRALP DEMİREL')}</figcaption>
           </figure>
-          <div className="hero-fragments" aria-label={t('Featured artwork')}>
-            {[
-              catalog[0],
-              catalog[2],
-              catalog.find((entry) => entry.id === 'cafe-environment'),
-            ].map((entry, index) => (
-              <a
-                href={'#' + entry.id}
-                key={entry.id}
-                className={`hero-fragment hero-fragment--${['one', 'two', 'three'][index]}`}
-              >
-                <img
-                  src={assetPath(entry.thumbnailLarge)}
-                  alt={t(entry.title)}
-                  decoding="async"
-                />
-                <span>
-                  {entry.number} / {t(entry.title)} ↗
-                </span>
-              </a>
-            ))}
-          </div>
+          <div className="hero-process-index" aria-label={t('Production disciplines')}><span>{t('GEOMETRY')}</span><i>→</i><span>{t('LIGHTING')}</span><i>→</i><span>{t('COMPOSITING')}</span><i>→</i><span>{t('FINAL FRAME')}</span></div>
           <div className="hero-bottom">
             <span>{t('DEPTH / MOTION / REAL WORK')}</span>
             <a href="#about">{t('SCROLL TO ENTER')} ↓</a>
@@ -274,6 +255,7 @@ export default function App() {
                   setBreakdown(index)
                 }}
               >
+                <img className="breakdown-thumb" src={assetPath(item.poster)} alt="" width="320" height="180" loading="lazy" decoding="async" />
                 <span>
                   {item.number} / {t(item.kind)}
                 </span>
@@ -323,16 +305,24 @@ export default function App() {
           <div className="education-composition"><span className="education-line"/><div className="education-copy"><p>{t(education.institutionPeriod)}</p><h3>{t(education.program)}</h3></div></div>
           <span className="light-rail"/>
         </section>
+        <section id="final-shot" className="camera-scene final-shot" data-scene aria-labelledby="final-shot-title">
+          <header className="final-shot__heading"><p className="scene-number">12 / {t('CINEMATIC FINAL SHOT')}</p><h2 id="final-shot-title">{t('EVERY LAYER.')}<br/><span>{t('ONE FINAL FRAME.')}</span></h2><p>{t('Geometry, light and compositing. One scene, brought together.')}</p></header>
+          <ProductionFrame closing />
+          <div className="final-shot__disciplines" aria-label={t('Production disciplines')}>{['GEOMETRY','SHADING','LIGHTING','RENDERING','COMPOSITING','VFX','FINAL FRAME'].map((label,index)=><span key={label}><small>0{index+1}</small>{t(label)}</span>)}</div>
+          <p className="final-shot__source">{t('Presentation sequence using original SOLID, MIST and FINAL renders. No isolated shading, lighting or VFX passes are claimed.')}</p>
+          <a className="final-shot__next" href="#contact">{t('THE NEXT FRAME STARTS WITH A CONVERSATION.')} <span>↓</span></a>
+          <span className="light-rail"/>
+        </section>
         <section id="contact" className="camera-scene contact-scene" data-scene>
           <div className="contact-depth" aria-hidden="true">
             <img
-              src={assetPath('media/web/backgrounds--contact-1280.webp')}
+              src={assetPath('media/projects/cafe-environment/final.webp')}
               alt=""
               loading="lazy"
               decoding="async"
             />
           </div>
-          <p className="scene-number">12 / {t('CONTACT')}</p>
+          <p className="scene-number">13 / {t('CONTACT')}</p>
           <h2>
             {['LET’S CREATE', 'SOMETHING.'].map((word) => (
               <span className="contact-word" key={word}>
@@ -368,7 +358,7 @@ export default function App() {
         </section>
       </main>
       <footer className="scroll-footer">
-        <span>DEMİRALP DEMİREL / PORTFOLIO SCROLL</span>
+        <span>DEMİRALP DEMİREL / CINEMATIC PRODUCTION LAB</span>
         <a href="#home">{t('BACK TO TOP')} ↑</a>
       </footer>
       <CaseReveal ref={caseReveal}/>

@@ -1,5 +1,11 @@
 # Steam Blender playtime
 
+**Legacy optional API service.** As of 2026-10-15 the portfolio uses the public
+profile snapshot pipeline instead: `npm run steam:sync` and the scheduled Pages
+workflow. No key or Worker is required for the current frontend. See
+`../../docs/STEAM-PLAYTIME-VALIDATION.md`. The following documents the retained
+optional Worker implementation, not a prerequisite for the published card.
+
 Status: source and frontend prepared; **real account playtime is not yet verified**. No Steam key or Cloudflare login was available during implementation. The Worker is not deployed. The frontend can be published safely in its unavailable state until the public endpoint is configured.
 
 ## Architecture

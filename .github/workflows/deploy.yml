@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '17 */2 * * *'
 permissions:
   contents: read
   pages: write
@@ -20,10 +22,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Refresh verified public Steam playtime (no API key)
+        run: npm run steam:sync
       - run: npm test
       - run: npm run build
-        env:
-          VITE_STEAM_PLAYTIME_URL: ${{ vars.STEAM_PLAYTIME_URL }}
       - run: git diff --check
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

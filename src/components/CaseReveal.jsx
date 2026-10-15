@@ -25,6 +25,7 @@ export default forwardRef(function CaseReveal(_, ref) {
     suspendedMotion.current.forEach(animation => { if (animation.playState === 'paused') animation.play() })
     suspendedMotion.current = []
     phase.current = 'idle'
+    if (dialog.current) dialog.current.dataset.phase = 'idle'
     source.current?.closest('button')?.focus({ preventScroll: true })
     source.current = null
   }

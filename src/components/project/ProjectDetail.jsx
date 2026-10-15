@@ -9,6 +9,7 @@ import ProjectMeta from './ProjectMeta'
 import BreakdownSwitcher from '../media/BreakdownSwitcher'
 import { projectMediaDimensions } from '../../data/projects'
 import SceneStatistics from './SceneStatistics'
+import { CafeProcess, TopologyStudy } from '../ProcessLab.jsx'
 
 function DetailImage({ src, title, alt = title, onOpen }) {
   const { t } = useLanguage()
@@ -67,6 +68,8 @@ export default function ProjectDetail({ project, onClose, onNext, returnFocus })
         </div><div className="project-modal__info"><h2 id="project-modal-title">{t(project.title)}</h2><p className="section-index">{t(project.primaryCategory || project.categories?.join(' / '))}</p><p className="project-modal__description">{t(project.description)}</p><ProjectMeta project={project} />{project.credits?.length > 0 && <p>{t('CREDITS')} / {project.credits.join(' / ')}</p>}</div></div>
         {project.type && <p className="section-index">{t(project.type)}</p>}
         <SceneStatistics stats={project.sceneStats} />
+        {project.id==='cafe-environment' && <section className="project-modal__supplement"><h3 className="section-index">{t('INSPECT THE PROCESS')}</h3><CafeProcess /></section>}
+        {project.id==='sofa-modeling' && <TopologyStudy project={project} />}
         {!switcher && project.mediaGroups ? project.mediaGroups.map(group => <section key={group.label} className="project-modal__supplement"><h3 className="section-index">{t(group.label)}</h3><div className="project-modal__gallery">{group.indices.map(index => <DetailImage key={images[index]} src={images[index]} alt={project.mediaViews?.[index]?.alt} title={`${t(project.title)} — ${t(group.label)} ${index + 1}`} onOpen={() => setImageIndex(index)} />)}</div></section>) : !switcher && images.length > 1 && <section className="project-modal__gallery" aria-label={t(`${project.title} gallery`)}>{images.slice(1).map((src, index) => <DetailImage key={src} src={src} title={`${project.title} — view ${index + 2}`} onOpen={() => setImageIndex(index + 1)} />)}</section>}
         {project.references?.length > 0 && <section className="project-modal__supplement"><h3 className="section-index">{t('REAL-WORLD REFERENCES')}</h3><div className="project-modal__references">{project.references.map(reference => <a key={reference.image} href={reference.source} target="_blank" rel="noopener noreferrer"><img src={reference.image} alt={t(reference.label)} loading="lazy" decoding="async" /><span>{reference.sourceLabel} ↗</span></a>)}</div></section>}
         {[['STRUCTURE INFO', project.structureInfo], ['PROJECT FACTS', project.projectFacts]].map(([heading, facts]) => facts?.length > 0 && <section key={heading} className="project-modal__supplement"><h3 className="section-index">{t(heading)}</h3><dl className="project-modal__facts">{facts.map(fact => <div key={fact.label}><dt>{t(fact.label)}</dt><dd>{t(fact.value)}</dd></div>)}</dl>{heading === 'STRUCTURE INFO' && <a href={project.references[0].source} target="_blank" rel="noopener noreferrer">{project.references[0].sourceLabel} ↗</a>}</section>)}

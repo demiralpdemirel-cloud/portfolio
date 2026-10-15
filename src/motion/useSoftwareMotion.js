@@ -33,6 +33,7 @@ export function buildSoftwareTimeline(id, timeline, select) {
       timeline.to(select('.cube-orbit'), { rotation: 360, duration: 1.85, ease: 'power2.inOut' }, 0)
         .to(select('.default-cube'), { rotationY: 210, rotationX: -24, duration: 1.85 }, 0)
         .to(select('.viewport-orbit'), { opacity: 0.65, duration: 0.5 }, 0)
+        .to(select('.default-cube i'), { backgroundColor: '#d3945666', duration: .6, stagger: .04 }, 1.05)
       break
     case 'after-effects':
       timeline.fromTo(select('.micro-burst--left'), { scale: 0.25, opacity: 0 }, { scale: 1.15, opacity: 0.85, duration: 0.32 }, 0.08)
@@ -43,6 +44,7 @@ export function buildSoftwareTimeline(id, timeline, select) {
         .to(logo, { x: -10, rotation: -4, duration: 0.45 }, 0.6)
         .to(logo, { x: 0, rotation: 0, duration: 0.55 }, 1.05)
         .to(select('.impact-line'), { scaleX: 1, opacity: 0.45, duration: 0.5 }, 0.15)
+        .fromTo(select('.ae-layer-assembly i'), { x: index => (index-1)*20, y: index => (index-1)*-10, opacity: 0 }, { x: 0, y: 0, opacity: .5, duration: .55, stagger: .06 }, 1.05)
       break
     case 'premiere':
       timeline.to(logo, { y: -16, duration: 0.5 }, 0)
@@ -57,6 +59,8 @@ export function buildSoftwareTimeline(id, timeline, select) {
         .to(select('.layer-front'), { x: 18, y: -10, rotation: 4, opacity: 0.45, duration: 0.7 }, 0.08)
         .to(select('.crop-selection'), { opacity: 0.85, scale: 1, duration: 0.55 }, 0.25)
         .to(logo, { y: -3, duration: 0.5 }, 0)
+        .to(select('.layer-back'), { x: 0, y: 0, rotation: 0, opacity: .65, duration: .65 }, .85)
+        .to(select('.layer-front'), { x: 0, y: 0, rotation: 0, opacity: .7, duration: .65 }, .9)
       break
     case 'illustrator':
       timeline.to(select('.bezier-handles'), { opacity: 0.6, duration: 0.4 }, 0)

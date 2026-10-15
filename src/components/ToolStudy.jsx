@@ -12,7 +12,7 @@ function Burst({ side }) {
 function ToolGeometry({ id }) {
   switch (id) {
     case 'blender': return <><span className="viewport-orbit" /><span className="cube-orbit"><span className="default-cube">{['front', 'back', 'right', 'left', 'top', 'bottom'].map(face => <i key={face} className={`cube-${face}`} />)}</span></span><span className="viewport-axes">X <i /> Y</span></>
-    case 'after-effects': return <><Burst side="left" /><Burst side="right" /><span className="impact-line" /></>
+    case 'after-effects': return <><Burst side="left" /><Burst side="right" /><span className="impact-line" /><span className="ae-layer-assembly"><i/><i/><i/></span></>
     case 'premiere': return <span className="micro-timeline"><i className="timeline-ruler" /><i className="clip-left" /><i className="clip-right" /><i className="audio-strip" /><i className="edit-playhead" /><i className="edit-cut" /></span>
     case 'photoshop': return <><span className="image-layer layer-back" /><span className="image-layer layer-front" /><svg className="crop-selection" viewBox="0 0 160 120"><path d="M25 40V18H48 M112 18H135V40 M135 80V102H112 M48 102H25V80" /><rect x="25" y="18" width="110" height="84" strokeDasharray="2 5" /></svg></>
     case 'illustrator': return <svg className="bezier-study" viewBox="0 0 200 140"><path className="bezier-handles" d="M26 105 45 25 M174 105 155 25" /><path className="bezier-curve" d="M26 105C45 0 155 0 174 105" pathLength="1" />{[[26,105],[45,25],[155,25],[174,105]].map(([x,y]) => <rect className="vector-node" key={x} x={x-3} y={y-3} width="6" height="6" />)}</svg>

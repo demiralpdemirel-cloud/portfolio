@@ -53,13 +53,14 @@ export default function useScrollWorld(root, revision) {
               {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
-                stagger: 0.12,
+                duration: 0.75,
+                stagger: 0.08,
                 ease: 'power3.out',
+                delay: .55,
               },
             )
           const flight = motion(hero, 'top top', 'bottom top')
-          // Portrait is the primary identity and stays fully opaque throughout Hero.
+          // Artwork leads; the artist remains a smaller, stable signature.
           flight.to('.hero-portrait', {rotateY:small ? -2 : -7, rotateX:small ? 0 : 3, z:small ? -8 : -60, yPercent:-5, ease:'none'},0)
           flight.to(
             '.hero-depth',
@@ -78,33 +79,7 @@ export default function useScrollWorld(root, revision) {
             },
             0,
           )
-          flight.to(
-            '.hero-fragment--one',
-            {
-              xPercent: small ? 8 : 24,
-              yPercent: -38,
-              rotateY: -9,
-              z: small ? 10 : 220,
-              ease: 'none',
-            },
-            0,
-          )
-          flight.to(
-            '.hero-fragment--two',
-            {
-              xPercent: -8,
-              yPercent: -16,
-              rotateY: 8,
-              z: small ? 10 : 90,
-              ease: 'none',
-            },
-            0,
-          )
-          flight.to(
-            '.hero-fragment--three',
-            { yPercent: 25, z: small ? 0 : 120, ease: 'none' },
-            0,
-          )
+          flight.to('.hero-lab-art', { yPercent: small ? -3 : -8, rotateY: small ? 0 : -2, ease: 'none' }, 0)
           for (const scene of scenes) {
             const id = scene.id
             if (id === 'home') continue
@@ -151,14 +126,13 @@ export default function useScrollWorld(root, revision) {
               motion(scene,'top bottom','top 12%').fromTo(seam,{scaleX:0.18,rotate:world==='architecture' ? -12 : 8,xPercent:-20},{scaleX:1,rotate:0,xPercent:0,stagger:0.025,ease:'none'})
               motion(scene,'bottom 90%','bottom 10%').to(scene.querySelector('.world-geometry'),{yPercent:-12,rotateZ:world==='compositing' ? -4 : 0,opacity:0.18,ease:'none'})
               if(world==='architecture') {
-                motion(scene,'top 95%','top 15%').fromTo(scene.querySelector('.architectural-lines path'),{strokeDashoffset:1},{strokeDashoffset:0,ease:'none'})
                 timeline.fromTo(scene.querySelector('.world-grid'),{rotateX:72,z:-100,y:100},{rotateX:58,z:0,y:-50,ease:'none'},0)
               } else if(world==='product') {
                 timeline.fromTo(scene.querySelectorAll('.studio-light'),{xPercent:-35,rotate:-25},{xPercent:35,rotate:15,stagger:0.15,ease:'none'},0)
               } else if(world==='compositing') {
                 timeline.fromTo(scene.querySelector('.node-lines'),{xPercent:-6,scale:0.92},{xPercent:4,scale:1,ease:'none'},0)
               } else if(world==='modeling') {
-                timeline.fromTo(scene.querySelector('.topology-outline'),{rotateY:-24,rotateX:15,z:-80},{rotateY:10,rotateX:0,z:20,ease:'none'},0)
+                timeline.fromTo(scene.querySelectorAll('.viewport-axis'),{opacity:.2,y:12},{opacity:.8,y:0,stagger:.08,ease:'none'},0)
               } else if(world==='production') {
                 timeline.fromTo(scene.querySelector('.projector-beam'),{rotate:-8,xPercent:-15},{rotate:5,xPercent:10,ease:'none'},0)
               }
@@ -204,6 +178,8 @@ export default function useScrollWorld(root, revision) {
                 { rotateY: 0, y: 0, z: 0, stagger: 0.08, ease: 'none' },
                 0,
               )
+            } else if (id === 'final-shot') {
+              timeline.fromTo(scene.querySelector('.final-shot__heading'),{y:25,opacity:.5},{y:0,opacity:1,ease:'none'},0)
             } else if (id === 'contact') {
               timeline.fromTo(
                 scene.querySelectorAll('.contact-word'),

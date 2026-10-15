@@ -1,4 +1,39 @@
-# Steam Blender integration — validation, 2026-10-14
+# Steam Blender integration — current validation, 2026-10-15
+
+## Public-profile fix (supersedes the legacy API setup below)
+
+Real unauthenticated browser AND server HTML reads confirmed Blender app 365670
+on the main profile with 3,937 displayed hours. The groups page has no playtime;
+the full games list redirects signed-out visitors to login. Neither is used.
+
+Canonical source: https://steamcommunity.com/profiles/76561198324240680/?l=english
+
+`npm run steam:sync` binds the exact Blender app link to its own recent_game block
+and reads only English hrs on record, not recent two-week totals or other games.
+No cookies, login, Steam API key or Cloudflare deployment required. Steam rounds
+public hours: the site explicitly labels rounded public-profile hours, not exact
+API minutes. No invented minute value is derived from the displayed hours.
+
+Frontend fetches same-origin data/steam-blender.json, avoiding Steam browser CORS.
+Pages refreshes the snapshot on push/manual deployment and every two hours with
+GitHub Actions. Cron execution is best effort, not an instantaneous live feed.
+GitHub disables scheduled workflows in public repositories after 60 days without
+repository activity. If disabled or delayed, the card retains its last verified
+reading with the original timestamp; automatic updates require re-enabling the
+workflow. This is not an unconditional forever-live guarantee.
+Reference: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
+No automated source commits or elevated contents-write permission is needed.
+The source snapshot is retained; scheduled builds first retrieve the last deployed
+snapshot so an outage cannot roll the reading back to an older repository value.
+Missing Blender, login HTML, changed markup or fetch failure preserves the last
+verified reading and ORIGINAL timestamp. After six hours it is visibly stale,
+not deleted or misrepresented as fresh. A removed public listing cannot be
+reliably updated until Blender appears on the public profile again.
+
+Current code uses no STEAM_PLAYTIME_URL variable; a stale repository variable
+cannot silently send the card back to the undeployed legacy Worker.
+
+## Historical API implementation notes (2026-10-14; no longer the frontend path)
 
 STEAM PROFILE: 76561198324240680
 

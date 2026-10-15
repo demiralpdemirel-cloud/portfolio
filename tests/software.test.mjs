@@ -67,7 +67,7 @@ test('Blender has a six-face cube orbit; AE bursts alternate by half a second an
   assert.match(source('src/components/ToolStudy.jsx'), /'front', 'back', 'right', 'left', 'top', 'bottom'/)
   const ae = recordTimeline()
   buildSoftwareTimeline('after-effects', ae, target => target)
-  const bursts = ae.calls.filter(call => call.method === 'fromTo')
+  const bursts = ae.calls.filter(call => call.method === 'fromTo' && call.target.startsWith('.micro-burst'))
   assert.equal(bursts.length, 2)
   assert.equal(Number((bursts[1].position - bursts[0].position).toFixed(2)), 0.5)
   assert.ok(ae.calls.some(call => call.values.x > 0))

@@ -15,12 +15,14 @@ test('all 20 works have exactly one primary world; canonical details are reused'
   assert.equal(worldFor(catalog.find(e=>e.id==='sofa-modeling')),'modeling')
   assert.equal(worldFor(catalog.find(e=>e.id==='project-004')),'modeling')
 })
-test('portrait is real local source, eager in Hero, retained during scroll; About remains second',()=>{
+test('real portrait remains in Hero while actual project imagery has loading priority; About remains second',()=>{
   const app=readFileSync(new URL('../src/App.jsx',import.meta.url),'utf8')
   const motion=readFileSync(new URL('../src/motion/useScrollWorld.js',import.meta.url),'utf8')
   assert.ok(existsSync(new URL('../public/'+siteConfig.profileImage,import.meta.url)))
   assert.ok(app.indexOf('className="hero-portrait"')<app.indexOf('id="about"'))
-  assert.match(app,/profileImage\)} alt=\{siteConfig.name\} fetchPriority="high"/)
+  assert.match(app,/profileImage\)} alt=\{siteConfig.name\} loading="lazy"/)
+  const frame=readFileSync(new URL('../src/components/ProductionFrame.jsx',import.meta.url),'utf8')
+  assert.match(frame,/fetchPriority=\{closing \? 'auto' : 'high'\}/)
   const sections=[...app.matchAll(/<section\s+id="([^"]+)"/g)].map(m=>m[1])
   assert.deepEqual(sections.slice(0,2),['home','about'])
   assert.ok(app.indexOf('id="capabilities"')<app.indexOf('id="education"'))
@@ -37,7 +39,9 @@ test('five worlds have unique actual geometry/motion and bilingual presentation 
   }
   assert.match(jsx,/Illustrative layer structure/)
   assert.match(jsx,/breakdownStages/)
-  assert.match(jsx,/mediaViews\[4\]/)
+  assert.match(jsx,/TopologyStudy project=\{entry.detail\}/)
+  const lab=readFileSync(new URL('../src/components/ProcessLab.jsx',import.meta.url),'utf8')
+  assert.match(lab,/project.media\[wire \? 4 : 3\]/)
   assert.match(jsx,/<article id=\{entry.id\}/)
   assert.doesNotMatch(jsx,/<VideoPlayer|requestAnimationFrame|setInterval/)
   assert.match(motion,/\}, \[root\]\)/)

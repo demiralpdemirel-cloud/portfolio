@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
-import { endpointURL, hoursFormatter, loadPlaytime, STEAM_PROFILE, validatePlaytime } from '../utils/steamPlaytime.js'
+import { hoursFormatter, loadPlaytime, STEAM_PROFILE, validatePlaytime } from '../utils/steamPlaytime.js'
 import '../styles/steam-playtime.css'
+import { assetPath } from '../utils/assetPath.js'
 
-const endpoint = endpointURL(import.meta.env.VITE_STEAM_PLAYTIME_URL)
+const endpoint = assetPath('data/steam-blender.json')
 const storageKey = `steam-blender-last-good:${endpoint || 'unconfigured'}`
 
 export default function SteamPlaytime() {
@@ -14,7 +15,7 @@ export default function SteamPlaytime() {
   const number = useRef(null)
   const motion = useRef({ hours: 0 })
   const formatter = useRef(hoursFormatter(language))
-  formatter.current = hoursFormatter(language)
+  formatter.current = hoursFormatter(language, state.data?.source === 'steam-community')
 
   useEffect(() => {
     if (!endpoint) return
@@ -60,18 +61,19 @@ export default function SteamPlaytime() {
   }, [state.data?.hours])
 
   const { data, status } = state
+  const publicProfile = data?.source === 'steam-community'
   const updated = data ? new Intl.DateTimeFormat(language === 'tr' ? 'tr-TR' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(data.updatedAt)) : null
   return <article ref={panel} className="profile-panel steam-playtime" aria-label={t('Blender Steam Recorded Playtime')} aria-busy={status === 'loading'}>
     <span>BLENDER / STEAM</span>
     <div className="steam-playtime-value">
       {data ? <>
         <strong aria-hidden="true"><span ref={number}>—</span> <small>{t('HOURS')}</small></strong>
-        <span className="steam-sr-only">{hoursFormatter(language).format(data.hours)} {t('HOURS')}</span>
+        <span className="steam-sr-only">{formatter.current.format(data.hours)} {t('HOURS')}</span>
       </> : <strong aria-hidden="true">—</strong>}
     </div>
     <div className="steam-playtime-copy" role="status">
-      <p>{t('Steam Recorded Playtime')}</p>
-      <p className="steam-sync-state">{t(status === 'loading' ? 'Checking Steam playtime…' : status === 'success' ? 'STEAM SYNCED' : status === 'stale' ? 'Cached playtime — Steam sync unavailable' : 'Steam playtime unavailable')}</p>
+      <p>{t(publicProfile ? 'Public Steam profile — rounded hours' : 'Steam Recorded Playtime')}</p>
+      <p className="steam-sync-state">{t(status === 'loading' ? 'Checking Steam playtime…' : publicProfile ? status === 'stale' ? 'Last verified profile reading' : 'PUBLIC PROFILE VERIFIED' : status === 'success' ? 'STEAM SYNCED' : status === 'stale' ? 'Cached playtime — Steam sync unavailable' : 'Steam playtime unavailable')}</p>
       {updated && <p>{t(status === 'stale' ? 'Last synced' : 'Last updated')}: <time dateTime={data.updatedAt}>{updated}</time></p>}
       <a href={STEAM_PROFILE} target="_blank" rel="noopener noreferrer">{t('Steam profile')} ↗</a>
     </div>
