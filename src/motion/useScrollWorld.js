@@ -82,7 +82,8 @@ export default function useScrollWorld(root, revision) {
           flight.to('.hero-lab-art', { yPercent: small ? -3 : -8, rotateY: small ? 0 : -2, ease: 'none' }, 0)
           for (const scene of scenes) {
             const id = scene.id
-            if (id === 'home') continue
+            // Production archive owns its finite entrance and selection wipe.
+            if (id === 'home' || id === 'production') continue
             const timeline = motion(scene)
             if (id === 'about') {
               timeline.fromTo(

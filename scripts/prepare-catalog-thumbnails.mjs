@@ -5,6 +5,8 @@ import { catalog } from '../src/data/catalog.js'
 const directory = resolve('public/media/catalog')
 mkdirSync(directory,{recursive:true})
 for(const entry of catalog.filter(entry=>entry.image)) {
+  // Explicit reviewed external reference: never download/re-encode unlicensed artwork.
+  if (entry.detail.remoteArtwork) continue
   if(/^https?:/.test(entry.image)) throw new Error(`Remote source requires review: ${entry.id}`)
   const source = resolve('public',entry.image.replace(/^\//,''))
   if(!existsSync(source)) throw new Error(`Missing source: ${source}`)
@@ -16,4 +18,4 @@ for(const entry of catalog.filter(entry=>entry.image)) {
     if(result.status!==0) throw new Error(result.stderr || `Thumbnail failed: ${entry.id}`)
   }
 }
-console.log(`Prepared thumbnails for ${catalog.filter(entry=>entry.image).length} works; originals untouched.`)
+console.log(`Prepared local thumbnails for ${catalog.filter(entry=>entry.image && !entry.detail.remoteArtwork).length} works; originals and external references untouched.`)

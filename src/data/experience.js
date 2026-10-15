@@ -1,6 +1,7 @@
 import { bilingual } from '../i18n/translations.js'
 import { CURRENT_COMPANY } from './professionalProfile.js'
 import { productions } from './productions.js'
+import { traitorsCredit } from './traitorsTurkiye.js'
 
 export const experience = [
   { title: 'ONBEŞLİLER', period: '2026', summary: '3D ARTIST / COMPOSITING ARTIST', role: ['3D ARTIST', 'COMPOSITING ARTIST'], highlights: [] },
@@ -13,4 +14,5 @@ export const experience = [
   { title: 'KURULUŞ OSMAN', company: CURRENT_COMPANY, period: '2023–TODAY', summary: bilingual('Created large-scale CGI armies and crowd scenes alongside 3D castles, nomadic camps and environment work for cinematic sequences.'), highlights: ['CG ARMIES / CROWD', '3D ENVIRONMENTS', 'CG ENVIRONMENT ASSETS'] },
   { title: 'KURULUŞ ORHAN', summary: productions['kurulus-orhan'].description, highlights: [] },
   { title: 'AŞK VE TAHT', summary: bilingual('Created CGI army and crowd work for production shots.'), highlights: ['CG CROWD / ARMY'] },
+  traitorsCredit,
 ]

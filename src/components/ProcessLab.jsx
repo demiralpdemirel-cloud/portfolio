@@ -50,13 +50,15 @@ export function TopologyStudy({ project }) {
   </div>
 }
 
-export function ArchitectureStudy({ project }) {
+export function ArchitectureStudy({ project, onOpen }) {
   const { t } = useLanguage()
   const [view, setView] = useState(0)
   const views = [{ index:0, label:'BUILDING / OVERVIEW' }, { index:1, label:'FACADE / DETAIL' }, { index:3, label:'SITE / CONTEXT' }]
   return <div className="process-lab architecture-study">
     <div className="process-lab__top"><span>BEYLİKDÜZÜ / 03</span><span>{t('ARCHITECTURAL VIEWS')}</span></div>
-    <img src={assetPath(project.media[views[view].index])} alt={t(project.mediaViews?.[views[view].index]?.alt || project.title)} width="1920" height="1080" loading="lazy" decoding="async" />
+    <button className="architecture-study__image" type="button" onClick={() => onOpen(views[view].index)} aria-label={t(`Open ${project.title} — view ${views[view].index + 1} fullscreen`)}>
+      <img src={assetPath(project.media[views[view].index])} alt={t(project.mediaViews?.[views[view].index]?.alt || project.title)} width="1920" height="1080" loading="lazy" decoding="async" />
+    </button>
     <div className="process-controls" role="group" aria-label={t('Architectural views')}>{views.map((item,index)=><button type="button" key={item.index} aria-pressed={view===index} onClick={()=>setView(index)}>{t(item.label)}</button>)}</div>
     <p className="process-note">{t('Original artist renders — view study, not construction-stage passes.')}</p>
   </div>

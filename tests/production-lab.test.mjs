@@ -38,3 +38,14 @@ test('comparison uses an on-image native thumb with keyboard access and no React
 test('new process controls and source limitations have Turkish counterparts',()=>{
   for(const text of ['GEOMETRY TO REALITY','Compare solid and final render','Cafe process modes','Topology study views','SELECT A BREAKDOWN BELOW','THE BREAKDOWN LAB.','ARCHITECTURAL VIEWS']) assert.notEqual(translate(text,'tr'),text)
 })
+
+test('Beylikduzu has one clickable home cover; architectural views live only in its detail hero',()=>{
+  const world=read('components/CreativeWorlds.jsx')
+  const detail=read('components/project/ProjectDetail.jsx')
+  const lab=read('components/ProcessLab.jsx')
+  assert.doesNotMatch(world,/ArchitectureStudy/)
+  assert.match(world,/onClick=\{event => onOpen\(event, entry\)\}/)
+  assert.match(detail,/project.id === 'beylikduzu-kultur-merkezi' \? <ArchitectureStudy project=\{project\} onOpen=\{setImageIndex\}/)
+  assert.match(lab,/onOpen\(views\[view\].index\)/)
+  assert.match(lab,/index:3, label:'SITE \/ CONTEXT'/)
+})

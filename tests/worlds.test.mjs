@@ -6,12 +6,12 @@ import {catalog} from '../src/data/catalog.js'
 import {siteConfig} from '../src/data/siteConfig.js'
 import {translate} from '../src/i18n/translations.js'
 
-test('all 20 works have exactly one primary world; canonical details are reused',()=>{
+test('all 21 works have exactly one primary world; canonical details are reused',()=>{
   const entries=worlds.flatMap(w=>w.entries)
   assert.equal(entries.length,catalog.length)
   assert.equal(new Set(entries.map(e=>e.id)).size,catalog.length)
   assert.ok(entries.every(e=>catalog.includes(e)))
-  assert.deepEqual(worlds.map(w=>[w.id,w.entries.length]),[['product',5],['architecture',3],['compositing',1],['modeling',2],['production',9]])
+  assert.deepEqual(worlds.map(w=>[w.id,w.entries.length]),[['product',5],['architecture',3],['compositing',1],['modeling',2],['production',10]])
   assert.equal(worldFor(catalog.find(e=>e.id==='sofa-modeling')),'modeling')
   assert.equal(worldFor(catalog.find(e=>e.id==='project-004')),'modeling')
 })

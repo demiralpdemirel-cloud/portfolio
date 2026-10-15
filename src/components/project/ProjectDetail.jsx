@@ -9,7 +9,7 @@ import ProjectMeta from './ProjectMeta'
 import BreakdownSwitcher from '../media/BreakdownSwitcher'
 import { projectMediaDimensions } from '../../data/projects'
 import SceneStatistics from './SceneStatistics'
-import { CafeProcess, TopologyStudy } from '../ProcessLab.jsx'
+import { CafeProcess, TopologyStudy, ArchitectureStudy } from '../ProcessLab.jsx'
 
 function DetailImage({ src, title, alt = title, onOpen }) {
   const { t } = useLanguage()
@@ -62,9 +62,9 @@ export default function ProjectDetail({ project, onClose, onNext, returnFocus })
       <header className="project-modal__header"><p>{t('PROJECT')} / {project.number}</p><div className="modal-header-actions"><LanguageSwitcher inline /><button className="project-modal__close" type="button" onClick={close} autoFocus>{t("CLOSE ×")}</button></div></header>
       <div className="project-modal__content" key={project.id}>
         <div className="project-modal__intro"><div className="project-modal__hero">
-          {project.mediaViews && <p className="section-index">{project.mediaViews[0].label}</p>}
+          {project.mediaViews && project.id !== 'beylikduzu-kultur-merkezi' && <p className="section-index">{project.mediaViews[0].label}</p>}
           {project.video && project.breakdownVideo && <p className="section-index">{t("MAIN FILM")}</p>}
-          {switcher ? <BreakdownSwitcher stages={project.breakdownStages} title={project.title} onOpen={setImageIndex} /> : project.video && project.presentation !== 'environment' ? <VideoPlayer src={project.video.src} poster={project.video.poster} label={project.breakdownVideo ? 'Main film' : project.title} /> : images[0] && <DetailImage src={images[0]} alt={project.mediaViews?.[0]?.alt} title={`${project.title} — view 1`} onOpen={() => setImageIndex(0)} />}
+          {project.id === 'beylikduzu-kultur-merkezi' ? <ArchitectureStudy project={project} onOpen={setImageIndex} /> : switcher ? <BreakdownSwitcher stages={project.breakdownStages} title={project.title} onOpen={setImageIndex} /> : project.video && project.presentation !== 'environment' ? <VideoPlayer src={project.video.src} poster={project.video.poster} label={project.breakdownVideo ? 'Main film' : project.title} /> : images[0] && <DetailImage src={images[0]} alt={project.mediaViews?.[0]?.alt} title={`${project.title} — view 1`} onOpen={() => setImageIndex(0)} />}
         </div><div className="project-modal__info"><h2 id="project-modal-title">{t(project.title)}</h2><p className="section-index">{t(project.primaryCategory || project.categories?.join(' / '))}</p><p className="project-modal__description">{t(project.description)}</p><ProjectMeta project={project} />{project.credits?.length > 0 && <p>{t('CREDITS')} / {project.credits.join(' / ')}</p>}</div></div>
         {project.type && <p className="section-index">{t(project.type)}</p>}
         <SceneStatistics stats={project.sceneStats} />

@@ -27,7 +27,7 @@ test('shelf stays frontal and has no particle, video or continuous animation eng
 })
 test('physical collection contains exactly the nine requested works; all professional records survive', () => {
   assert.deepEqual(personalCatalog.map(entry => entry.title), ['EVGA RTX 3090','KEYBOARD','XPOMATCH','CAFE ENVIRONMENT','INTERIOR','SOFA MODELING','MARIO / ARCADE','STAR WARS / IMPACT','BEYLİKDÜZÜ CULTURAL CENTER'])
-  assert.equal(catalog.filter(entry => entry.kind === 'production').length,11)
+  assert.equal(catalog.filter(entry => entry.kind === 'production').length,12)
   for (const filter of personalFilters) {
     const filtered = filterPersonalCatalog(filter.id)
     assert.ok(filtered.length)

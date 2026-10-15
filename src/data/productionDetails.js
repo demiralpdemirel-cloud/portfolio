@@ -1,5 +1,6 @@
 import { bilingual } from '../i18n/translations.js'
 import { productions } from './productions.js'
+import { traitorsDetails } from './traitorsTurkiye.js'
 // Public metadata researched 2026-10-02. Ratings are indexed IMDb snapshots,
 // not a live API; missing/blocked values remain null. Work credits come ONLY
 // from experience.js and the user's existing credit audit, never public cast data.
@@ -8,6 +9,7 @@ const imdb = (id, rating = null) => ({ imdbTitleId: id, imdbUrl: `https://www.im
 const image = (name, width, height, source, sourceUrl, assetUrl) => ({ image: `/media/productions/${name}.webp`, imageWidth: width, imageHeight: height, imageSource: source, imageSourceUrl: sourceUrl, imageAssetUrl: assetUrl })
 
 export const productionDetails = {
+  'THE TRAITORS TÜRKİYE': traitorsDetails,
   'ONBEŞLİLER': {
     type: 'DIGITAL SERIES', genre: 'DRAMA / ACTION / HISTORY', broadcastYears: '2026',
     platform: 'tabii', productionCompany: 'MİRAY YAPIM', seasons: 1, episodes: 16,

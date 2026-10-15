@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import useModalDialog, { trapModalFocus } from '../../hooks/useModalDialog'
 import { assetPath } from '../../utils/assetPath'
 import VideoPlayer from '../showreel/VideoPlayer'
+import OfficialTrailer from '../media/OfficialTrailer.jsx'
 
 function ProductionMetadata({ production }) {
   const { t, formatDate } = useLanguage()
@@ -14,11 +15,12 @@ function ProductionMetadata({ production }) {
   const rows = [
     ['TYPE', production.type || 'Not confirmed'],
     ['FIRST RELEASE YEAR', production.firstReleaseYear ?? 'Not confirmed'],
-    [series ? 'FIRST RELEASE' : 'RELEASE DATE / TURKEY', formatDate(production.releaseStart)],
+    [production.premiereLabel || (series ? 'FIRST RELEASE' : 'RELEASE DATE / TURKEY'), formatDate(production.releaseStart)],
     ...(series ? [['RELEASE RANGE', production.releaseStart ? `${formatDate(production.releaseStart)} — ${production.status === 'ONGOING' ? (production.hideUnknownFields ? t('PRESENT') : 'PRESENT') : formatDate(production.releaseEnd)}` : 'Not confirmed'], ['SEASONS', production.seasons ?? 'Not confirmed']] : []),
     ...(production.episodes != null ? [['EPISODES', production.episodes]] : []),
     ...(production.platform ? [['PLATFORM', production.platform]] : []),
     ...(production.brand ? [['BRAND', production.brand]] : []),
+    ...(production.host ? [['COUNTRY', production.country], ['LANGUAGE', production.language], ['PRODUCERS', production.producers?.join(' · ')], ['STUDIO', production.studio]].filter(([, value]) => value) : []),
     ['IMDb RATING', production.imdbRating == null ? 'IMDb rating unavailable' : `${production.imdbRating.toFixed(1)} / 10`],
     ...[['GENRE', production.genre], ['YEAR', production.broadcastYears], ['PRODUCTION COMPANY', production.productionCompany], ['BROADCASTER', production.broadcaster], ['DIRECTOR', production.director], ['DIRECTORS', production.directors?.join(' / ')], ['WRITER', production.writer], ['PRODUCER', production.producer], ['PROJECT DESIGN', production.projectDesign], ['CREATOR', production.creator]].filter(([, value]) => value),
   ].filter(([label]) => !production.hideUnknownFields || !(label in optionalValues) || optionalValues[label] != null)
@@ -39,7 +41,7 @@ export default function ProductionDetailModal({ production, onClose, returnFocus
       <div className="project-modal__content production-modal__composition" style={production.hideUnknownFields && (!production.image || imageFailed) ? { gridTemplateColumns: 'minmax(0, 1fr)' } : undefined}>
         {(!production.hideUnknownFields || (production.image && !imageFailed)) && <figure className="production-modal__visual">
           {production.videoLabel && <p className="section-index">{t(production.videoLabel)}</p>}
-          {production.video ? <VideoPlayer src={production.video.src} poster={production.video.poster || production.image} durationHint={production.video.duration} label={production.title} lazy /> : production.image && !imageFailed ? <img src={assetPath(production.image)} width={production.imageWidth} height={production.imageHeight} alt={t(`${production.title} — production publicity image`)} decoding="async" onError={() => setImageFailed(true)} /> : <div className="production-modal__placeholder">{t("PRODUCTION IMAGE")}<br />{t("NOT AVAILABLE")}</div>}
+          {production.video ? <VideoPlayer src={production.video.src} poster={production.video.poster || production.image} durationHint={production.video.duration} label={production.title} lazy /> : production.image && !imageFailed ? <img src={assetPath(production.image)} srcSet={production.imageSrcSet} sizes="(max-width:768px) 100vw, 55vw" width={production.imageWidth} height={production.imageHeight} alt={t(production.imageAlt || `${production.title} — production publicity image`)} decoding="async" onError={() => setImageFailed(true)} /> : <div className="production-modal__placeholder">{t("PRODUCTION IMAGE")}<br />{t("NOT AVAILABLE")}</div>}
           {production.imageSource && !imageFailed && <figcaption>{t(production.imageSource)}{production.imageSourceUrl && <> · <a href={production.imageSourceUrl} target="_blank" rel="noopener noreferrer">{t("SOURCE ↗")}</a></>}</figcaption>}
         </figure>}
         <div className="production-modal__info">
@@ -55,6 +57,8 @@ export default function ProductionDetailModal({ production, onClose, returnFocus
           </div>
         </div>
       </div>
+      {production.officialTrailer && <section className="project-modal__content production-modal__trailer" aria-label={t('OFFICIAL TRAILER')}><h3>{t('OFFICIAL TRAILER')}</h3><OfficialTrailer trailer={production.officialTrailer} title={production.title} srcSet={production.imageSrcSet} /></section>}
+      {production.host && <section className="project-modal__content production-modal__participants"><h3>{t('HOST')}</h3><p>{production.host}</p>{production.contestants?.length > 0 && <><h3>{t('CONTESTANTS')}</h3><ul className="production-contestants">{production.contestants.map(name => <li key={name}>{name}</li>)}</ul></>}</section>}
     </div>
   </dialog>, document.body)
 }

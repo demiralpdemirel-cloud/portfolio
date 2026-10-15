@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { worlds } from '../data/worlds.js'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
 import { assetPath } from '../utils/assetPath.js'
-import { CafeProcess, TopologyStudy, ArchitectureStudy, VfxLab } from './ProcessLab.jsx'
+import { CafeProcess, TopologyStudy, VfxLab } from './ProcessLab.jsx'
+import ProductionShowcase from './ProductionShowcase.jsx'
 
 function Stage({ entry, world, onOpen, tilt, reset }) {
   const { t } = useLanguage()
@@ -23,7 +24,6 @@ function Stage({ entry, world, onOpen, tilt, reset }) {
       {stages.length > 0 && entry.id !== 'cafe-environment' && <div className="world-passes" role="group" aria-label={t('Breakdown stages')}>{stages.map((stage,index)=><button key={stage.label} type="button" aria-pressed={index===pass} onClick={()=>setPass(index)}>{stage.label}</button>)}</div>}
       {world === 'compositing' && <p className="graphic-disclaimer">{t('Illustrative layer structure — not a project breakdown.')}</p>}
       {topology && <TopologyStudy project={entry.detail} />}
-      {entry.id === 'beylikduzu-kultur-merkezi' && <ArchitectureStudy project={entry.detail} />}
       {world === 'modeling' && entry.detail.breakdownVideo && <p className="graphic-disclaimer">{t('ARTIST-MADE BREAKDOWN IN DETAILS')}</p>}
     </div>
     <div className="world-entry-copy">
@@ -48,7 +48,7 @@ function WorldGeometry({ id }) {
 
 export default function CreativeWorlds({ onOpen, tilt, reset }) {
   const {t}=useLanguage()
-  return worlds.map((world,index)=><section id={world.id} key={world.id} className={`camera-scene creative-world world-${world.id}`} data-scene data-world={world.id}>
+  return worlds.map((world,index)=>world.id === 'production' ? <ProductionShowcase key={world.id} onOpen={onOpen} /> : <section id={world.id} key={world.id} className={`camera-scene creative-world world-${world.id}`} data-scene data-world={world.id}>
     <div className="world-seam" aria-hidden="true"><span/><span/><span/><span/><span/></div>
     <WorldGeometry id={world.id}/>
     <header className="world-heading"><p className="scene-number">{world.number} / {t(world.label)}</p><h2>{t(world.title)}</h2><p className="world-cue">{t(world.cue)}</p></header>

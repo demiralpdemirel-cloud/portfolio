@@ -7,9 +7,9 @@ import { experience } from '../src/data/experience.js'
 import { showreel } from '../src/data/showreel.js'
 import { translate } from '../src/i18n/translations.js'
 
-test('catalog retains all nine projects, ten experience records and verified breakdown-only work', () => {
-  assert.equal(catalog.length,20)
-  assert.equal(new Set(catalog.map(entry=>entry.id)).size,20)
+test('catalog retains all nine projects, eleven experience records and verified breakdown-only work', () => {
+  assert.equal(catalog.length,21)
+  assert.equal(new Set(catalog.map(entry=>entry.id)).size,21)
   assert.deepEqual(catalog.filter(entry=>entry.kind==='project').map(entry=>entry.detail).sort((a,b)=>a.id.localeCompare(b.id)), [...projects].sort((a,b)=>a.id.localeCompare(b.id)))
   assert.deepEqual(catalog.filter(entry=>entry.kind==='production').slice(0,experience.length).map(entry=>entry.title),experience.map(entry=>entry.title))
   for(const breakdown of showreel.breakdowns) assert.ok(catalog.some(entry=>entry.title===breakdown.title && entry.detail.video.src===breakdown.src))
@@ -23,12 +23,16 @@ test('filters are bilingual subsets with canonical ordering', () => {
     assert.ok(entries.every(entry=>catalog.includes(entry)))
     assert.notEqual(translate(filter.label,'tr'),filter.label)
   }
-  assert.equal(filterCatalog('production').length,11)
+  assert.equal(filterCatalog('production').length,12)
   assert.equal(filterCatalog('brand').length,5)
   assert.equal(filterCatalog('environment').length,3)
 })
 test('poster derivatives exist without replacing originals; no fabricated role/poster', () => {
   for(const entry of catalog.filter(entry=>entry.image)) {
+    if (entry.detail.remoteArtwork) {
+      for (const path of [entry.image,entry.thumbnail,entry.thumbnailLarge]) assert.equal(new URL(path).hostname,'shinemedya.com')
+      continue
+    }
     for(const path of [entry.image,entry.thumbnail,entry.thumbnailLarge]) assert.ok(existsSync(new URL('../public/'+path.replace(/^\//,''),import.meta.url)),path)
   }
   assert.equal(catalog.find(entry=>entry.title==='AŞK VE TAHT').thumbnail,null)

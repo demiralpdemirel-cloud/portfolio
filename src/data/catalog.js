@@ -53,8 +53,8 @@ const additionalProductions = showreel.breakdowns.filter(record => !productionEn
 }))
 export const catalog = [...personalEntries,...productionEntries,...additionalProductions].map((entry,index) => ({
   ...entry, number:String(index+1).padStart(2,'0'),
-  thumbnail:entry.image ? `media/catalog/${entry.id}-480.webp` : null,
-  thumbnailLarge:entry.image ? `media/catalog/${entry.id}-960.webp` : null,
+  thumbnail:entry.detail.remoteArtwork ? entry.detail.thumbnail : entry.image ? `media/catalog/${entry.id}-480.webp` : null,
+  thumbnailLarge:entry.detail.remoteArtwork ? entry.detail.thumbnailLarge : entry.image ? `media/catalog/${entry.id}-960.webp` : null,
 }))
 export const filterCatalog = category => category === 'all' ? catalog : catalog.filter(entry => entry.categories.includes(category))
 // Only this showcase is physical media. Professional worlds keep their existing layout.
