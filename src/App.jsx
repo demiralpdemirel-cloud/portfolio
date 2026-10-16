@@ -10,7 +10,7 @@ import ProductionDetailModal from './components/experience/ProductionDetailModal
 import ToolStudy from './components/ToolStudy.jsx'
 import PerformanceProbe from './components/PerformanceProbe.jsx'
 import SteamPlaytime from './components/SteamPlaytime.jsx'
-import ProfileBattle from './components/ProfileBattle.jsx'
+import './styles/profile-cards.css'
 import CreativeWorlds from './components/CreativeWorlds.jsx'
 import JewelCaseCatalog from './components/JewelCaseCatalog.jsx'
 import CaseReveal from './components/CaseReveal.jsx'
@@ -191,7 +191,7 @@ export default function App() {
             title="PROFILE / STATUS"
             subtitle="PROFESSIONAL PROFILE"
           />
-          <ProfileBattle>
+          <div className="profile-stage"><div className="profile-track">
             <article className="profile-panel">
               <span>{t('CURRENT STUDIO')}</span>
               <a
@@ -222,7 +222,7 @@ export default function App() {
               </a>
             </article>
             <SteamPlaytime />
-          </ProfileBattle>
+          </div></div>
           <span className="light-rail" />
         </section>
         <section id="work" className="camera-scene works-scene" data-scene>
