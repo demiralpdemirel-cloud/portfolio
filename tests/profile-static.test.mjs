@@ -21,3 +21,10 @@ test('archived battle source and fixtures are absent from the portfolio', () => 
   assert.match(css, /prefers-reduced-motion/)
   assert.doesNotMatch(css, /performance-overlay|data-reference-actor/)
 })
+
+test('Steam hours remain visible without a profile redirect', () => {
+  const source = readFileSync(new URL('../src/components/SteamPlaytime.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /<a\b|href=|STEAM_PROFILE/)
+  assert.match(source, /loadPlaytime\(endpoint\)/)
+  assert.match(source, /formatter.current.format\(data.hours\)/)
+})

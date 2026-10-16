@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
-import { hoursFormatter, loadPlaytime, STEAM_PROFILE, validatePlaytime } from '../utils/steamPlaytime.js'
+import { hoursFormatter, loadPlaytime, validatePlaytime } from '../utils/steamPlaytime.js'
 import '../styles/steam-playtime.css'
 import { assetPath } from '../utils/assetPath.js'
 
@@ -75,7 +75,6 @@ export default function SteamPlaytime() {
       <p>{t(publicProfile ? 'Public Steam profile — rounded hours' : 'Steam Recorded Playtime')}</p>
       <p className="steam-sync-state">{t(status === 'loading' ? 'Checking Steam playtime…' : publicProfile ? status === 'stale' ? 'Last verified profile reading' : 'PUBLIC PROFILE VERIFIED' : status === 'success' ? 'STEAM SYNCED' : status === 'stale' ? 'Cached playtime — Steam sync unavailable' : 'Steam playtime unavailable')}</p>
       {updated && <p>{t(status === 'stale' ? 'Last synced' : 'Last updated')}: <time dateTime={data.updatedAt}>{updated}</time></p>}
-      <a href={STEAM_PROFILE} target="_blank" rel="noopener noreferrer">{t('Steam profile')} ↗</a>
     </div>
   </article>
 }
