@@ -113,12 +113,7 @@ export default function useScrollWorld(root, revision) {
                 0,
               )
             } else if (id === 'profile') {
-              timeline.fromTo(
-                scene.querySelectorAll('.profile-panel'),
-                { rotateX: small ? 2 : 12, z: -70, y: 35 },
-                { rotateX: 0, z: 0, y: -18, stagger: 0.1, ease: 'none' },
-                0,
-              )
+              // Physical platform tops stay stationary while the local battle runs.
             } else if (id === 'showreel') {
               timeline.fromTo(
                 scene.querySelector('.cinema-shell'),
